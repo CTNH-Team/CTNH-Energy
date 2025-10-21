@@ -3,9 +3,9 @@ package tech.luckyblock.mcmod.ctnhenergy.common;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import tech.luckyblock.mcmod.ctnhenergy.CTNHLib;
+import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
-@Mod.EventBusSubscriber(modid = CTNHLib.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonProxy {
     public CommonProxy(FMLJavaModLoadingContext context) {
         IEventBus eventBus = context.getModEventBus();

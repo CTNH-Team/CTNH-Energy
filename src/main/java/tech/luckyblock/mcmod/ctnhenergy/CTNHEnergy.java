@@ -8,13 +8,14 @@ import org.slf4j.Logger;
 import tech.luckyblock.mcmod.ctnhenergy.client.ClientProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
 
-@Mod(CTNHLib.MODID)
-public class CTNHLib {
-    public static final String MODID = "ctnhlib";
+@SuppressWarnings("removal")
+@Mod(CTNHEnergy.MODID)
+public class CTNHEnergy {
+    public static final String MODID = "ctnhenergy";
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public CTNHLib() {
+    public CTNHEnergy() {
         final var context = FMLJavaModLoadingContext.get();
         //noinspection InstantiationOfUtilityClass
         DistExecutor.unsafeRunForDist(() -> () -> new ClientProxy(context), () -> () -> new CommonProxy(context));

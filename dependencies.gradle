@@ -22,7 +22,8 @@ dependencies {
     modImplementation("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
     modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
 
-
+    modImplementation("appeng:appliedenergistics2-forge:${ae2_version}")
+    modImplementation("curse.maven:guideme-1173950:6679102")
 //    modRuntimeOnly("curse.maven:modernfix-790626:6719008")
 
 //    // KubeJS
