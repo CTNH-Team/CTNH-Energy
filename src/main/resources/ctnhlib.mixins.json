@@ -1,0 +1,18 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "tech.luckyblock.mcmod.ctnhenergy.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "refmap": "ctnhlib.refmap.json",
+    "mixins": [
+        "MachineBuilderMixin"
+    ],
+    "client": [
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
+}
