@@ -30,5 +30,4 @@ public interface ExecutingCraftingJobAccessor {
     @Accessor("finalOutput")
     GenericStack getFinalOutput();
 
-
 }

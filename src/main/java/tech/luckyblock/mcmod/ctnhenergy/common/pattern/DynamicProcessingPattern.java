@@ -9,6 +9,8 @@ import appeng.crafting.pattern.AEProcessingPattern;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import static com.mojang.text2speech.Narrator.LOGGER;
+
 /**
  * 支持动态倍数扩展的处理型 Pattern。
  * 可通过 multiplyInPlace(long) 方法原地修改输入输出数量。
@@ -28,7 +30,7 @@ public class DynamicProcessingPattern implements IPatternDetails {
         for (int i = 0; i < inputs.length; ++i) {
             inputs[i] = new Input(pattern.getInputs()[i]);
         }
-        this.condensedOutputs = pattern.getOutputs();
+        this.condensedOutputs = pattern.getOutputs().clone();
     }
 
     @Override
@@ -100,7 +102,9 @@ public class DynamicProcessingPattern implements IPatternDetails {
      */
     public DynamicProcessingPattern multiplyInPlace(long factor) {
         if (factor <= 0) {
-            throw new IllegalArgumentException("factor must be > 0");
+            //throw new IllegalArgumentException("factor must be > 0");
+            LOGGER.debug("样板倍数小于0！");
+            factor = 1;
         }
 
         scaleStacksInPlace(this.sparseInputs, factor);
