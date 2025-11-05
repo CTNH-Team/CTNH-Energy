@@ -7,13 +7,19 @@
   "mixins": [
     "CraftingCpuLogicMixin",
     "ElapsedTimeTrackerInvoker",
-    "MEPatternBufferPartMachineMixin",
     "ExecutingCraftingJobAccessor",
+    "MEPatternBufferPartMachineMixin",
     "PatternProviderLogicAccessor",
     "PatternProviderLogicMixin",
+    "PatternProviderMenuAccessor",
+    "PatternProviderMenuMixin",
+    "PatternProviderTargetCacheMixin",
+    "SettingsMixin",
     "TaskProgressAccessor"
   ],
   "client": [
+    "PatternProviderScreenMixin",
+    "SettingToggleButtonMixin"
   ],
   "injectors": {
     "defaultRequire": 1

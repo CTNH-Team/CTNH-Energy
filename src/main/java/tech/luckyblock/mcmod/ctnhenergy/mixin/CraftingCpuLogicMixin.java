@@ -61,125 +61,125 @@ public abstract class CraftingCpuLogicMixin {
     /**
      * 主逻辑拦截
      */
-    @Inject(method = "executeCrafting", at = @At("HEAD"), cancellable = true)
-    private void onExecuteCrafting(int maxPatterns,
-                                   CraftingService craftingService,
-                                   IEnergyService energyService,
-                                   Level level,
-                                   CallbackInfoReturnable<Integer> cir) {
-
-        var jobLocal = this.job;
-        if (jobLocal == null) {
-            cir.setReturnValue(0);
-            return;
-        }
-
-        ExecutingCraftingJobAccessor jobAccessor = (ExecutingCraftingJobAccessor) jobLocal;
-        ListCraftingInventory waitingFor = jobAccessor.getWaitingFor();
-        var timeTracker = jobAccessor.getTimeTracker();
-
-        int pushedPatterns = 0;
-
-        // Step2: 推送
-        var it = jobAccessor.getTasks().entrySet().iterator();
-        taskLoop: while (it.hasNext()) {
-            var task = it.next();
-            TaskProgressAccessor progressAccessor = (TaskProgressAccessor)(task.getValue());
-            long totalCount = progressAccessor.getValue();
-
-            if (totalCount <= 0) {
-                it.remove();
-                continue;
-            }
-
-            IPatternDetails pattern = task.getKey();
-            boolean isProcessing = pattern instanceof AEProcessingPattern;
-
-            List<ICraftingProvider> providers = new ArrayList<>();
-            boolean pushed = false;
-
-            for (var provider : craftingService.getProviders(pattern)) {
-                if (!provider.isBusy()) {
-                    providers.add(provider);
-                }
-            }
-            int remains = providers.size();
-            for (var provider : providers) {
-
-                boolean isBlocking = false;
-                if(provider instanceof PatternProviderLogic){
-                    isBlocking = ((PatternProviderLogicAccessor)provider).getConfigManager().getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
-                }
-
-
-                long multiplier;
-                IPatternDetails realPattern;
-
-                if(isBlocking || !isProcessing){
-                    multiplier = 1;
-                    realPattern = pattern;
-                }
-                else {
-                    multiplier = totalCount/remains;
-                    realPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier);
-                }
-
-                KeyCounter expectedOutputs = new KeyCounter();
-                KeyCounter expectedContainerItems = new KeyCounter();
-                var craftingContainer = CraftingCpuHelper.extractPatternInputs(realPattern, inventory, level, expectedOutputs, expectedContainerItems);
-
-                if (craftingContainer == null) {
-                    break;
-                }
-
-                double patternPower = CraftingCpuHelper.calculatePatternPower(craftingContainer);
-
-                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-
-                if (extracted + 0.01 >= patternPower && provider.pushPattern(realPattern, craftingContainer)) {
-                    energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                    pushed = true;
-                    //pushedPatterns++;
-
-                    for (var ao : expectedOutputs) {
-                        waitingFor.insert(ao.getKey(), ao.getLongValue(), Actionable.MODULATE);
-                    }
-                    for (var expected : expectedContainerItems) {
-                        waitingFor.insert(expected.getKey(), expected.getLongValue(), Actionable.MODULATE);
-                        ((ElapsedTimeTrackerInvoker) timeTracker).invokeAddMaxItems(expected.getLongValue(), expected.getKey().getType());
-                    }
-
-                    cluster.markDirty();
-
-                    totalCount -= multiplier;
-
-                    if(totalCount <= 0 )
-                    {
-                        progressAccessor.setValue(0);
-                        it.remove();
-                        continue taskLoop;
-                    }
-                    else{
-                        progressAccessor.setValue(totalCount);
-                    }
-
-                    //expectedOutputs.reset();
-                    //expectedContainerItems.reset();
-                    //不用reset，直接释放
-                }
-                else {
-                    CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
-                }
-                remains--;
-            }
-            if(pushed) pushedPatterns++;
-            if(pushedPatterns == maxPatterns)
-            {
-                break;
-            }
-
-        }
-
-        cir.setReturnValue(pushedPatterns);
-    }
+//    @Inject(method = "executeCrafting", at = @At("HEAD"), cancellable = true)
+//    private void onExecuteCrafting(int maxPatterns,
+//                                   CraftingService craftingService,
+//                                   IEnergyService energyService,
+//                                   Level level,
+//                                   CallbackInfoReturnable<Integer> cir) {
+//
+//        var jobLocal = this.job;
+//        if (jobLocal == null) {
+//            cir.setReturnValue(0);
+//            return;
+//        }
+//
+//        ExecutingCraftingJobAccessor jobAccessor = (ExecutingCraftingJobAccessor) jobLocal;
+//        ListCraftingInventory waitingFor = jobAccessor.getWaitingFor();
+//        var timeTracker = jobAccessor.getTimeTracker();
+//
+//        int pushedPatterns = 0;
+//
+//        // Step2: 推送
+//        var it = jobAccessor.getTasks().entrySet().iterator();
+//        taskLoop: while (it.hasNext()) {
+//            var task = it.next();
+//            TaskProgressAccessor progressAccessor = (TaskProgressAccessor)(task.getValue());
+//            long totalCount = progressAccessor.getValue();
+//
+//            if (totalCount <= 0) {
+//                it.remove();
+//                continue;
+//            }
+//
+//            IPatternDetails pattern = task.getKey();
+//            boolean isProcessing = pattern instanceof AEProcessingPattern;
+//
+//            List<ICraftingProvider> providers = new ArrayList<>();
+//            boolean pushed = false;
+//
+//            for (var provider : craftingService.getProviders(pattern)) {
+//                if (!provider.isBusy()) {
+//                    providers.add(provider);
+//                }
+//            }
+//            int remains = providers.size();
+//            for (var provider : providers) {
+//
+//                boolean isBlocking = false;
+//                if(provider instanceof PatternProviderLogic){
+//                    isBlocking = ((PatternProviderLogicAccessor)provider).getConfigManager().getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
+//                }
+//
+//
+//                long multiplier;
+//                IPatternDetails realPattern;
+//
+//                if(isBlocking || !isProcessing){
+//                    multiplier = 1;
+//                    realPattern = pattern;
+//                }
+//                else {
+//                    multiplier = totalCount/remains;
+//                    realPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier);
+//                }
+//
+//                KeyCounter expectedOutputs = new KeyCounter();
+//                KeyCounter expectedContainerItems = new KeyCounter();
+//                var craftingContainer = CraftingCpuHelper.extractPatternInputs(realPattern, inventory, level, expectedOutputs, expectedContainerItems);
+//
+//                if (craftingContainer == null) {
+//                    break;
+//                }
+//
+//                double patternPower = CraftingCpuHelper.calculatePatternPower(craftingContainer);
+//
+//                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+//
+//                if (extracted + 0.01 >= patternPower && provider.pushPattern(realPattern, craftingContainer)) {
+//                    energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
+//                    pushed = true;
+//                    //pushedPatterns++;
+//
+//                    for (var ao : expectedOutputs) {
+//                        waitingFor.insert(ao.getKey(), ao.getLongValue(), Actionable.MODULATE);
+//                    }
+//                    for (var expected : expectedContainerItems) {
+//                        waitingFor.insert(expected.getKey(), expected.getLongValue(), Actionable.MODULATE);
+//                        ((ElapsedTimeTrackerInvoker) timeTracker).invokeAddMaxItems(expected.getLongValue(), expected.getKey().getType());
+//                    }
+//
+//                    cluster.markDirty();
+//
+//                    totalCount -= multiplier;
+//
+//                    if(totalCount <= 0 )
+//                    {
+//                        progressAccessor.setValue(0);
+//                        it.remove();
+//                        continue taskLoop;
+//                    }
+//                    else{
+//                        progressAccessor.setValue(totalCount);
+//                    }
+//
+//                    //expectedOutputs.reset();
+//                    //expectedContainerItems.reset();
+//                    //不用reset，直接释放
+//                }
+//                else {
+//                    CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
+//                }
+//                remains--;
+//            }
+//            if(pushed) pushedPatterns++;
+//            if(pushedPatterns == maxPatterns)
+//            {
+//                break;
+//            }
+//
+//        }
+//
+//        cir.setReturnValue(pushedPatterns);
+//    }
 }
