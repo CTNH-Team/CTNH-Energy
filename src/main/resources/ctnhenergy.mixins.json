@@ -12,6 +12,7 @@
     "MEPatternBufferPartMachineMixin",
     "SettingsMixin",
     "TaskProgressAccessor",
+    "GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
     "patternprovider.PatternProviderLogicAccessor",
     "patternprovider.PatternProviderLogicMixin",
     "patternprovider.PatternProviderMenuAccessor",

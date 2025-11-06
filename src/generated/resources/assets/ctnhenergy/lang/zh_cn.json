@@ -1,4 +1,6 @@
 {
+  "block.ctnhenergy.advanced_me_pattern_buffer": "高级ME样板总成",
+  "creativemodetab.ctnhenergy.itemgroup": "CTNH-Energy 物品",
   "gui.ctnhenergy.blocking_type.all": "全部",
   "gui.ctnhenergy.blocking_type.all.details": "容器内存在任何材料时暂停发送。",
   "gui.ctnhenergy.blocking_type.default": "默认",

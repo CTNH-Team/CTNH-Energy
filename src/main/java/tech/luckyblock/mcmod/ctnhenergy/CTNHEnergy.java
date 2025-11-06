@@ -1,12 +1,17 @@
 package tech.luckyblock.mcmod.ctnhenergy;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import tech.luckyblock.mcmod.ctnhenergy.client.ClientProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERegistrate;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.LangProcessor;
 
@@ -23,8 +28,12 @@ public class CTNHEnergy {
         final var context = FMLJavaModLoadingContext.get();
         //noinspection InstantiationOfUtilityClass
         DistExecutor.unsafeRunForDist(() -> () -> new ClientProxy(context), () -> () -> new CommonProxy(context));
-
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addGenericListener(MachineDefinition.class, this::registerMachines);
     }
 
+    public void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event){
+        CEMachines.init();
+    }
 
 }
