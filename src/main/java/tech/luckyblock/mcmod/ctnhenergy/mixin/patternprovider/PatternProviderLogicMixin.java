@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
-import tech.luckyblock.mcmod.ctnhenergy.utils.IPatternProviderLogic;
 import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
@@ -93,10 +92,10 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     private final Map<AEItemKey, Set<AEKey>> CE$patternInputsMap = new HashMap<>();
 
     @Inject(
-            method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;)V",
+            method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
             at = @At("TAIL")
     )
-    private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, CallbackInfo ci) {
+    private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
         configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.SMART);
     }
 

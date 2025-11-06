@@ -9,16 +9,16 @@
     "ElapsedTimeTrackerInvoker",
     "ExecutingCraftingJobAccessor",
     "MEPatternBufferPartMachineMixin",
-    "PatternProviderLogicAccessor",
-    "PatternProviderLogicMixin",
-    "PatternProviderMenuAccessor",
-    "PatternProviderMenuMixin",
-    "PatternProviderTargetCacheMixin",
+    "patternprovider.PatternProviderLogicAccessor",
+    "patternprovider.PatternProviderLogicMixin",
+    "patternprovider.PatternProviderMenuAccessor",
+    "patternprovider.PatternProviderMenuMixin",
+    "patternprovider.PatternProviderTargetCacheMixin",
     "SettingsMixin",
     "TaskProgressAccessor"
   ],
   "client": [
-    "PatternProviderScreenMixin",
+    "patternprovider.PatternProviderScreenMixin",
     "SettingToggleButtonMixin"
   ],
   "injectors": {

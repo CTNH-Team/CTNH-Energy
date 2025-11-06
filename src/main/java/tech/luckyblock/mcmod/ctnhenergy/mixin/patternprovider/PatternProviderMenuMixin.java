@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider;
 
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.AEBaseMenu;

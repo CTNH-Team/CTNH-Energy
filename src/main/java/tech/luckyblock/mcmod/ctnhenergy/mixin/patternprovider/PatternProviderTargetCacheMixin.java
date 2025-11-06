@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -7,7 +7,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
