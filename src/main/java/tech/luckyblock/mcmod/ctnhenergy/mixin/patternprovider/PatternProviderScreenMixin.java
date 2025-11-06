@@ -5,12 +5,14 @@ import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.menu.implementations.PatternProviderMenu;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.utils.IPatternProviderLogic;
@@ -25,14 +27,18 @@ public abstract class PatternProviderScreenMixin <C extends PatternProviderMenu>
         super(menu, playerInventory, title, style);
     }
 
-    @Inject(
+    @Redirect(
             method = "<init>",
-            at = @At("TAIL"),
+            at = @At(value = "INVOKE",
+                    target = "Lappeng/client/gui/implementations/PatternProviderScreen;addToLeftToolbar(Lnet/minecraft/client/gui/components/Button;)Lnet/minecraft/client/gui/components/Button;",
+                    ordinal = 0
+            ),
             remap = false
     )
-    private void init(PatternProviderMenu menu, Inventory playerInventory, Component title, ScreenStyle style, CallbackInfo ci) {
+    private Button init(PatternProviderScreen instance, Button button) {
+        this.addToLeftToolbar(button);
         CE$blockingType =  new ServerSettingToggleButton<>(CESettings.BLOCKING_TYPE, CESettings.BlockingType.DEFAULT);
-        this.addToLeftToolbar(CE$blockingType);
+        return this.addToLeftToolbar(CE$blockingType);
     }
 
     @Inject(method = "updateBeforeRender", at = @At("TAIL"), remap = false)

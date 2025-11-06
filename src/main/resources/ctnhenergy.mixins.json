@@ -5,21 +5,22 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "ctnhenergy.refmap.json",
   "mixins": [
+    "AEBaseMenuMixin",
     "CraftingCpuLogicMixin",
     "ElapsedTimeTrackerInvoker",
     "ExecutingCraftingJobAccessor",
     "MEPatternBufferPartMachineMixin",
+    "SettingsMixin",
+    "TaskProgressAccessor",
     "patternprovider.PatternProviderLogicAccessor",
     "patternprovider.PatternProviderLogicMixin",
     "patternprovider.PatternProviderMenuAccessor",
     "patternprovider.PatternProviderMenuMixin",
-    "patternprovider.PatternProviderTargetCacheMixin",
-    "SettingsMixin",
-    "TaskProgressAccessor"
+    "patternprovider.PatternProviderTargetCacheMixin"
   ],
   "client": [
-    "patternprovider.PatternProviderScreenMixin",
-    "SettingToggleButtonMixin"
+    "SettingToggleButtonMixin",
+    "patternprovider.PatternProviderScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
