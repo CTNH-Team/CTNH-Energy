@@ -36,4 +36,8 @@ public class CTNHEnergy {
         CEMachines.init();
     }
 
+    public static ResourceLocation id(String string){
+        return ResourceLocation.tryBuild(MODID, string);
+    }
+
 }

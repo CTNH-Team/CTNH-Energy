@@ -14,11 +14,14 @@
     "SettingsMixin",
     "TaskProgressAccessor",
     "GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
+    "patternencodingpanel.ProcessingEncodingPanelMixin",
+    "patternencodingpanel.StyleManagerMixin",
     "patternprovider.PatternProviderLogicAccessor",
     "patternprovider.PatternProviderLogicMixin",
     "patternprovider.PatternProviderMenuAccessor",
     "patternprovider.PatternProviderMenuMixin",
-    "patternprovider.PatternProviderTargetCacheMixin"
+    "patternprovider.PatternProviderTargetCacheMixin",
+    "pcc.ConfigClientMixin"
   ],
   "client": [
     "SettingToggleButtonMixin",

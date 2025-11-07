@@ -12,5 +12,10 @@ public class ChineseLangHandler {
         provider.add("gui.ctnhenergy.blocking_type.smart", "智能");
         provider.add("gui.ctnhenergy.blocking_type.smart.details.1", "容器内存在当前样板所需的合成材料之外的材料时暂停发送。");
         provider.add("gui.ctnhenergy.blocking_type.smart.details.2", "（忽略编程电路）");
+
+        provider.add("gui.ctnhenergy.enable_circuit", "启用编程电路");
+        provider.add("gui.ctnhenergy.enable_circuit.tooltip", "在样板输入中加入编程电路");
+        provider.add("gui.ctnhenergy.disable_circuit", "禁用编程电路");
+        provider.add("gui.ctnhenergy.disable_circuit.tooltip", "忽略配方中的编程电路");
     }
 }

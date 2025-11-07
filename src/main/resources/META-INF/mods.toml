@@ -55,9 +55,22 @@ ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT, or SERVER
 side = "BOTH"# Here's another dependency
 [[dependencies."${mod_id}"]]
+
 modId = "minecraft"
 mandatory = true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange = "${minecraft_version}"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependency."${mod_id}"]]
+modId = "ae2"
+mandatory = true
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependency."${mod_id}"]]
+modId = "ae2wtlib"
+mandatory = true
+ordering = "BEFORE"
 side = "BOTH"
