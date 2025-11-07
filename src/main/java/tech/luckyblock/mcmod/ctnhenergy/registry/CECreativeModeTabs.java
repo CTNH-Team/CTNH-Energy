@@ -17,8 +17,8 @@ public class CECreativeModeTabs {
 
     }
 
-    @EN("CTNH-Energy Items")
-    @CN("CTNH-Energy 物品")
+    @EN("CTNH Energy Items")
+    @CN("CTNH Energy 物品")
     static Lang itemGroup;
     public static RegistryEntry<CreativeModeTab> ITEM = REGISTRATE.defaultCreativeTab("item",
                     builder -> builder.displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("item", REGISTRATE))

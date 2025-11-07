@@ -66,11 +66,18 @@ side = "BOTH"
 [[dependency."${mod_id}"]]
 modId = "ae2"
 mandatory = true
-ordering = "BEFORE"
+ordering = "NONE"
 side = "BOTH"
 
 [[dependency."${mod_id}"]]
 modId = "ae2wtlib"
 mandatory = true
-ordering = "BEFORE"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependency."${mod_id}"]]
+modId = "pccard"
+mandatory = true
+versionRange = "[1.2.3]"
+ordering = "NONE"
 side = "BOTH"
