@@ -24,8 +24,6 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -151,7 +149,7 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
     @Persisted
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
-    private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
+    private final Set<AdvancedMEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
     @Getter
     protected final ProgrammableSlotRecipeHandler internalRecipeHandler;
@@ -235,22 +233,22 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
         }
     }
 
-    public void addProxy(MEPatternBufferProxyPartMachine proxy) {
+    public void addProxy(AdvancedMEPatternBufferProxyPartMachine proxy) {
         proxies.add(proxy.getPos());
         proxyMachines.add(proxy);
     }
 
-    public void removeProxy(MEPatternBufferProxyPartMachine proxy) {
+    public void removeProxy(AdvancedMEPatternBufferProxyPartMachine proxy) {
         proxies.remove(proxy.getPos());
         proxyMachines.remove(proxy);
     }
 
     @UnmodifiableView
-    public Set<MEPatternBufferProxyPartMachine> getProxies() {
+    public Set<AdvancedMEPatternBufferProxyPartMachine> getProxies() {
         if (proxyMachines.size() != proxies.size()) {
             proxyMachines.clear();
             for (var pos : proxies) {
-                if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferProxyPartMachine proxy) {
+                if (MetaMachine.getMachine(getLevel(), pos) instanceof AdvancedMEPatternBufferProxyPartMachine proxy) {
                     proxyMachines.add(proxy);
                 }
             }
