@@ -1,0 +1,9 @@
+{
+  "$schema": "ae2/screens/schema.json",
+  "widgets": {
+    "enableCircuit": {
+      "left": 92,
+      "bottom": 163
+    }
+  }
+}

@@ -42,6 +42,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -52,6 +53,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -75,6 +78,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import yuuki1293.pccard.impl.PatternProviderLogicImpl;
+import yuuki1293.pccard.wrapper.IAEPattern;
+import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +93,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
-        implements ICraftingProvider, PatternContainer, IDataStickInteractable {
+        implements ICraftingProvider, PatternContainer, IDataStickInteractable, IPatternProviderLogicMixin {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             AdvancedMEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -132,6 +138,10 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
     private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
 
+    private final BiMap<AEItemKey, Integer> patternKeySlotIndexMap = HashBiMap.create(MAX_PATTERN_COUNT);
+
+    private final BiMap<AEItemKey, IPatternDetails> patternKeyDetailsMap = HashBiMap.create(MAX_PATTERN_COUNT);
+
     @DescSynced
     @Persisted
     @Setter
@@ -168,9 +178,13 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
             serverLevel.getServer().tell(new TickTask(1, () -> {
                 for (int i = 0; i < patternInventory.getSlots(); i++) {
                     var pattern = patternInventory.getStackInSlot(i);
-                    var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
+                    var patternDetails = PatternDetailsHelper.decodePattern(
+                            PatternProviderLogicImpl.updatePatterns(this, pattern), getLevel()
+                    );
                     if (patternDetails != null) {
-                        this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
+                        //this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
+                        patternKeyDetailsMap.put(patternDetails.getDefinition(), patternDetails);
+                        patternKeySlotIndexMap.put(patternDetails.getDefinition(), i);
                     }
                 }
                 needPatternSync = true;
@@ -255,15 +269,25 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
     private void onPatternChange(int index) {
         if (isRemote()) return;
 
-        // remove old if applicable
         var internalInv = internalInventory[index];
         var newPattern = patternInventory.getStackInSlot(index);
-        var newPatternDetails = PatternDetailsHelper.decodePattern(newPattern, getLevel());
-        var oldPatternDetails = detailsSlotMap.inverse().get(internalInv);
-        detailsSlotMap.forcePut(newPatternDetails, internalInv);
-        if (oldPatternDetails != null && !oldPatternDetails.equals(newPatternDetails)) {
+        var newPatternDetails = PatternDetailsHelper.decodePattern(
+                PatternProviderLogicImpl.updatePatterns(this, newPattern), getLevel()
+        );
+        var oldPatternKey = patternKeySlotIndexMap.inverse().get(index);
+        var oldPatternDetails = patternKeyDetailsMap.get(oldPatternKey);
+
+        if (!(oldPatternDetails == newPatternDetails)) {
             internalInv.refund();
+            patternKeyDetailsMap.remove(oldPatternKey);
+            if(newPatternDetails != null)
+            {
+                patternKeySlotIndexMap.forcePut(newPatternDetails.getDefinition(), index);
+                patternKeyDetailsMap.put(newPatternDetails.getDefinition(), newPatternDetails);
+            }
         }
+
+        //detailsSlotMap.forcePut(newPatternDetails, internalInv);
 
         needPatternSync = true;
     }
@@ -332,19 +356,35 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        return detailsSlotMap.keySet().stream().filter(Objects::nonNull).toList();
+        //return detailsSlotMap.keySet().stream().filter(Objects::nonNull).toList();
+        return patternKeyDetailsMap.values().stream().filter(Objects::nonNull).toList();
     }
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
-        if (!isFormed() || !getMainNode().isActive() || !detailsSlotMap.containsKey(patternDetails) ||
+        if (!isFormed() || !getMainNode().isActive() || !patternKeyDetailsMap.containsKey(patternDetails.getDefinition()) ||
                 !checkInput(inputHolder)) {
             return false;
         }
 
-        var slot = detailsSlotMap.get(patternDetails);
-        if (slot != null) {
+        var slotIndex = patternKeySlotIndexMap.get(patternDetails.getDefinition());
+        if(slotIndex != null)
+        {
+
+            Integer circuit = null;
+            var machineCircuit = circuitInventory.storage.getStackInSlot(0);
+            if(IntCircuitBehaviour.isIntegratedCircuit(machineCircuit))
+                circuit = IntCircuitBehaviour.getCircuitConfiguration(machineCircuit);
+
+            if(patternDetails instanceof IAEPattern patternDetailsW)
+                circuit = patternDetailsW.pCCard$getNumber();
+
+            if(circuit != null)
+                internalRecipeHandler.setCircuit(slotIndex, circuit);
+
+            var slot = internalInventory[slotIndex];
             slot.pushPattern(patternDetails, inputHolder);
+
             return true;
         }
         return false;
@@ -434,16 +474,39 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
         return InteractionResult.SUCCESS;
     }
 
-    public record BufferData(Object2LongMap<ItemStack> items, Object2LongMap<FluidStack> fluids) {}
+    @Override
+    public void pCCard$setPCNumber(IPatternDetails patternDetails) {
 
-    public BufferData mergeInternalSlots() {
-        var items = new Object2LongOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
-        var fluids = new Object2LongOpenHashMap<FluidStack>();
-        for (InternalSlot slot : internalInventory) {
-            slot.itemInventory.object2LongEntrySet().fastForEach(e -> items.addTo(e.getKey(), e.getLongValue()));
-            slot.fluidInventory.object2LongEntrySet().fastForEach(e -> fluids.addTo(e.getKey(), e.getLongValue()));
-        }
-        return new BufferData(items, fluids);
+    }
+
+    @Override
+    public boolean pCCard$hasPCCard() {
+        return true;
+    }
+
+    @Override
+    public List<BlockPos> pCCard$getSendPos() {
+        return List.of();
+    }
+
+    @Override
+    public Direction pCCard$getSendDirection() {
+        return null;
+    }
+
+    @Override
+    public void pCCard$setSendDirection(Direction direction) {
+
+    }
+
+    @Override
+    public BlockEntity pCCard$getBlockEntity() {
+        return null;
+    }
+
+    @Override
+    public Level pCCard$getLevel() {
+        return null;
     }
 
     public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
@@ -457,6 +520,7 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
         private final Object2LongOpenHashMap<FluidStack> fluidInventory = new Object2LongOpenHashMap<>();
         private List<ItemStack> itemStacks = null;
         private List<FluidStack> fluidStacks = null;
+
 
         public InternalSlot() {}
 

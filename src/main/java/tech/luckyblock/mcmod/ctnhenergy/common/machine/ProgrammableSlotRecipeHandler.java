@@ -1,11 +1,13 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.AdvancedMEPatternBufferPartMachine.InternalSlot;
 
 import net.minecraft.world.item.ItemStack;
@@ -31,17 +33,25 @@ public final class ProgrammableSlotRecipeHandler {
         }
     }
 
+    public void setCircuit(int index, int circuit){
+        ((SlotRHL)slotHandlers.get(index)).circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(circuit));
+    }
+
     @Getter
     protected static class SlotRHL extends RecipeHandlerList {
 
         private final SlotItemRecipeHandler itemRecipeHandler;
         private final SlotFluidRecipeHandler fluidRecipeHandler;
+        private final NotifiableItemStackHandler circuitInventory;
 
         public SlotRHL(AdvancedMEPatternBufferPartMachine buffer, InternalSlot slot, int idx) {
             super(IO.IN);
             itemRecipeHandler = new SlotItemRecipeHandler(buffer, slot, idx);
             fluidRecipeHandler = new SlotFluidRecipeHandler(buffer, slot, idx);
-            addHandlers(buffer.getCircuitInventory(), buffer.getShareInventory(), buffer.getShareTank(),
+            circuitInventory = new NotifiableItemStackHandler(buffer, 1, IO.IN, IO.NONE)
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit)
+                    .shouldSearchContent(false);
+            addHandlers(circuitInventory, buffer.getShareInventory(), buffer.getShareTank(),
                     itemRecipeHandler, fluidRecipeHandler);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
