@@ -4,14 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
 import net.minecraft.network.chat.Component;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.AdvancedMEPatternBufferPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.AdvancedMEPatternBufferProxyPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.MEDualOutputHatchPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch.MEDualOutputHatchPartMachine;
 
-import static com.gregtechceu.gtceu.api.GTValues.EV;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_OUTPUT_HATCH_ABILITIES;
 import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
@@ -50,7 +47,7 @@ public class CEMachines {
                     Component.translatable("gtceu.part_sharing.enabled"))
             .register();
 
-    public final static MachineDefinition ITEM_EXPORT_BUS_ME = REGISTRATE
+    public final static MachineDefinition DUAL_OUTPUT_HATCH_ME = REGISTRATE
             .machine("me_dual_output_hatch", MEDualOutputHatchPartMachine::new)
             .cnLangValue("ME输出总成")
             .langValue("ME Dual Output Hatch")

@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.ProgrammableSlotRecipeHandler.SlotRHL;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.ProgrammableSlotRecipeHandler.SlotRHL;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 import net.minecraft.world.item.crafting.Ingredient;
@@ -25,26 +25,39 @@ import java.util.List;
 public final class ProgrammableProxySlotRecipeHandler {
 
     private final List<RecipeHandlerList> proxySlotHandlers;
+    private final ProxyItemRecipeHandler itemOutput;
+    private final ProxyFluidRecipeHandler fluidOutput;
+    private final int slots;
 
     public ProgrammableProxySlotRecipeHandler(AdvancedMEPatternBufferProxyPartMachine machine, int slots) {
-        proxySlotHandlers = new ArrayList<>(slots);
+        this.slots = slots;
+        proxySlotHandlers = new ArrayList<>(slots + 1);
         for (int i = 0; i < slots; ++i) {
             proxySlotHandlers.add(new ProxyRHL(machine));
         }
+        itemOutput = new ProxyItemRecipeHandler(machine, IO.OUT);
+        fluidOutput = new ProxyFluidRecipeHandler(machine, IO.OUT);
+
+        List<IRecipeHandler<?>> handlers = new ArrayList<>();
+        handlers.add(itemOutput);
+        handlers.add(fluidOutput);
+        proxySlotHandlers.add(RecipeHandlerList.of(IO.OUT, handlers));
     }
 
     public void updateProxy(AdvancedMEPatternBufferPartMachine patternBuffer) {
         var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
-        for (int i = 0; i < proxySlotHandlers.size(); ++i) {
+        for (int i = 0; i <slots; ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
             ProgrammableSlotRecipeHandler.SlotRHL slotRHL = (SlotRHL) slotHandlers.get(i);
             proxyRHL.setBuffer(patternBuffer, slotRHL);
         }
+        itemOutput.setProxy(patternBuffer.getOutputInventory());
+        fluidOutput.setProxy(patternBuffer.getOutputTank());
     }
 
     public void clearProxy() {
-        for (var slotHandler : proxySlotHandlers) {
-            ((ProxyRHL) slotHandler).clearBuffer();
+        for (int i = 0; i < slots; ++i) {
+            ((ProxyRHL) proxySlotHandlers.get(i)).clearBuffer();
         }
     }
 
@@ -56,6 +69,7 @@ public final class ProgrammableProxySlotRecipeHandler {
         private final ProxyFluidRecipeHandler sharedFluid;
         private final ProxyFluidRecipeHandler slotFluid;
 
+
         public ProxyRHL(AdvancedMEPatternBufferProxyPartMachine machine) {
             super(IO.IN);
             circuit = new ProxyItemRecipeHandler(machine);
@@ -63,6 +77,8 @@ public final class ProgrammableProxySlotRecipeHandler {
             slotItem = new ProxyItemRecipeHandler(machine);
             sharedFluid = new ProxyFluidRecipeHandler(machine);
             slotFluid = new ProxyFluidRecipeHandler(machine);
+
+
             addHandlers(circuit, sharedItem, slotItem, sharedFluid, slotFluid);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
@@ -73,6 +89,7 @@ public final class ProgrammableProxySlotRecipeHandler {
             sharedFluid.setProxy(buffer.getShareTank());
             slotItem.setProxy(slotRHL.getItemRecipeHandler());
             slotFluid.setProxy(slotRHL.getFluidRecipeHandler());
+
         }
 
         public void clearBuffer() {
@@ -98,12 +115,17 @@ public final class ProgrammableProxySlotRecipeHandler {
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
 
-        private final IO handlerIO = IO.IN;
+        private final IO handlerIO;
         private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
         private final boolean isDistinct = true;
 
-        public ProxyItemRecipeHandler(MetaMachine machine) {
+        public ProxyItemRecipeHandler(MetaMachine machine, IO io) {
             super(machine);
+            handlerIO = io;
+        }
+
+        public ProxyItemRecipeHandler(MetaMachine machine) {
+            this(machine, IO.IN);
         }
 
         public void setProxy(IRecipeHandlerTrait<Ingredient> proxy) {
@@ -153,12 +175,17 @@ public final class ProgrammableProxySlotRecipeHandler {
         private IRecipeHandlerTrait<FluidIngredient> proxy = null;
         private ISubscription proxySub = null;
 
-        private final IO handlerIO = IO.IN;
+        private final IO handlerIO;
         private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
         private final boolean isDistinct = true;
 
-        public ProxyFluidRecipeHandler(MetaMachine machine) {
+        public ProxyFluidRecipeHandler(MetaMachine machine, IO io) {
             super(machine);
+            handlerIO = io;
+        }
+
+        public ProxyFluidRecipeHandler(MetaMachine machine) {
+            this(machine, IO.IN);
         }
 
         public void setProxy(IRecipeHandlerTrait<FluidIngredient> proxy) {

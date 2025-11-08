@@ -1,8 +1,7 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEFluidDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
@@ -64,11 +62,12 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     @Nullable
     protected ISubscription tankSubs;
 
+    //static to make sure its init before Inventory
     private static final List<Runnable> changeListeners = new ArrayList<>();
 
     public MEDualOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.OUT, args);
-        tank = new InaccessibleInfiniteTank(this);
+        tank = new InaccessibleInfiniteTank(this, changeListeners, internalBuffer);
         internalBuffer.setOnContentsChanged(()-> changeListeners.forEach(Runnable::run));
     }
 
@@ -79,7 +78,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler(this);
+        return new InaccessibleInfiniteHandler(this, changeListeners, internalBuffer);
     }
 
     @Override
@@ -203,7 +202,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
 
             buffer.writeVarInt(this.changeMap.size());
             for (var entry : this.changeMap.object2LongEntrySet()) {
-                toPacket(buffer, entry.getKey());
+                toPacket(buffer, entry.getKey());// rewrite this method to fix this line
                 buffer.writeVarLong(entry.getLongValue());
             }
         }
@@ -214,10 +213,10 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
         }
     }
 
-    private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
+    public static class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 
-        public InaccessibleInfiniteHandler(MetaMachine holder) {
-            super(holder, 1, IO.OUT, IO.NONE, ItemStackHandlerDelegate::new);
+        public InaccessibleInfiniteHandler(MetaMachine holder, List<Runnable> changeListeners, KeyStorage buffer) {
+            super(holder, 1, IO.OUT, IO.NONE, i -> new ItemStackHandlerDelegate(i, buffer));
             //internalBuffer.setOnContentsChanged(this::onContentsChanged);
             changeListeners.add(this::onContentsChanged);
         }
@@ -239,11 +238,13 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     }
 
     @NoArgsConstructor
-    private class ItemStackHandlerDelegate extends CustomItemStackHandler {
+    public static class ItemStackHandlerDelegate extends CustomItemStackHandler {
 
+        KeyStorage buffer;
         // Necessary for InaccessibleInfiniteHandler
-        public ItemStackHandlerDelegate(Integer integer) {
+        public ItemStackHandlerDelegate(Integer integer, KeyStorage buffer) {
             super();
+            this.buffer = buffer;
         }
 
         @Override
@@ -270,12 +271,12 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             var key = AEItemKey.of(stack);
             int count = stack.getCount();
-            long oldValue = internalBuffer.storage.getOrDefault(key, 0);
+            long oldValue = buffer.storage.getOrDefault(key, 0);
             long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
             if (changeValue > 0) {
                 if (!simulate) {
-                    internalBuffer.storage.put(key, oldValue + changeValue);
-                    internalBuffer.onChanged();
+                    buffer.storage.put(key, oldValue + changeValue);
+                    buffer.onChanged();
                 }
                 return stack.copyWithCount((int) (count - changeValue));
             } else {
@@ -289,12 +290,12 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
         }
     }
 
-    private class InaccessibleInfiniteTank extends NotifiableFluidTank {
+    public static class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
         FluidStorageDelegate storage;
 
-        public InaccessibleInfiniteTank(MetaMachine holder) {
-            super(holder, List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
+        public InaccessibleInfiniteTank(MetaMachine holder, List<Runnable> changeListeners, KeyStorage buffer) {
+            super(holder, List.of(new FluidStorageDelegate(buffer)), IO.OUT, IO.NONE);
             //internalBuffer.setOnContentsChanged(this::onContentsChanged);
             changeListeners.add(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];
@@ -366,10 +367,12 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
         }
     }
 
-    private class FluidStorageDelegate extends CustomFluidTank {
+    public static class FluidStorageDelegate extends CustomFluidTank {
 
-        public FluidStorageDelegate() {
+        KeyStorage buffer;
+        public FluidStorageDelegate(KeyStorage buffer) {
             super(0);
+            this.buffer = buffer;
         }
 
         @Override
@@ -386,11 +389,11 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
         public int fill(FluidStack resource, FluidAction action) {
             var key = AEFluidKey.of(resource.getFluid(), resource.getTag());
             int amount = resource.getAmount();
-            int oldValue = GTMath.saturatedCast(internalBuffer.storage.getOrDefault(key, 0));
+            int oldValue = GTMath.saturatedCast(buffer.storage.getOrDefault(key, 0));
             int changeValue = Math.min(Integer.MAX_VALUE - oldValue, amount);
             if (changeValue > 0 && action.execute()) {
-                internalBuffer.storage.put(key, oldValue + changeValue);
-                internalBuffer.onChanged();
+                buffer.storage.put(key, oldValue + changeValue);
+                buffer.onChanged();
             }
             return changeValue;
         }

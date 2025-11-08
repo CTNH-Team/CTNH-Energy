@@ -14,5 +14,7 @@
   "gui.ctnhenergy.disable_circuit": "禁用编程电路",
   "gui.ctnhenergy.disable_circuit.tooltip": "忽略配方中的编程电路",
   "gui.ctnhenergy.enable_circuit": "启用编程电路",
-  "gui.ctnhenergy.enable_circuit.tooltip": "在样板输入中加入编程电路"
+  "gui.ctnhenergy.enable_circuit.tooltip": "在样板输入中加入编程电路",
+  "ui.ctnhenergy.dualoutput": "ME输出",
+  "ui.ctnhenergy.dualoutputtooltip": "ME输出缓存"
 }

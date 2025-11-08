@@ -1,16 +1,16 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer;
 
+import appeng.api.config.Actionable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.*;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -33,6 +34,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -76,6 +78,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch.MEDualOutputConfigurator;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch.MEDualOutputHatchPartMachine;
 import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IAEPattern;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
@@ -134,8 +138,6 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
     @Persisted
     protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
 
-    private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
-
     private final BiMap<AEItemKey, Integer> patternKeySlotIndexMap = HashBiMap.create(MAX_PATTERN_COUNT);
 
     private final BiMap<AEItemKey, IPatternDetails> patternKeyDetailsMap = HashBiMap.create(MAX_PATTERN_COUNT);
@@ -157,6 +159,8 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
     @Nullable
     protected TickableSubscription updateSubs;
 
+
+
     public AdvancedMEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
@@ -167,6 +171,8 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
         this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE);
         this.internalRecipeHandler = new ProgrammableSlotRecipeHandler(this, internalInventory);
+
+        initOutput();
     }
 
     @Override
@@ -188,11 +194,33 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
                 needPatternSync = true;
             }));
         }
+
+        inventorySubs = outputInventory.addChangedListener(this::updateInventorySubscription);
+        tankSubs = outputTank.addChangedListener(this::updateInventorySubscription);
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (inventorySubs != null) {
+            inventorySubs.unsubscribe();
+            inventorySubs = null;
+        }
+        if (tankSubs != null) {
+            tankSubs.unsubscribe();
+            tankSubs = null;
+        }
     }
 
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
-        return internalRecipeHandler.getSlotHandlers();
+        List<IRecipeHandler<?>> handlers = new ArrayList<>();
+        handlers.add(outputInventory);
+        handlers.add(outputTank);
+        var outList =  RecipeHandlerList.of(IO.OUT, getPaintingColor(), handlers);
+        var all = new ArrayList<>(internalRecipeHandler.getSlotHandlers());
+        all.add(outList);
+        return all;
     }
 
     @Override
@@ -311,6 +339,17 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
                 .setTooltips(List.of(
                         Component.translatable("gui.gtceu.share_tank.desc.0"),
                         Component.translatable("gui.gtceu.share_inventory.desc.1"))));
+    }
+
+    @Override
+    public void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this);
+
+        sideTabs.attachSubTab(new MEDualOutputConfigurator(this, internalBuffer));
+
+        var directionalConfigurator = CombinedDirectionalFancyConfigurator.of(self(), self());
+        if (directionalConfigurator != null)
+            sideTabs.attachSubTab(directionalConfigurator);
     }
 
     @Override
@@ -464,6 +503,13 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
     public void onMachineRemoved() {
         clearInventory(patternInventory);
         clearInventory(shareInventory);
+        var grid = getMainNode().getGrid();
+        if (grid != null && !internalBuffer.isEmpty()) {
+            for (var entry : internalBuffer) {
+                grid.getStorageService().getInventory().insert(entry.getKey(), entry.getLongValue(),
+                        Actionable.MODULATE, actionSource);
+            }
+        }
     }
 
     @Override
@@ -768,4 +814,46 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
             }
         }
     }
+
+
+    @Persisted
+    private KeyStorage internalBuffer;
+
+    @Persisted
+    @Getter
+    private NotifiableItemStackHandler outputInventory;
+
+    @Persisted
+    @Getter
+    private NotifiableFluidTank outputTank;
+
+    @Nullable
+    protected ISubscription inventorySubs, tankSubs;
+
+    private void initOutput(){
+        internalBuffer = new KeyStorage();
+        outputInventory = new MEDualOutputHatchPartMachine.InaccessibleInfiniteHandler(this, changeListeners, internalBuffer);
+        outputTank = new MEDualOutputHatchPartMachine.InaccessibleInfiniteTank(this, changeListeners, internalBuffer);
+        internalBuffer.setOnContentsChanged(()-> changeListeners.forEach(Runnable::run));
+    }
+
+    @Override
+    protected boolean shouldSubscribe() {
+        return super.shouldSubscribe() && !internalBuffer.storage.isEmpty();
+    }
+
+    @Override
+    protected void autoIO() {
+        if (!this.shouldSyncME()) return;
+        if (this.updateMEStatus()) {
+            var grid = getMainNode().getGrid();
+            if (grid != null && !internalBuffer.isEmpty()) {
+                internalBuffer.insertInventory(grid.getStorageService().getInventory(), actionSource);
+            }
+            this.updateInventorySubscription();
+        }
+    }
+
+    private static final List<Runnable> changeListeners = new ArrayList<>();
+
 }

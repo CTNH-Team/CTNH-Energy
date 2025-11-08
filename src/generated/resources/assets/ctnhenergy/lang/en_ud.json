@@ -2,5 +2,7 @@
   "block.ctnhenergy.advanced_me_pattern_buffer": "ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝɔuɐʌpⱯ",
   "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "ʎxoɹԀ ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝɔuɐʌpⱯ",
   "block.ctnhenergy.me_dual_output_hatch": "ɥɔʇɐH ʇndʇnO ןɐnᗡ ƎW",
-  "creativemodetab.ctnhenergy.itemgroup": "sɯǝʇI ʎbɹǝuƎ HN⟘Ɔ"
+  "creativemodetab.ctnhenergy.itemgroup": "sɯǝʇI ʎbɹǝuƎ HN⟘Ɔ",
+  "ui.ctnhenergy.dualoutput": "ʇndʇnO ƎW",
+  "ui.ctnhenergy.dualoutputtooltip": "ɥɔʇɐƆ ʇndʇnO ƎW"
 }

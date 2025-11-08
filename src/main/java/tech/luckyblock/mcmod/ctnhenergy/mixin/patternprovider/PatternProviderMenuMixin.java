@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.utils.IPatternProviderLogic;
 
-@Mixin(value = PatternProviderMenu.class, remap = false)
+@Mixin(value = PatternProviderMenu.class, remap = true)
 public abstract class PatternProviderMenuMixin extends AEBaseMenu implements IPatternProviderLogic {
     @Unique
     @GuiSync(8)
@@ -35,9 +35,10 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu implements IPa
         return CE$blockingType;
     }
 
-    @SuppressWarnings("all")
-    @Inject(method = "m_38946_",
-            at = @At(value = "HEAD")
+    //@SuppressWarnings("all")
+    @Inject(method = "broadcastChanges",
+            at = @At(value = "HEAD"),
+            remap = true
     )
     private void broadcastChanges(CallbackInfo ci) {
         if (isServerSide()) {

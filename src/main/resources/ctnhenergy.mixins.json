@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "ctnhenergy.refmap.json",
   "mixins": [
-    "Ae2PatternTerminalHandlerMixin",
     "AEBaseMenuMixin",
     "CraftingCpuLogicMixin",
     "ElapsedTimeTrackerInvoker",
