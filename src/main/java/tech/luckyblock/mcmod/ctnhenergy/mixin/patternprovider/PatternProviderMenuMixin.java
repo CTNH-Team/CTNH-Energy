@@ -17,13 +17,13 @@ import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.utils.IPatternProviderLogic;
 
 @Mixin(value = PatternProviderMenu.class, remap = false)
-public class PatternProviderMenuMixin extends AEBaseMenu implements IPatternProviderLogic {
+public abstract class PatternProviderMenuMixin extends AEBaseMenu implements IPatternProviderLogic {
     @Unique
     @GuiSync(8)
     private CESettings.BlockingType CE$blockingType = CESettings.BlockingType.DEFAULT;
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     protected PatternProviderLogic logic;
 
     public PatternProviderMenuMixin(MenuType<?> menuType, int id, Inventory playerInventory, Object host) {
@@ -34,7 +34,9 @@ public class PatternProviderMenuMixin extends AEBaseMenu implements IPatternProv
     public CESettings.BlockingType CE$getBlockingMode() {
         return CE$blockingType;
     }
-    @Inject(method = "broadcastChanges",
+
+    @SuppressWarnings("all")
+    @Inject(method = "m_38946_",
             at = @At(value = "HEAD")
     )
     private void broadcastChanges(CallbackInfo ci) {
