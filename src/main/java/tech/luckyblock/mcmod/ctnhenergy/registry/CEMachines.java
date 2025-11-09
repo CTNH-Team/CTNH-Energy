@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import net.minecraft.network.chat.Component;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferProxyPartMachine;
@@ -60,5 +61,8 @@ public class CEMachines {
                     Component.translatable("gtceu.part_sharing.enabled"))
             .register();
 
-    public static void init(){};
+    public static void init(){
+        GTAEMachines.STOCKING_IMPORT_BUS_ME.setTier(IV);
+        GTAEMachines.STOCKING_IMPORT_HATCH_ME.setTier(IV);
+    };
 }
