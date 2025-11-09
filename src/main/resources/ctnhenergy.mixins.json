@@ -3,15 +3,14 @@
   "minVersion": "0.8",
   "package": "tech.luckyblock.mcmod.ctnhenergy.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "ctnhenergy.refmap.json",
   "mixins": [
-    "AEBaseMenuMixin",
-    "CraftingCpuLogicMixin",
-    "ElapsedTimeTrackerInvoker",
-    "ExecutingCraftingJobAccessor",
-    "MEPatternBufferPartMachineMixin",
+    "misc.AEBaseMenuMixin",
+    "cpu.CraftingCpuLogicMixin",
+    "cpu.ElapsedTimeTrackerInvoker",
+    "cpu.ExecutingCraftingJobAccessor",
+    "GTmepatternbuffer.MEPatternBufferPartMachineMixin",
     "SettingsMixin",
-    "TaskProgressAccessor",
+    "cpu.TaskProgressAccessor",
     "GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
     "misc.ColorApplicatorItemMixin",
     "patternencodingpanel.ProcessingEncodingPanelMixin",
@@ -25,7 +24,7 @@
     "pcc.ConfigClientMixin"
   ],
   "client": [
-    "SettingToggleButtonMixin",
+    "patternprovider.SettingToggleButtonMixin",
     "patternprovider.PatternProviderScreenMixin"
   ],
   "injectors": {

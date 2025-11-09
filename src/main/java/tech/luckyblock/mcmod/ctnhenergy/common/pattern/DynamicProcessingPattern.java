@@ -8,6 +8,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.crafting.pattern.AEProcessingPattern;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import yuuki1293.pccard.wrapper.IAEPattern;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
@@ -15,12 +16,13 @@ import static com.mojang.text2speech.Narrator.LOGGER;
  * 支持动态倍数扩展的处理型 Pattern。
  * 可通过 multiplyInPlace(long) 方法原地修改输入输出数量。
  */
-public class DynamicProcessingPattern implements IPatternDetails {
+public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
 
     private final AEItemKey definition;
     private final GenericStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;
     private final GenericStack[] condensedOutputs;
+    private int pCCard$number = 0;
 
     public DynamicProcessingPattern(AEProcessingPattern pattern) {
         this.definition = pattern.getDefinition();
@@ -31,6 +33,8 @@ public class DynamicProcessingPattern implements IPatternDetails {
             inputs[i] = new Input(pattern.getInputs()[i]);
         }
         this.condensedOutputs = pattern.getOutputs().clone();
+        if(pattern instanceof IAEPattern iaePattern)
+            pCCard$setNumber(iaePattern.pCCard$getNumber());
     }
 
     @Override
@@ -126,6 +130,16 @@ public class DynamicProcessingPattern implements IPatternDetails {
             if (s == null) continue;
             arr[i] = new GenericStack(s.what(), s.amount() * factor);
         }
+    }
+
+    @Override
+    public void pCCard$setNumber(int number) {
+        pCCard$number = number;
+    }
+
+    @Override
+    public int pCCard$getNumber() {
+        return pCCard$number;
     }
 
     // ===========================================================

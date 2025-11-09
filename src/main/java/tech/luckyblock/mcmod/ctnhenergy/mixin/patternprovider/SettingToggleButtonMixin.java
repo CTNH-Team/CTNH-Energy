@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider;
 
 import appeng.api.config.Setting;
 import appeng.client.gui.Icon;

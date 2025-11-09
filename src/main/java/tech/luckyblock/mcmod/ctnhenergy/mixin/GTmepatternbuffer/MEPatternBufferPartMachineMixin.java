@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.GTmepatternbuffer;
 
 import appeng.api.crafting.IPatternDetails;
 import com.google.common.collect.BiMap;

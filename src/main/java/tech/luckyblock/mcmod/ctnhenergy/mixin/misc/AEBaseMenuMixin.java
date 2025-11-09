@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.misc;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(value = AEBaseMenu.class, remap = false)

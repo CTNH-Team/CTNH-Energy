@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.cpu;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.crafting.execution.ElapsedTimeTracker;

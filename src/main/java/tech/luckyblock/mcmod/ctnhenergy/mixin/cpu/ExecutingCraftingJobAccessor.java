@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.cpu;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.GenericStack;
@@ -6,7 +6,6 @@ import appeng.crafting.execution.ExecutingCraftingJob;
 import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.crafting.inv.ListCraftingInventory;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;

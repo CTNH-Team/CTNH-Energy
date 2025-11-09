@@ -3,6 +3,7 @@ package tech.luckyblock.mcmod.ctnhenergy.common;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CECreativeModeTabs;
@@ -16,7 +17,7 @@ public class CommonProxy {
     }
     public static void init() {
         CTNHEnergy.REGISTRATE.registerRegistrate();
-
+        CEConfig.init();
         CEDatagen.init();
         CECreativeModeTabs.init();
     }

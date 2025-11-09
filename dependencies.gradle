@@ -37,13 +37,11 @@ dependencies {
     modImplementation("curse.maven:eu-p2p-tunnel-1065433:6927538")
     //omni cells
     modImplementation("curse.maven:omni-cells-1359517:7152251")
+    //Me Requester
+    modImplementation("curse.maven:merequester-688367:5689932")
 
     modImplementation("curse.maven:applied-energistics-2-wireless-terminals-459929:7154316")
-    //
-    //modImplementation("curse.maven:mae2-1028068:6827727")
 
-    //
-    //modCompileOnly("curse.maven:advancedae-1084104:6757852")
 
     //modCompileOnly("dev.emi:emi-forge:${emi_version}")
     //modCompileOnly("curse.maven:emi-580555:6420945")

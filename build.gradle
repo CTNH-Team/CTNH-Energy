@@ -11,7 +11,7 @@ buildscript {
 
 plugins {
     id "idea"
-    id "eclipse"
+    id 'java-library'
     id "maven-publish"
     id 'net.neoforged.moddev.legacyforge' version '2.0.91'
     id 'com.diffplug.spotless' version '7.0.2'
@@ -92,7 +92,12 @@ jar {
             "MixinConfigs": "${mod_id}.mixins.json"
     ])
 }
-
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+obfuscation {
+    createRemappingConfiguration(configurations.localRuntime)
+}
 //apply from: "$rootDir/gradle/scripts/spotless.gradle"
 idea {
     module {

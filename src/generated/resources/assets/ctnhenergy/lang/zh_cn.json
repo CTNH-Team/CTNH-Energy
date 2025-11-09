@@ -1,5 +1,5 @@
 {
-  "block.ctnhenergy.advanced_me_pattern_buffer": "高级ME样板总成",
+  "block.ctnhenergy.advanced_me_pattern_buffer": "§5高级ME样板总成§r",
   "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "高级ME样板总成镜像",
   "block.ctnhenergy.me_dual_output_hatch": "ME输出总成",
   "creativemodetab.ctnhenergy.itemgroup": "CTNH Energy 物品",
@@ -15,6 +15,9 @@
   "gui.ctnhenergy.disable_circuit.tooltip": "忽略配方中的编程电路",
   "gui.ctnhenergy.enable_circuit": "启用编程电路",
   "gui.ctnhenergy.enable_circuit.tooltip": "在样板输入中加入编程电路",
+  "machine.ctnhenergy.circuit_ability": "支持带有§6编程电路§r的样板，每个样板槽位有§6独立§r的虚拟电路槽",
+  "machine.ctnhenergy.output_ability": "兼具§6输出功能§r，直接将产物存入ME网络",
+  "machine.ctnhenergy.slot_number": "具有%s个样板槽位",
   "ui.ctnhenergy.dualoutput": "ME输出",
   "ui.ctnhenergy.dualoutputtooltip": "ME输出缓存"
 }

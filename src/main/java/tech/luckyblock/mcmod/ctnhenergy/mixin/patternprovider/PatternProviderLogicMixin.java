@@ -226,6 +226,10 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             }
 
             if (canPush) {
+                pCCard$setSendDirection(direction);
+                //重写cpulogic后pcc监听不到，故在此处帮其set
+                pCCard$setPCNumber(patternDetails);
+                //先设置电路板，最大程度保证不串配方
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                     long inserted = adapter.insert(what, amount, Actionable.MODULATE);
                     if (inserted < amount) {
@@ -233,7 +237,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
                     }
                 });
                 this.onPushPatternSuccess(patternDetails);
-                pCCard$setSendDirection(direction);
+
                 this.sendDirection = direction;
                 this.sendStacksOut();
                 ++this.roundRobinIndex;
