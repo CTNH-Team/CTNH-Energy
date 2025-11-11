@@ -102,7 +102,7 @@ public abstract class CraftingCpuLogicMixin {
             }
 
             IPatternDetails pattern = task.getKey(), mulPattern;
-
+            boolean isProcessing = pattern instanceof AEProcessingPattern;
             List<ProviderRecord> providerRecords = new ArrayList<>();
 
             int blocking = 0, nonBlocking = 0;
@@ -110,11 +110,12 @@ public abstract class CraftingCpuLogicMixin {
                 if(maxProviders <= 0) break;
                 if (!provider.isBusy()) {
                     maxProviders--; //每调用一个样板供应器，消耗一并行
-                    if(CE$isBlock(provider))
+                    var isBlock = !isProcessing || CE$isBlock(provider);
+                    if(isBlock)
                         blocking++;
                     else
                         nonBlocking++;
-                    providerRecords.add(new ProviderRecord(provider, CE$isBlock(provider)));
+                    providerRecords.add(new ProviderRecord(provider, isBlock));
                 }
             }
 
