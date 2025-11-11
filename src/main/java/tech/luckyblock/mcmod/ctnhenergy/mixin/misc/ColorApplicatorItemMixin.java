@@ -13,6 +13,7 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 import com.gregtechceu.gtceu.common.item.ColorSprayBehaviour;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -32,6 +33,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tech.luckyblock.mcmod.ctnhenergy.utils.TempColorSprayBehaviour;
 
 import java.util.function.DoubleSupplier;
 
@@ -61,7 +63,6 @@ public abstract class ColorApplicatorItemMixin extends AEBasePoweredItem {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         ItemStack is = context.getItemInHand();
-        Direction side = context.getClickedFace();
         Player p = context.getPlayer(); // This can be null
         if (p == null && level instanceof ServerLevel) {
             p = Platform.getFakePlayer((ServerLevel) level, null);
@@ -86,22 +87,18 @@ public abstract class ColorApplicatorItemMixin extends AEBasePoweredItem {
             }
 
             if (!paintBall.isEmpty()) {
-
                 final AEColor newColor = this.getColorFromItem(paintBall);
-
                 if (newColor != null && this.getAECurrentPower(is) > 100) {
                     int color = -1;
                     if(newColor.dye != null){
                         color = newColor.dye.getId();
                     }
-                    var behaviour = new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, color);
-                    var result = behaviour.onItemUseFirst(ItemStack.EMPTY, context);
-                    if(result.shouldAwardStats()){
+                    var behaviour = new TempColorSprayBehaviour(color);
+                    behaviour.onItemUseFirst(ItemStack.EMPTY, context);
+                    if(behaviour.used) {
                         consumeItem(is, paintBallKey, false);
-                        return result;
+                        return InteractionResult.sidedSuccess(level.isClientSide());
                     }
-                    else
-                        return InteractionResult.PASS;
                 }
             }
         }
