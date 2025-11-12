@@ -89,7 +89,7 @@ public abstract class CraftingCpuLogicMixin {
         var timeTracker = jobAccessor.getTimeTracker();
 
         int pushedPatterns = 0;
-
+        
         var it = jobAccessor.getTasks().entrySet().iterator();
         while (it.hasNext() && maxProviders >0) {
             var task = it.next();
@@ -107,9 +107,8 @@ public abstract class CraftingCpuLogicMixin {
 
             int blocking = 0, nonBlocking = 0;
             for (var provider : craftingService.getProviders(pattern)) {
-                if(maxProviders <= 0) break;
                 if (!provider.isBusy()) {
-                    maxProviders--; //每调用一个样板供应器，消耗一并行
+
                     var isBlock = !isProcessing || CE$isBlock(provider);
                     if(isBlock)
                         blocking++;
@@ -130,6 +129,7 @@ public abstract class CraftingCpuLogicMixin {
             mulPattern = (multiplier == 1 ? pattern : new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier));
 
             for (var r : providerRecords) {
+                if(maxProviders <= 0) break;
                 var workingPattern = r.block() ? pattern : mulPattern;
                 //最后一个供应器可能会分配到大于倍数的样板
                 if(totalCount < multiplier) workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(totalCount);
@@ -159,6 +159,7 @@ public abstract class CraftingCpuLogicMixin {
 
                     cluster.markDirty();
                     pushedPatterns++;
+                    maxProviders--;
                     totalCount -= (r.block() ? 1 : multiplier);
 
                     if(totalCount <= 0 )
