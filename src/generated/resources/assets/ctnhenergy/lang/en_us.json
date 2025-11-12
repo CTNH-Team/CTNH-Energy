@@ -8,6 +8,7 @@
   "block.ctnhenergy.quantum_computer_me_network_port": "Quantum Computer ME Network Port",
   "block.ctnhenergy.quantum_pointing_block": "Quantum Pointing Block",
   "creativemodetab.ctnhenergy.itemgroup": "CTNH Energy Items",
+  "ctnhenergy.quantum_computer": "Quantum Supercomputer",
   "machine.ctnhenergy.jiuzhang_tooltip.0": "Work Status: ",
   "machine.ctnhenergy.jiuzhang_tooltip.1": "Power: ",
   "machine.ctnhenergy.jiuzhang_tooltip.2": "Total Memory: ",
@@ -15,6 +16,7 @@
   "machine.ctnhenergy.jiuzhang_tooltip.4": "Total Computation: ",
   "machine.ctnhenergy.jiuzhang_tooltip.5": "Total Co-Processing: ",
   "machine.ctnhenergy.jiuzhang_tooltip.6": "Current Co-Processing: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.7": "Hold Shift to double/halve.",
   "ui.ctnhenergy.dualoutput": "ME Output",
   "ui.ctnhenergy.dualoutputtooltip": "ME Output Catch"
 }

@@ -1,17 +1,17 @@
 package tech.luckyblock.mcmod.ctnhenergy.registry;
 
 import appeng.core.definitions.AEBlocks;
+import com.glodblock.github.extendedae.common.EPPItemAndBlock;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.registries.ForgeRegistries;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.api.CEPredicates;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine.QuantumComputerMultiblockMachine;
@@ -38,8 +38,8 @@ public class CEMultiblock {
                 .cnLangValue("§6九章§r | §d量子超算§r")
                 .langValue("§6JIUZHANG§r | §dQuantum Supercomputing§r")
                 .rotationState(RotationState.NON_Y_AXIS)
-                .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-                .appearanceBlock(COMPUTER_CASING)
+                .recipeType(CERecipeTypes.QUANTUM_COMPUTER)
+                .appearanceBlock(CEBlocks.LIGHT_COMPUTER_CASING)
                 .pattern(definition -> FactoryBlockPattern.start()
                         .aisle("AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "###############", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA")
                         .aisle("AAAAAA###AAAAAA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ACCCCC###CCCCCA", "###############", "ACCCCC###CCCCCA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "AAAAAA###AAAAAA")
@@ -54,27 +54,24 @@ public class CEMultiblock {
                         .aisle("AAAAAA###AAAAAA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ACCCCC###CCCCCA", "###############", "ACCCCC###CCCCCA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "AAAAAA###AAAAAA")
                         .aisle("AAAAAA###AAAAAA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ACCCCC###CCCCCA", "###############", "ACCCCC###CCCCCA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "ABBBBC###CBBBBA", "AAAAAA###AAAAAA")
                         .aisle("AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "###############", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA", "AAAAAA###AAAAAA")
-                        .where("G", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ae2:1k_crafting_storage"))))
-                        .where("I", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ctnhenergy:quantum_computer_me_network_port"))))
-                        .where("F", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ae2:not_so_mysterious_cube"))))
+                        .where("G", CEPredicates.craftingUnitBlock())
+                        .where("I", Predicates.blocks(CEBlocks.QUANTUM_COMPUTER_ME_NETWORK_PORT.get()))
+                        .where("F", Predicates.blocks(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block())
+                                .or(Predicates.abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setExactLimit(1).setPreviewCount(1))
+                        )
                         .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                         .where("#", Predicates.any())
-                        .where("C", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("expatternprovider:assembler_matrix_wall"))))
-                        .where("E", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ctnhenergy:quantum_pointing_block"))))
-                        .where("H", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ae2:dense_energy_cell"))))
-                        .where("B", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("minecraft:cobblestone"))))
-                        .where("A", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ctnhenergy:quantum_computer_casing"))))
-                        .where("D", Predicates.blocks(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ctnhenergy:light_computer_casing"))))
+                        .where("C", Predicates.blocks(EPPItemAndBlock.ASSEMBLER_MATRIX_WALL))
+                        .where("E", Predicates.blocks(CEBlocks.QUANTUM_POINTING_BLOCK.get()))
+                        .where("H", Predicates.blocks(AEBlocks.DENSE_ENERGY_CELL.block()))
+                        .where("B", Predicates.air())
+                        .where("A", Predicates.blocks(CEBlocks.QUANTUM_COMPUTER_CASING.get()))
+                        .where("D", Predicates.blocks(CEBlocks.LIGHT_COMPUTER_CASING.get())
+                                .or(Predicates.autoAbilities(CERecipeTypes.QUANTUM_COMPUTER))
+                        )
                         .build())
-                .model((ctx, prov, builder) ->{
-                    builder.forAllStates(state ->{
-                        BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(), GTCEu.id("block/overlay/front_all"))
-                                .texture("all", CTNHEnergy.id("block/casings/light_computer_casing"))
-                                .texture("overlay", CTNHEnergy.id("block/overlay/quantum_computer"));
-                        return ConfiguredModel.builder().modelFile(model).build();
-                    });
-                })
-
+                .workableCasingModel(CTNHEnergy.id("block/casings/light_computer_casing"),
+                        CTNHEnergy.id("block/machine/quantum_computer"))
                 .register();
 
 

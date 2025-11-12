@@ -9,10 +9,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -20,25 +19,29 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
+import tech.luckyblock.mcmod.ctnhenergy.common.block.QuantumComputerCasingBlock;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CERecipeTypes;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.List;
 
 import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
@@ -57,13 +60,15 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     @Getter
     @Persisted
     private int coprocessing = 0;
-    private IOpticalComputationProvider computationProvider;
-    private final int COMPUTATION2COPROCESSING = 4;
+
+    @Getter
+    private IOpticalComputationProvider computationContainer;
+    private final int COMPUTATION2COPROCESSING = 1;
+
+    protected LongSet qcCasings;
 
     private WorkStatus workStatus;
 //    private int tickDelay = 0;
-    @Nullable
-    protected TickableSubscription tickSubs;
 
     public QuantumComputerMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -79,43 +84,34 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        List<IEnergyContainer> energyContainers = new ArrayList<>();
+        //List<IEnergyContainer> energyContainers = new ArrayList<>();
         for (IMultiPart part : getParts()) {
             part.self().holder.self()
                     .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER)
-                    .ifPresent(provider -> this.computationProvider = provider);
+                    .ifPresent(provider -> this.computationContainer = provider);
 
-            part.self().holder.self()
-                    .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER)
-                    .ifPresent(energyContainers::add);
+//            part.self().holder.self()
+//                    .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER)
+//                    .ifPresent(energyContainers::add);
 
         }
-        this.energyContainer = new EnergyContainerList(energyContainers);
-        if (computationProvider == null || !findMENetworkBlockEntity()) {
+        //this.energyContainer = new EnergyContainerList(energyContainers);
+        if (computationContainer == null || !findMENetworkBlockEntity()) {
             onStructureInvalid();
         }
-        this.coprocessing = 0;
-        this.storageKilobyte = getMultiblockState().getMatchContext().getOrPut("StorageKb", 0);
-        this.workStatus = WorkStatus.WORKING;
 
-        onLoad();
+        this.storageKilobyte = getMultiblockState().getMatchContext().getOrPut("StorageKb", 0);
+        this.workStatus = WorkStatus.SUSPEND;
+        qcCasings = getMultiblockState().getMatchContext().getOrDefault("qcCasings", LongSets.emptySet());
+        //onLoad();
     }
 
     private boolean findMENetworkBlockEntity(){
         int[][] offsets = new int[][]{
-                new int[]{0,2,0},
-                new int[]{2,2,2},
-                new int[]{2,2,-2},
-                new int[]{-2,2,2},
-                new int[]{-2,2,-2},
-                new int[]{2,4,0},
-                new int[]{-2,4,0},
-                new int[]{0,4,2},
-                new int[]{0,4,-2},
-                new int[]{4,2,0},
-                new int[]{-4,2,0},
-                new int[]{0,2,4},
-                new int[]{0,2,-4},
+                new int[]{2,2,0},
+                new int[]{0,2,2},
+                new int[]{-2,2,0},
+                new int[]{0,2,-2}
         };
         BlockPos controllerPos = getPos();
         for (int[] offset : offsets) {
@@ -133,33 +129,22 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     @Override
     public void onStructureInvalid() {
+
         super.onStructureInvalid();
         this.storageKilobyte = 0;
-        this.coprocessing = 0;
-        this.computationProvider = null;
-        this.meNetworkPortBlockEntity.multiBlockBreak();
-        this.meNetworkPortBlockEntity = null;
-        this.energyContainer = new EnergyContainerList(new ArrayList<>());
-        onUnload();
+        this.computationContainer = null;
+
+        if(meNetworkPortBlockEntity != null)
+        {
+            this.meNetworkPortBlockEntity.multiBlockBreak();
+            this.meNetworkPortBlockEntity = null;
+        }
+        updateCasings(QuantumComputerCasingBlock.State.GREY);
+        qcCasings = null;
+        //onUnload();
     }
 
 
-//    @Override
-//    public boolean onWorking() {
-//        DivineCreation.LOGGER.debug("onWorking()");
-//        if (energyContainer.getEnergyStored() >= calculateEnergyUsage()) {
-//            energyContainer.changeEnergy(-calculateEnergyUsage());
-//
-//            return true;
-//        }
-//        return false;
-//    }
-
-//    @Override
-//    public List<IMultiPart> getParts() {
-//        DivineCreation.LOGGER.debug("getParts()");
-//        return super.getParts();
-//    }
     @CN({
             "工作状态：",
             "耗电量：",
@@ -167,7 +152,8 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             "空闲内存：",
             "最大算力：",
             "最大可用并行：",
-            "当前并行："
+            "当前并行：",
+            "按住shift可翻倍/减半"
     })
     @EN({
             "Work Status: ",
@@ -176,12 +162,14 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             "Remaining memory: ",
             "Total Computation: ",
             "Total Co-Processing: ",
-            "Current Co-Processing: "
+            "Current Co-Processing: ",
+            "Hold Shift to double/halve."
     })
     static Lang[] jiuzhang_tooltip;
 
     @Override
     public void addDisplayText(List<Component> textList) {
+        if(isRemote()) return;
         if (isFormed()) {
             //工作状态：
             if(this.workStatus!=null){
@@ -211,13 +199,15 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                     .append(getMaxCWUt() + " CWU/t"));
             //最大并行：
             textList.add(jiuzhang_tooltip[5].translate()
-                    .append(String.valueOf(getMaxCWUt() / COMPUTATION2COPROCESSING)));
+                    .append(String.valueOf(getMaxCoProcessing())));
             //当前并行：[-] [+]
-            textList.add(jiuzhang_tooltip[6].translate()
-                            .append(Component.literal(coprocessing + "")
-                                    .withStyle(coprocessing > getMaxCWUt() / COMPUTATION2COPROCESSING ? ChatFormatting.DARK_RED : ChatFormatting.WHITE))
-                    .append(" ")
+            textList.add(jiuzhang_tooltip[6].translate().withStyle(
+                    style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, jiuzhang_tooltip[7].translate()))
+                    )
                     .append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"))
+                    .append(" ")
+                    .append(Component.literal(coprocessing + "")
+                            .withStyle(coprocessing > getMaxCoProcessing() ? ChatFormatting.DARK_RED : ChatFormatting.WHITE))
                     .append(" ")
                     .append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add")));
         }else{
@@ -225,9 +215,9 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
     }
 
+    //???
     public int getEnergyTier() {
         var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
-        if (energyContainer == null) return this.tier;
         var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
                 .map(IEnergyContainer.class::cast).toList());
 
@@ -235,99 +225,50 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     public int getMaxCWUt() {
-        var provider = getComputationProvider();
-        if (provider == null) return 0;
-        return provider.getMaxCWUt();
+        return computationContainer!= null? computationContainer.getMaxCWUt() : 0;
     }
 
-    @Nullable
-    @Override
-    public IOpticalComputationProvider getComputationProvider() {
-        if (computationProvider instanceof NotifiableComputationContainer notifiableContainer) {
-            return notifiableContainer.getComputationProvider();
-        } else if (computationProvider instanceof MachineTrait trait) {
-            /*代码来自 NotifiableComputationContainer::getComputationProvider()*/
-            for (Direction direction : GTUtil.DIRECTIONS) {
-                BlockEntity blockEntity = trait.getMachine().getLevel().getBlockEntity(trait.getMachine().getPos().relative(direction));
-                if (blockEntity == null) continue;
-                // noinspection DataFlowIssue can be null just fine.
-                IOpticalComputationProvider provider = blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).orElse(null);
-                // noinspection ConstantValue can be null because above.
-                if (provider != null && provider != this) {
-                    return provider;
-                }
-            }
-        }
-        return null;
+    public int getMaxCoProcessing() {
+        return computationContainer.getMaxCWUt() / COMPUTATION2COPROCESSING;
     }
 
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
-//            DivineCreation.LOGGER.debug("handleDisplayClick({})", componentData);
-            this.coprocessing = Mth.clamp(this.coprocessing + (componentData.equals("add") ? 1 : -1), 0, computationProvider.getMaxCWUt() / COMPUTATION2COPROCESSING);
+            if (clickData.isShiftClick)
+                this.coprocessing = Mth.clamp((int)(this.coprocessing * (componentData.equals("add") ? 2 : 0.5)), 0, getMaxCoProcessing());
+            else
+                this.coprocessing = Mth.clamp(this.coprocessing + (componentData.equals("add") ? 1 : -1), 0, getMaxCoProcessing());
         }
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
-        this.workStatus = WorkStatus.WORKING;
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (tickSubs != null) {
-            tickSubs.unsubscribe();
-            tickSubs = null;
-        }
-        this.workStatus = WorkStatus.SUSPEND;
-    }
-
-    protected void updateTickSubscription() {
-        if (isFormed) {
-            tickSubs = subscribeServerTick(tickSubs, this::tick);
-        } else if (tickSubs != null) {
-            tickSubs.unsubscribe();
-            tickSubs = null;
+    public void setWorkStatus(WorkStatus newStatus) {
+        if(workStatus != newStatus)
+        {
+            workStatus = newStatus;
+            if(workStatus == WorkStatus.SUSPEND)
+                updateCasings(QuantumComputerCasingBlock.State.GREY);
+            if(workStatus == WorkStatus.WORKING)
+                updateCasings(QuantumComputerCasingBlock.State.BLUE);
+            if(workStatus == WorkStatus.NOT_ENOUGH_COMPUTATION)
+                updateCasings(QuantumComputerCasingBlock.State.PURPLE);
+            if(workStatus == WorkStatus.NOT_ENOUGH_ENERGY)
+                updateCasings(QuantumComputerCasingBlock.State.RED);
         }
     }
 
-    public void tick() {
-
-
-        if (!isWorkingEnabled()){
-            if(this.meNetworkPortBlockEntity!=null) {
-                meNetworkPortBlockEntity.suspend();
+    public void updateCasings(QuantumComputerCasingBlock.State state){
+        if(qcCasings != null){
+            for(long pos : qcCasings){
+                var blockPos = BlockPos.of(pos);
+                var blockState = getLevel().getBlockState(blockPos);
+                if (blockState.hasProperty(QuantumComputerCasingBlock.STATE)) {
+                    var newState = blockState.setValue(QuantumComputerCasingBlock.STATE, state);
+                    if (newState != blockState) {
+                        getLevel().setBlock(blockPos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                    }
+                }
             }
-            return;
         }
-        if (!consumeEnergy()) {
-
-            this.workStatus = WorkStatus.NOT_ENOUGH_ENERGY;
-            if(this.meNetworkPortBlockEntity!=null){
-                meNetworkPortBlockEntity.suspend();
-            }
-
-            return;
-        }
-        if (!consumeComputation()) {
-
-            this.workStatus = WorkStatus.NOT_ENOUGH_COMPUTATION;
-            if(this.meNetworkPortBlockEntity!=null) {
-                meNetworkPortBlockEntity.suspend();
-            }
-
-            return;
-        }
-
-        this.workStatus = WorkStatus.WORKING;
-        getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
-        this.meNetworkPortBlockEntity.active();
-
     }
 
     private boolean consumeEnergy() {
@@ -368,6 +309,74 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         return requestedCWUt >= requestComputation;
     }
 
+    @Override
+    public IOpticalComputationProvider getComputationProvider() {
+        return computationContainer;
+    }
+
+    @Override
+    protected RecipeLogic createRecipeLogic(Object... args) {
+        return new QCRecipeLogic(this);
+    }
+
+    @Override
+    public QCRecipeLogic getRecipeLogic() {
+        return (QCRecipeLogic)recipeLogic;
+    }
+
+    public class QCRecipeLogic extends RecipeLogic{
+
+        public QCRecipeLogic(IRecipeLogicMachine machine) {
+            super(machine);
+        }
+
+        @Override
+        public void serverTick() {
+            if(getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
+            {
+                if (isIdle()){
+                    setWorkStatus(WorkStatus.SUSPEND);
+                    if(meNetworkPortBlockEntity!=null) {
+                        meNetworkPortBlockEntity.suspend();
+                    }
+                    return;
+                }
+                if (!consumeEnergy()) {
+                    setWorkStatus(WorkStatus.NOT_ENOUGH_ENERGY);
+                    if(meNetworkPortBlockEntity!=null){
+                        meNetworkPortBlockEntity.suspend();
+                    }
+                    return;
+                }
+                if (!consumeComputation()) {
+                    setWorkStatus(WorkStatus.NOT_ENOUGH_COMPUTATION);
+                    if(meNetworkPortBlockEntity!=null) {
+                        meNetworkPortBlockEntity.suspend();
+                    }
+                    return;
+                }
+                setWorkStatus(WorkStatus.WORKING);
+                meNetworkPortBlockEntity.active();
+            }
+            else
+                super.serverTick();
+        }
+
+        @Override
+        public void setWorkingEnabled(boolean workingEnabled) {
+            if(getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
+                setStatus(workingEnabled ? Status.WORKING : Status.IDLE);
+            else
+                super.setWorkingEnabled(workingEnabled);
+        }
+
+        @Override
+        public boolean isWorkingEnabled() {
+            if(getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
+                return isWorking();
+            return super.isWorkingEnabled();
+        }
+    }
 
     public enum WorkStatus{
         WORKING(REGISTRATE.addLang("machine", "work_status_working", "Working", "运行中")),
