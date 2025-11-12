@@ -1,0 +1,7 @@
+{
+  "parent": "ctnhenergy:block/overlay/top_all",
+  "textures": {
+    "all": "ctnhenergy:block/casings/light_computer_casing",
+    "overlay": "ctnhenergy:block/overlay/quantum_computer_port"
+  }
+}

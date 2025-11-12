@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ctnhenergy:quantum_computer_me_network_port"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "ctnhenergy:blocks/quantum_computer_me_network_port"
+}

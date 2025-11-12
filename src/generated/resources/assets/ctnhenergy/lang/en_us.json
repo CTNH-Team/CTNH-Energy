@@ -1,8 +1,20 @@
 {
   "block.ctnhenergy.advanced_me_pattern_buffer": "§5Advanced ME Pattern Buffer§r",
   "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "Advanced ME Pattern Buffer Proxy",
+  "block.ctnhenergy.jiuzhang_quantum_computer": "§6JIUZHANG§r | §dQuantum Supercomputing§r",
+  "block.ctnhenergy.light_computer_casing": "Light Computer Casing",
   "block.ctnhenergy.me_dual_output_hatch": "ME Dual Output Hatch",
+  "block.ctnhenergy.quantum_computer_casing": "Quantum Computer Casing",
+  "block.ctnhenergy.quantum_computer_me_network_port": "Quantum Computer ME Network Port",
+  "block.ctnhenergy.quantum_pointing_block": "Quantum Pointing Block",
   "creativemodetab.ctnhenergy.itemgroup": "CTNH Energy Items",
+  "machine.ctnhenergy.jiuzhang_tooltip.0": "Work Status: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.1": "Power: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.2": "Total Memory: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.3": "Remaining memory: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.4": "Total Computation: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.5": "Total Co-Processing: ",
+  "machine.ctnhenergy.jiuzhang_tooltip.6": "Current Co-Processing: ",
   "ui.ctnhenergy.dualoutput": "ME Output",
   "ui.ctnhenergy.dualoutputtooltip": "ME Output Catch"
 }

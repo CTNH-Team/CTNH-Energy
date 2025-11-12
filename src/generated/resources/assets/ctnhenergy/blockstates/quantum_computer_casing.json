@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "state=blue": {
+      "model": "ctnhenergy:block/quantum_computer_casing_blue"
+    },
+    "state=grey": {
+      "model": "ctnhenergy:block/quantum_computer_casing_grey"
+    },
+    "state=purple": {
+      "model": "ctnhenergy:block/quantum_computer_casing_purple"
+    },
+    "state=red": {
+      "model": "ctnhenergy:block/quantum_computer_casing_red"
+    }
+  }
+}

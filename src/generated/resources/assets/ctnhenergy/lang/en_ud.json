@@ -1,8 +1,20 @@
 {
   "block.ctnhenergy.advanced_me_pattern_buffer": "ɹ§ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝɔuɐʌpⱯϛ§",
   "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "ʎxoɹԀ ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝɔuɐʌpⱯ",
+  "block.ctnhenergy.jiuzhang_quantum_computer": "ɹ§buıʇndɯoɔɹǝdnS ɯnʇuɐnὉp§ | ɹ§⅁NⱯHZ∩Iſ9§",
+  "block.ctnhenergy.light_computer_casing": "buısɐƆ ɹǝʇndɯoƆ ʇɥbıꞀ",
   "block.ctnhenergy.me_dual_output_hatch": "ɥɔʇɐH ʇndʇnO ןɐnᗡ ƎW",
+  "block.ctnhenergy.quantum_computer_casing": "buısɐƆ ɹǝʇndɯoƆ ɯnʇuɐnὉ",
+  "block.ctnhenergy.quantum_computer_me_network_port": "ʇɹoԀ ʞɹoʍʇǝN ƎW ɹǝʇndɯoƆ ɯnʇuɐnὉ",
+  "block.ctnhenergy.quantum_pointing_block": "ʞɔoןᗺ buıʇuıoԀ ɯnʇuɐnὉ",
   "creativemodetab.ctnhenergy.itemgroup": "sɯǝʇI ʎbɹǝuƎ HN⟘Ɔ",
+  "machine.ctnhenergy.jiuzhang_tooltip.0": " :snʇɐʇS ʞɹoM",
+  "machine.ctnhenergy.jiuzhang_tooltip.1": " :ɹǝʍoԀ",
+  "machine.ctnhenergy.jiuzhang_tooltip.2": " :ʎɹoɯǝW ןɐʇo⟘",
+  "machine.ctnhenergy.jiuzhang_tooltip.3": " :ʎɹoɯǝɯ buıuıɐɯǝᴚ",
+  "machine.ctnhenergy.jiuzhang_tooltip.4": " :uoıʇɐʇndɯoƆ ןɐʇo⟘",
+  "machine.ctnhenergy.jiuzhang_tooltip.5": " :buıssǝɔoɹԀ-oƆ ןɐʇo⟘",
+  "machine.ctnhenergy.jiuzhang_tooltip.6": " :buıssǝɔoɹԀ-oƆ ʇuǝɹɹnƆ",
   "ui.ctnhenergy.dualoutput": "ʇndʇnO ƎW",
   "ui.ctnhenergy.dualoutputtooltip": "ɥɔʇɐƆ ʇndʇnO ƎW"
 }

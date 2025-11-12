@@ -12,11 +12,13 @@ import org.slf4j.Logger;
 import tech.luckyblock.mcmod.ctnhenergy.client.ClientProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEMultiblock;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERegistrate;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.LangProcessor;
 
 @SuppressWarnings("removal")
 @Mod(CTNHEnergy.MODID)
+
 public class CTNHEnergy {
     public static final String MODID = "ctnhenergy";
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -34,6 +36,7 @@ public class CTNHEnergy {
 
     public void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event){
         CEMachines.init();
+        CEMultiblock.init();
     }
 
     public static ResourceLocation id(String string){

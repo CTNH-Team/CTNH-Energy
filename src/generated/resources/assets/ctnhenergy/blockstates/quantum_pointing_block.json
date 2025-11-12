@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ctnhenergy:block/quantum_pointing_block"
+    }
+  }
+}

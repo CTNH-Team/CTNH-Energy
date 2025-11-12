@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/cube/tinted/all",
+  "textures": {
+    "all": "ctnhenergy:block/casings/quantum_computer_casing_grey"
+  }
+}

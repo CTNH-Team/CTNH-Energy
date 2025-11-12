@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ctnhenergy:block/quantum_computer_me_network_port"
+    }
+  }
+}
