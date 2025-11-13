@@ -9,6 +9,7 @@
   "block.ctnhenergy.quantum_pointing_block": "ʞɔoןᗺ buıʇuıoԀ ɯnʇuɐnὉ",
   "creativemodetab.ctnhenergy.itemgroup": "sɯǝʇI ʎbɹǝuƎ HN⟘Ɔ",
   "ctnhenergy.quantum_computer": "ɹǝʇndɯoɔɹǝdnS ɯnʇuɐnὉ",
+  "machine.ctnhenergy.craft_ui": "I∩ buıʇɟɐɹƆ uǝdO",
   "machine.ctnhenergy.jiuzhang_tooltip.0": " :snʇɐʇS ʞɹoM",
   "machine.ctnhenergy.jiuzhang_tooltip.1": " :ɹǝʍoԀ",
   "machine.ctnhenergy.jiuzhang_tooltip.2": " :ʎɹoɯǝW ןɐʇo⟘",
@@ -17,6 +18,10 @@
   "machine.ctnhenergy.jiuzhang_tooltip.5": " :buıssǝɔoɹԀ-oƆ ןɐʇo⟘",
   "machine.ctnhenergy.jiuzhang_tooltip.6": " :buıssǝɔoɹԀ-oƆ ʇuǝɹɹnƆ",
   "machine.ctnhenergy.jiuzhang_tooltip.7": "˙ǝʌןɐɥ/ǝןqnop oʇ ʇɟıɥS pןoH",
+  "machine.ctnhenergy.work_status.0": "buıʞɹoM",
+  "machine.ctnhenergy.work_status.1": "ʎbɹǝuƎ ɥbnouƎ ʇoN",
+  "machine.ctnhenergy.work_status.2": "uoıʇɐʇndɯoƆ ɥbnouƎ ʇoN",
+  "machine.ctnhenergy.work_status.3": "puǝdsnS",
   "ui.ctnhenergy.dualoutput": "ʇndʇnO ƎW",
   "ui.ctnhenergy.dualoutputtooltip": "ɥɔʇɐƆ ʇndʇnO ƎW"
 }

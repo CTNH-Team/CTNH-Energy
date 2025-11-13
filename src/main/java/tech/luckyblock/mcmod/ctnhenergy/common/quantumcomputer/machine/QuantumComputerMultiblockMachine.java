@@ -1,5 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine;
 
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
@@ -7,14 +9,18 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -30,12 +36,18 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.block.QuantumComputerCasingBlock;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
+import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERecipeTypes;
+import tech.luckyblock.mcmod.ctnhenergy.utils.button.CETextures;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
@@ -68,6 +80,8 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     protected LongSet qcCasings;
 
     private WorkStatus workStatus;
+
+    Player player;
 //    private int tickDelay = 0;
 
     public QuantumComputerMultiblockMachine(IMachineBlockEntity holder) {
@@ -183,9 +197,10 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             }
             //功率：
             int calculateEnergyUsage = calculateEnergyUsage();
-            long maxVoltage = GTValues.V[getEnergyTier()];
+            int energyTier = GTUtil.getFloorTierByVoltage(energyContainer.getInputVoltage());
+            long maxVoltage = GTValues.V[energyTier];
             textList.add(jiuzhang_tooltip[1].translate()
-                            .append(Component.literal(calculateEnergyUsage + "/" + maxVoltage + " EU/t (" + GTValues.VNF[getEnergyTier()] + ")")
+                            .append(Component.literal(calculateEnergyUsage + "/" + maxVoltage + " EU/t (" + GTValues.VNF[energyTier] + ")")
                                     .withStyle(calculateEnergyUsage <= maxVoltage ? ChatFormatting.GREEN : ChatFormatting.DARK_RED)
                             ));
             //总内存：${StorageKilobyte} KB
@@ -215,13 +230,29 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
     }
 
-    //???
-    public int getEnergyTier() {
-        var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
-        var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
-                .map(IEnergyContainer.class::cast).toList());
+    @CN("打开合成界面")
+    @EN("Open Crafting UI")
+    static Lang craft_ui;
 
-        return Math.min(this.tier + 1, Math.max(this.tier, GTUtil.getFloorTierByVoltage(energyCont.getInputVoltage())));
+    @Override
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+
+        configuratorPanel.attachConfigurators(new ButtonConfigurator(
+                new GuiTextureGroup(GuiTextures.BUTTON, CETextures.CRAFT), this::openCPU)
+                .setTooltips(List.of(craft_ui.translate())));
+        super.attachConfigurators(configuratorPanel);
+
+    }
+
+    @Override
+    public InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        this.player = player;
+        return super.tryToOpenUI(player, hand, hit);
+    }
+
+    private void openCPU(ClickData clickData){
+        if(!isRemote())
+            MenuOpener.open(AEMenus.QUANTUM_COMPUTER.get(), player, MenuLocators.forBlockEntity(meNetworkPortBlockEntity));
     }
 
     public int getMaxCWUt() {
@@ -378,11 +409,26 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
     }
 
+    @CN({
+            "运行中",
+            "能量不足",
+            "算力不足",
+            "暂停"
+    })
+    @EN({
+            "Working",
+            "Not Enough Energy",
+            "Not Enough Computation",
+            "Suspend"
+    })
+    static Lang[] work_status;
+
+
     public enum WorkStatus{
-        WORKING(REGISTRATE.addLang("machine", "work_status_working", "Working", "运行中")),
-        NOT_ENOUGH_ENERGY(REGISTRATE.addLang("machine", "work_status_not_enough_energy", "Not Enough Energy","能量不足")),
-        NOT_ENOUGH_COMPUTATION(REGISTRATE.addLang("machine", "work_status_not_enough_computation", "Not Enough Computation","算力不足")),
-        SUSPEND(REGISTRATE.addLang("machine", "work_status_suspend", "Suspend","暂停"));
+        WORKING(work_status[0].translate()),
+        NOT_ENOUGH_ENERGY(work_status[1].translate()),
+        NOT_ENOUGH_COMPUTATION(work_status[2].translate()),
+        SUSPEND(work_status[3].translate());
 
         public Component localize;
 
