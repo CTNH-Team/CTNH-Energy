@@ -122,10 +122,10 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     private boolean findMENetworkBlockEntity(){
         int[][] offsets = new int[][]{
-                new int[]{2,2,0},
-                new int[]{0,2,2},
-                new int[]{-2,2,0},
-                new int[]{0,2,-2}
+                new int[]{6,6,0},
+                new int[]{0,6,6},
+                new int[]{-6,6,0},
+                new int[]{0,6,-6}
         };
         BlockPos controllerPos = getPos();
         for (int[] offset : offsets) {

@@ -72,7 +72,7 @@ public class CraftingCPUMenuMixin extends AEBaseMenu {
         }
     }
 
-    @Inject(method = "setCPU(Lappeng/api/networking/crafting/ICraftingCPU;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setCPU", at = @At("HEAD"), cancellable = true)
     private void onSetCPU(ICraftingCPU c, CallbackInfo ci) {
         if (this.CE$vcpu != null) {
             this.CE$vcpu.craftingLogic.removeListener(cpuChangeListener);
@@ -113,7 +113,7 @@ public class CraftingCPUMenuMixin extends AEBaseMenu {
         }
     }
 
-    @Inject(method = "removed", at = @At("TAIL"))
+    @Inject(method = "removed", at = @At("TAIL"), remap = true)
     public void onRemoved(Player player, CallbackInfo ci) {
         if (this.CE$vcpu != null) {
             this.CE$vcpu.craftingLogic.removeListener(cpuChangeListener);
@@ -129,7 +129,7 @@ public class CraftingCPUMenuMixin extends AEBaseMenu {
 
             if (this.incrementalUpdateHelper.hasChanges()) {
                 CraftingStatus status =
-                        advancedAE$create(this.incrementalUpdateHelper, this.CE$vcpu.craftingLogic);
+                        CE$create(this.incrementalUpdateHelper, this.CE$vcpu.craftingLogic);
                 this.incrementalUpdateHelper.commitChanges();
 
                 sendPacketToClient(new CraftingStatusPacket(status));
@@ -138,7 +138,7 @@ public class CraftingCPUMenuMixin extends AEBaseMenu {
     }
 
     @Unique
-    private static CraftingStatus advancedAE$create(IncrementalUpdateHelper changes, VirtualCraftingCPULogic logic) {
+    private static CraftingStatus CE$create(IncrementalUpdateHelper changes, VirtualCraftingCPULogic logic) {
         boolean full = changes.isFullUpdate();
 
         ImmutableList.Builder<CraftingStatusEntry> newEntries = ImmutableList.builder();
