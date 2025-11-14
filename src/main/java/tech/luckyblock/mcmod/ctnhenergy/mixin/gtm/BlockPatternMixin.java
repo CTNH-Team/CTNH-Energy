@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin.misc;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.gtm;
 
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;

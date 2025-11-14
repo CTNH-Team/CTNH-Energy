@@ -1,6 +1,8 @@
 {
   "block.ctnhenergy.advanced_me_pattern_buffer": "§5Advanced ME Pattern Buffer§r",
   "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "Advanced ME Pattern Buffer Proxy",
+  "block.ctnhenergy.assembler_matrix_frame_no_entity": "Assembler Matrix Frame No Entity",
+  "block.ctnhenergy.assembler_matrix_wall_no_entity": "Assembler Matrix Wall No Entity",
   "block.ctnhenergy.jiuzhang_quantum_computer": "§6JIUZHANG§r | §dQuantum Supercomputing§r",
   "block.ctnhenergy.light_computer_casing": "Light Computer Casing",
   "block.ctnhenergy.me_dual_output_hatch": "ME Dual Output Hatch",

@@ -16,7 +16,7 @@
     "GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
     "GTmepatternbuffer.MEPatternBufferPartMachineMixin",
     "misc.AEBaseMenuMixin",
-    "misc.BlockPatternMixin",
+    "gtm.BlockPatternMixin",
     "misc.ColorApplicatorItemMixin",
     "patternencodingpanel.ProcessingEncodingPanelMixin",
     "patternencodingpanel.StyleManagerMixin",

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ctnhenergy:block/assembler_matrix_wall_no_entity"
+    }
+  }
+}

@@ -1,6 +1,8 @@
 {
   "values": [
     "ctnhenergy:light_computer_casing",
-    "ctnhenergy:quantum_pointing_block"
+    "ctnhenergy:quantum_pointing_block",
+    "ctnhenergy:assembler_matrix_frame_no_entity",
+    "ctnhenergy:assembler_matrix_wall_no_entity"
   ]
 }
