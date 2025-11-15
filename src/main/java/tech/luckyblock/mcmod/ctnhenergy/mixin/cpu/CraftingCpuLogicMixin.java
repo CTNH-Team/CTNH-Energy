@@ -131,9 +131,12 @@ public abstract class CraftingCpuLogicMixin {
             for (var r : providerRecords) {
                 if(maxProviders <= 0) break;
                 var workingPattern = r.block() ? pattern : mulPattern;
+                long workingMultiplier = r.block() ? 1 : multiplier;
                 //最后一个供应器可能会分配到大于倍数的样板
-                if(totalCount < multiplier) workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(totalCount);
-
+                if(totalCount < workingMultiplier) {
+                    workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(totalCount);
+                    workingMultiplier = totalCount;
+                }
                 KeyCounter expectedOutputs = new KeyCounter();
                 KeyCounter expectedContainerItems = new KeyCounter();
                 var craftingContainer = CraftingCpuHelper.extractPatternInputs(workingPattern, inventory, level, expectedOutputs, expectedContainerItems);
@@ -160,7 +163,7 @@ public abstract class CraftingCpuLogicMixin {
                     cluster.markDirty();
                     pushedPatterns++;
                     maxProviders--;
-                    totalCount -= (r.block() ? 1 : multiplier);
+                    totalCount -= workingMultiplier;
 
                     if(totalCount <= 0 )
                     {

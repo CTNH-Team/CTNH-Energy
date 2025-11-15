@@ -2,12 +2,12 @@ package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.crafting.ICraftingSubmitResult;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
@@ -21,6 +21,8 @@ import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.CraftingSubmitResult;
 
 import appeng.crafting.inv.ListCraftingInventory;
+import appeng.crafting.pattern.AEProcessingPattern;
+import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.service.CraftingService;
 
@@ -29,10 +31,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
+import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
+import tech.luckyblock.mcmod.ctnhenergy.common.pattern.DynamicProcessingPattern;
+import tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider.PatternProviderLogicAccessor;
+import tech.luckyblock.mcmod.ctnhenergy.utils.ProviderRecord;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class VirtualCraftingCPULogic {
@@ -156,42 +161,75 @@ public class VirtualCraftingCPULogic {
      * @return How many patterns were successfully pushed.
      */
     public int executeCrafting(
-            int maxPatterns, CraftingService craftingService, IEnergyService energyService, Level level) {
+            int maxProviders, CraftingService craftingService, IEnergyService energyService, Level level) {
+        maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
+
         var job = this.job;
         if (job == null) return 0;
 
         var pushedPatterns = 0;
 
         var it = job.tasks.entrySet().iterator();
-        taskLoop:
-        while (it.hasNext()) {
+
+        while (it.hasNext() && maxProviders>0) {
             var task = it.next();
-            if (task.getValue().value <= 0) {
+            long totalCount = task.getValue().value;
+            if (totalCount <= 0) {
                 it.remove();
                 continue;
             }
 
-            var details = task.getKey();
-            var expectedOutputs = new KeyCounter();
-            var expectedContainerItems = new KeyCounter();
-            // Contains the inputs for the pattern.
-            @Nullable
-            var craftingContainer = CraftingCpuHelper.extractPatternInputs(
-                    details, inventory, level, expectedOutputs, expectedContainerItems);
+            IPatternDetails pattern = task.getKey(), mulPattern;
+            boolean isProcessing = pattern instanceof AEProcessingPattern;
+            List<ProviderRecord> providerRecords = new ArrayList<>();
+            int blocking = 0, nonBlocking = 0;
+            for (var provider : craftingService.getProviders(pattern)) {
+                if (!provider.isBusy()) {
+
+                    var isBlock = !isProcessing || CE$isBlock(provider);
+                    if(isBlock)
+                        blocking++;
+                    else
+                        nonBlocking++;
+                    providerRecords.add(new ProviderRecord(provider, isBlock));
+                }
+            }
+
+            long multiplier = 1;
+            if(nonBlocking != 0) {
+                //神秘公式
+                multiplier = Math.max( (totalCount - blocking -1)/nonBlocking + 1,  1);
+                multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultiple);
+            }
+
+
+            mulPattern = (multiplier == 1 ? pattern : new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier));
 
             // Try to push to each provider.
-            for (var provider : craftingService.getProviders(details)) {
-                if (craftingContainer == null) break;
-                if (provider.isBusy()) continue;
+            for (var r : providerRecords) {
+                if(maxProviders <= 0) break;
+                var workingPattern = r.block() ? pattern : mulPattern;
+                long workingMultiplier = r.block() ? 1 : multiplier;
+                //最后一个供应器可能会分配到大于倍数的样板
+                if(totalCount < workingMultiplier) {
+                    workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(totalCount);
+                    workingMultiplier = totalCount;
+                }
+
+                KeyCounter expectedOutputs = new KeyCounter();
+                KeyCounter expectedContainerItems = new KeyCounter();
+                var craftingContainer = CraftingCpuHelper.extractPatternInputs(workingPattern, inventory, level, expectedOutputs, expectedContainerItems);
+
+                if (craftingContainer == null) {
+                    break;
+                }
 
                 var patternPower = CraftingCpuHelper.calculatePatternPower(craftingContainer);
 
-                if (energyService.extractAEPower(patternPower, Actionable.SIMULATE, PowerMultiplier.CONFIG)
-                        < patternPower - 0.01) break;
+                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
-                if (provider.pushPattern(details, craftingContainer)) {
+                if (extracted + 0.01 >= patternPower && r.provider().pushPattern(workingPattern, craftingContainer)) {
                     energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                    pushedPatterns++;
 
                     for (var expectedOutput : expectedOutputs) {
                         job.waitingFor.insert(
@@ -208,32 +246,34 @@ public class VirtualCraftingCPULogic {
                     }
 
                     cpu.markDirty();
-
-                    task.getValue().value--;
-                    if (task.getValue().value <= 0) {
+                    pushedPatterns++;
+                    maxProviders--;
+                    totalCount -= workingMultiplier;
+                    if (totalCount <= 0) {
+                        task.getValue().value = 0;
                         it.remove();
-                        continue taskLoop;
+                        break;
                     }
-
-                    if (pushedPatterns == maxPatterns) {
-                        break taskLoop;
+                    else {
+                        task.getValue().value = totalCount;
                     }
-
-                    // Prepare next inputs.
-                    expectedOutputs.reset();
-                    expectedContainerItems.reset();
-                    craftingContainer = CraftingCpuHelper.extractPatternInputs(
-                            details, inventory, level, expectedOutputs, expectedContainerItems);
                 }
-            }
-
-            // Failed to push this pattern, reinject the inputs.
-            if (craftingContainer != null) {
-                CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
+                else {
+                    CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
+                }
             }
         }
 
         return pushedPatterns;
+    }
+
+    private boolean CE$isBlock(ICraftingProvider provider) {
+        if(provider instanceof PatternProviderLogic){
+            var configManager = ((PatternProviderLogicAccessor)provider).getConfigManager();
+            return configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES
+                    && configManager.getSetting(CESettings.BLOCKING_TYPE) != CESettings.BlockingType.SMART;
+        }
+        return false;
     }
 
     /**
