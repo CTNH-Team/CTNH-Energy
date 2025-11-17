@@ -39,8 +39,8 @@ public class CEBlocks {
 
     public static BlockEntry<QuantumComputerMENetworkPortBlock> QUANTUM_COMPUTER_ME_NETWORK_PORT;
     public static BlockEntry<QuantumComputerCasingBlock> QUANTUM_COMPUTER_CASING;
-    public static BlockEntry<Block> LIGHT_COMPUTER_CASING = createCasingBlock("light_computer_casing", "亮色计算机外壳", CTNHEnergy.id("block/casings/light_computer_casing"));
-    public static BlockEntry<Block> QUANTUM_POINTING_BLOCK = createCasingBlock("quantum_pointing_block", "亮色高级计算机外壳", CTNHEnergy.id("block/casings/quantum_pointing_block"));
+    public static BlockEntry<Block> STEADY_STATE_COMPUTING_MATRIX_SHELL = createCasingBlock("steady_state_computing_matrix_shell", "稳态计算矩阵外壳", CTNHEnergy.id("block/casings/steady_state_computing_matrix_shell"));
+    public static BlockEntry<Block> QUANTUM_POINTING_BLOCK = createCasingBlock("quantum_pointing_block", "量子指向方块", CTNHEnergy.id("block/casings/quantum_pointing_block"));
     public static BlockEntry<Block> ASSEMBLER_MATRIX_FRAME =
             createCasingBlock("assembler_matrix_frame_no_entity", "装配矩阵框架（无实体）", CTNHEnergy.id("block/casings/assembler_matrix_frame"));
     public static BlockEntry<Block> ASSEMBLER_MATRIX_WALL =

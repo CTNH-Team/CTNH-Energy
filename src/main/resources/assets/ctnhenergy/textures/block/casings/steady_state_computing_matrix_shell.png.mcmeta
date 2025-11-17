@@ -1,0 +1,5 @@
+{
+  "ldlib": {
+    "connection": "ctnhenergy:block/casings/steady_state_computing_matrix_shell_ctm"
+  }
+}

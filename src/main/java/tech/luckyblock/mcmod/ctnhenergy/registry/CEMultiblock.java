@@ -88,11 +88,11 @@ public class CEMultiblock {
                         .where("J", Predicates.controller(Predicates.blocks(definition.get())))
                         .where("B", Predicates.air())
                         .where("A", Predicates.blocks(CEBlocks.QUANTUM_COMPUTER_CASING.get()))
-                        .where("F", Predicates.blocks(CEBlocks.LIGHT_COMPUTER_CASING.get())
+                        .where("F", Predicates.blocks(CEBlocks.STEADY_STATE_COMPUTING_MATRIX_SHELL.get())
                                 .or(Predicates.autoAbilities(CERecipeTypes.QUANTUM_COMPUTER))
                         )
                         .build())
-                .workableCasingModel(CTNHEnergy.id("block/casings/light_computer_casing"),
+                .workableCasingModel(CTNHEnergy.id("block/casings/steady_state_computing_matrix_shell"),
                         CTNHEnergy.id("block/machine/quantum_computer"))
                 .tooltips(jiuzhang_tooltip)
                 .register();
