@@ -57,7 +57,7 @@ public class CEMultiblock {
                 .langValue("§6JIUZHANG§r | §dQuantum Supercomputing§r")
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(CERecipeTypes.QUANTUM_COMPUTER)
-                .appearanceBlock(CEBlocks.LIGHT_COMPUTER_CASING)
+                .appearanceBlock(CEBlocks.STEADY_STATE_COMPUTING_MATRIX_SHELL)
                 .pattern(definition -> FactoryBlockPattern.start()
                         .aisle("AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "#################", "#################", "#################", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA", "AAAAAAA###AAAAAAA")
                         .aisle("AAAAAAA###AAAAAAA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ACCCCCC###CCCCCCA", "#################", "#################", "#################", "ACCCCCC###CCCCCCA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "ABBBBBC###CBBBBBA", "AAAAAAA###AAAAAAA")
