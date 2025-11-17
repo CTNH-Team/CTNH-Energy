@@ -59,7 +59,7 @@ public class CEBlocks {
 
                         .blockstate((ctx, prov) -> {
                             BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(),CTNHEnergy.id("block/overlay/top_all"))
-                                    .texture("all", CTNHEnergy.id("block/casings/light_computer_casing"))
+                                    .texture("all", CTNHEnergy.id("block/casings/steady_state_computing_matrix_shell"))
                                     .texture("overlay", CTNHEnergy.id("block/overlay/quantum_computer_port"));
 
                             prov.simpleBlock(ctx.getEntry(), model);
