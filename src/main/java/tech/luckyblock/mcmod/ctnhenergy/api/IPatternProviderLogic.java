@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.utils;
+package tech.luckyblock.mcmod.ctnhenergy.api;
 
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 

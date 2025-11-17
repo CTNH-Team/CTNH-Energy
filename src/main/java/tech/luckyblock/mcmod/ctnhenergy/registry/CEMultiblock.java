@@ -15,6 +15,10 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.api.CEPredicates;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine.QuantumComputerMultiblockMachine;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.ADVANCED_COMPUTER_CASING;
@@ -22,6 +26,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.COMPUTER_CASING;
 import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
 
 @SuppressWarnings("removal")
+@Prefix("multiblock")
 public class CEMultiblock {
 
     static {
@@ -29,6 +34,19 @@ public class CEMultiblock {
     }
 
     public static MultiblockMachineDefinition JIUZHANG_QUANTUM_COMPUTER;
+
+    @CN({
+            "通过顶部的接口接入ME网络，作为合成CPU处理网络的自动合成任务",
+            "自动分离出量子计算单元以创建子CPU来§e同时处理多个合成任务§r",
+            "所有子CPU具有相同并行数，总内存取决于结构中所有合成存储器容量之和",
+            "可通过主界面设置并行数，每1并行需要消耗1算力",
+            "能量消耗：(总内存x32 + 并行数x1920) EU/t",
+            "§d§o策定乾坤算因果§r§r"
+    })
+    @EN({
+            "","","","","",""
+    })
+    static Lang[] jiuzhang_tooltip;
 
     public static void init() {
         JIUZHANG_QUANTUM_COMPUTER = REGISTRATE.multiblock(
@@ -76,6 +94,7 @@ public class CEMultiblock {
                         .build())
                 .workableCasingModel(CTNHEnergy.id("block/casings/light_computer_casing"),
                         CTNHEnergy.id("block/machine/quantum_computer"))
+                .tooltips(jiuzhang_tooltip)
                 .register();
 
 

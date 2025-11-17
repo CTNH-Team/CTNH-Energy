@@ -96,7 +96,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             at = @At("TAIL")
     )
     private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
-        configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.DEFAULT);
+        configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.SMART);
     }
 
     @Unique

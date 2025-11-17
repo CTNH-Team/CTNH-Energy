@@ -23,9 +23,14 @@ public class CEConfig {
     public CPU cpu = new CPU();
     public static class CPU {
         @Configurable
-        @Configurable.Comment({"The maximum multiplier for automatic pattern doubling during automatic crafting.", "Default: 64"})
+        @Configurable.Comment({"The maximum multiplier for automatic pattern doubling of OMNI cpu during automatic crafting.", "Default: 64"})
         @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
-        public int maxMultiple = 64;
+        public int maxMultipleOMNI = 64;
+
+        @Configurable
+        @Configurable.Comment({"The maximum multiplier for automatic pattern doubling of Quantum cpu during automatic crafting.", "Default: 64"})
+        @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
+        public int maxMultipleQuantum = 1024;
 
         @Configurable
         @Configurable.Comment({"The maximum number of pattern providers can be called with 1 tick", "Default: 8192"})

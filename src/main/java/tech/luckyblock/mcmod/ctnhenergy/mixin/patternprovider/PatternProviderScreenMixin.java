@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
-import tech.luckyblock.mcmod.ctnhenergy.utils.IPatternProviderLogic;
+import tech.luckyblock.mcmod.ctnhenergy.api.IPatternProviderLogic;
 
 @Mixin(value = PatternProviderScreen.class, remap = false)
 public abstract class PatternProviderScreenMixin <C extends PatternProviderMenu> extends AEBaseScreen<C> {

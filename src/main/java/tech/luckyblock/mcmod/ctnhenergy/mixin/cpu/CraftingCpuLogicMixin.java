@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
+import tech.luckyblock.mcmod.ctnhenergy.api.IAutoMultiplyCPU;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.common.pattern.DynamicProcessingPattern;
 import tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider.PatternProviderLogicAccessor;
@@ -38,7 +39,7 @@ import java.util.List;
 
 
 @Mixin(value = CraftingCpuLogic.class, remap = false)
-public abstract class CraftingCpuLogicMixin {
+public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
 
     @Shadow
     private ExecutingCraftingJob job;
@@ -53,6 +54,19 @@ public abstract class CraftingCpuLogicMixin {
 
     @Shadow
     public abstract long insert(AEKey what, long amount, Actionable type);
+
+    @Unique
+    boolean CE$enableMultiply = false;
+
+    @Override
+    public boolean isEnableMultiply() {
+        return CE$enableMultiply;
+    }
+
+    @Override
+    public void setEnableMultiply(boolean enableMultiply) {
+        CE$enableMultiply = enableMultiply;
+    }
 
     @Unique
     private static final Logger LOG = LoggerFactory.getLogger("CTNHEnergy-CraftingCPU");
@@ -76,6 +90,8 @@ public abstract class CraftingCpuLogicMixin {
                                    IEnergyService energyService,
                                    Level level,
                                    CallbackInfoReturnable<Integer> cir) {
+        if(!isEnableMultiply()) return;
+
         maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
 
         var jobLocal = this.job;
@@ -122,7 +138,7 @@ public abstract class CraftingCpuLogicMixin {
             if(nonBlocking != 0) {
                 //神秘公式
                 multiplier = Math.max( (totalCount - blocking -1)/nonBlocking + 1,  1);
-                multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultiple);
+                multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultipleOMNI);
             }
 
 

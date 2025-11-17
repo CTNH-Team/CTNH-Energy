@@ -199,7 +199,7 @@ public class VirtualCraftingCPULogic {
             if(nonBlocking != 0) {
                 //神秘公式
                 multiplier = Math.max( (totalCount - blocking -1)/nonBlocking + 1,  1);
-                multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultiple);
+                multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultipleQuantum);
             }
 
 

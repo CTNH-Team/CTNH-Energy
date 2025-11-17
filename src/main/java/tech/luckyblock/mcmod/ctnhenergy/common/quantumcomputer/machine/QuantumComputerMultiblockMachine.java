@@ -410,16 +410,16 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     @CN({
-            "运行中",
-            "能量不足",
-            "算力不足",
-            "暂停"
+            "§a运行中§r",
+            "§4能量不足§r",
+            "§4算力不足§r",
+            "§e暂停§r"
     })
     @EN({
-            "Working",
-            "Not Enough Energy",
-            "Not Enough Computation",
-            "Suspend"
+            "§aWorking§r",
+            "§4Not Enough Energy§r",
+            "§4Not Enough Computation§r",
+            "§eSuspend§r"
     })
     static Lang[] work_status;
 

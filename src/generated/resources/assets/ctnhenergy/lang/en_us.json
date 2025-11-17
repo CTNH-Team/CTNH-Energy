@@ -20,10 +20,10 @@
   "machine.ctnhenergy.jiuzhang_tooltip.5": "Total Co-Processing: ",
   "machine.ctnhenergy.jiuzhang_tooltip.6": "Current Co-Processing: ",
   "machine.ctnhenergy.jiuzhang_tooltip.7": "Hold Shift to double/halve.",
-  "machine.ctnhenergy.work_status.0": "Working",
-  "machine.ctnhenergy.work_status.1": "Not Enough Energy",
-  "machine.ctnhenergy.work_status.2": "Not Enough Computation",
-  "machine.ctnhenergy.work_status.3": "Suspend",
+  "machine.ctnhenergy.work_status.0": "§aWorking§r",
+  "machine.ctnhenergy.work_status.1": "§4Not Enough Energy§r",
+  "machine.ctnhenergy.work_status.2": "§4Not Enough Computation§r",
+  "machine.ctnhenergy.work_status.3": "§eSuspend§r",
   "ui.ctnhenergy.dualoutput": "ME Output",
   "ui.ctnhenergy.dualoutputtooltip": "ME Output Catch"
 }
