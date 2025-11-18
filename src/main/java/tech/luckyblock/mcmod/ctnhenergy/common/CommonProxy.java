@@ -1,6 +1,8 @@
 package tech.luckyblock.mcmod.ctnhenergy.common;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -8,8 +10,11 @@ import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
 import tech.luckyblock.mcmod.ctnhenergy.event.EventHandler;
+import tech.luckyblock.mcmod.ctnhenergy.jade.AdMEPatternBufferProvider;
+import tech.luckyblock.mcmod.ctnhenergy.jade.AdMEPatternBufferProxyProvider;
 import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CECreativeModeTabs;
+import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonProxy {
@@ -25,5 +30,11 @@ public class CommonProxy {
         CEDatagen.init();
         CECreativeModeTabs.init();
         eventBus.addGenericListener(GTRecipeType.class, EventHandler::registerRecipeTypes);
+
+        JadePriorityManager.registerBlockData(new AdMEPatternBufferProvider(), BlockEntity.class, 2901, "ad_me_pattern_buffer_data");
+        JadePriorityManager.registerBlockData(new AdMEPatternBufferProxyProvider(), BlockEntity.class, 3001, "ad_me_pattern_buffer_proxy_data");
+        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProvider(), Block.class, 2901, "ad_me_pattern_buffer_component");
+        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProxyProvider(), Block.class, 3001, "ad_me_pattern_buffer_proxy_component");
+
     }
 }

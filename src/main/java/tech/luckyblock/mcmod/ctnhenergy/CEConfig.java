@@ -33,8 +33,8 @@ public class CEConfig {
         public int maxMultipleQuantum = 1024;
 
         @Configurable
-        @Configurable.Comment({"The maximum number of pattern providers can be called with 1 tick", "Default: 8192"})
-        @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
-        public int maxProviders = 8192;
+        @Configurable.Comment({"The maximum number of pattern providers can be called with 1 tick, and 0 means no restriction", "Default: 0"})
+        @Configurable.Range(min = 0, max = Integer.MAX_VALUE)
+        public int maxProviders = 0;
     }
 }

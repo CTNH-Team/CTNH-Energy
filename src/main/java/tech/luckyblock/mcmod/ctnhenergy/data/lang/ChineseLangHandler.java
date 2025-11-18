@@ -17,5 +17,6 @@ public class ChineseLangHandler {
         provider.add("gui.ctnhenergy.enable_circuit.tooltip", "在样板输入中加入编程电路");
         provider.add("gui.ctnhenergy.disable_circuit", "禁用编程电路");
         provider.add("gui.ctnhenergy.disable_circuit.tooltip", "忽略配方中的编程电路");
+        provider.add("ctnhenergy.copyright.info", "§6由CTNH添加§r");
     }
 }

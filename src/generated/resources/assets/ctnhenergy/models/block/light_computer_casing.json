@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "ctnhenergy:block/casings/light_computer_casing"
-  }
-}

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ctnhenergy:light_computer_casing"
+          "name": "ctnhenergy:steady_state_computing_matrix_shell"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "ctnhenergy:blocks/light_computer_casing"
+  "random_sequence": "ctnhenergy:blocks/steady_state_computing_matrix_shell"
 }

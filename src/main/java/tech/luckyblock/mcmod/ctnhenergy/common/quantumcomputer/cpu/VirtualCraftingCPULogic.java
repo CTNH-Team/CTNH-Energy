@@ -162,7 +162,8 @@ public class VirtualCraftingCPULogic {
      */
     public int executeCrafting(
             int maxProviders, CraftingService craftingService, IEnergyService energyService, Level level) {
-        maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
+        if(CEConfig.INSTANCE.cpu.maxProviders != 0)
+            maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
 
         var job = this.job;
         if (job == null) return 0;

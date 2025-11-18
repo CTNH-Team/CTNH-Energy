@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ctnhenergy:block/steady_state_computing_matrix_shell"
+    }
+  }
+}

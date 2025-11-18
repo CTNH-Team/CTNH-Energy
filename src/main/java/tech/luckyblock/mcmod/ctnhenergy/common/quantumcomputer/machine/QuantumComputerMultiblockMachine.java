@@ -75,7 +75,7 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     @Getter
     private IOpticalComputationProvider computationContainer;
-    private final int COMPUTATION2COPROCESSING = 1;
+    private final int COMPUTATION2COPROCESSING = 4;
 
     protected LongSet qcCasings;
 
@@ -260,7 +260,7 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     public int getMaxCoProcessing() {
-        return computationContainer.getMaxCWUt() / COMPUTATION2COPROCESSING;
+        return computationContainer.getMaxCWUt() * COMPUTATION2COPROCESSING;
     }
 
     public void handleDisplayClick(String componentData, ClickData clickData) {
@@ -334,7 +334,7 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     private boolean checkComputation(boolean simulate) {
-        int requestComputation = coprocessing * COMPUTATION2COPROCESSING;
+        int requestComputation = coprocessing / COMPUTATION2COPROCESSING;
         if (requestComputation <= 0) return true;
         int requestedCWUt = getComputationProvider().requestCWUt(requestComputation, simulate);
         return requestedCWUt >= requestComputation;

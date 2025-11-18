@@ -14,6 +14,7 @@
     "cpu.ElapsedTimeTrackerInvoker",
     "cpu.ExecutingCraftingJobAccessor",
     "cpu.TaskProgressAccessor",
+    "EUP2P.EUP2PMixin",
     "gtm.BlockPatternMixin",
     "gtm.MultiblockStateMixin",
     "GTmepatternbuffer.MEPatternBufferPartMachineAccessor",

@@ -8,7 +8,7 @@ dependencies {
     // JEI, EMI, Jade
     //modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     //modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    //modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     modCompileOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
     //modRuntimeOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
     modImplementation("curse.maven:jade-324717:6855440")
@@ -54,7 +54,7 @@ dependencies {
     modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     modImplementation("curse.maven:cloth-config-348521:5729105")
 
-    modRuntimeOnly("curse.maven:just-enough-characters-250702:6680042")
+    //modRuntimeOnly("curse.maven:just-enough-characters-250702:6680042")
     modRuntimeOnly("curse.maven:constructionwand-399558:4684054")
     modRuntimeOnly("curse.maven:building-gadgets-298187:6850495")
 //    // KubeJS

@@ -91,8 +91,8 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                                    Level level,
                                    CallbackInfoReturnable<Integer> cir) {
         if(!isEnableMultiply()) return;
-
-        maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
+        if(CEConfig.INSTANCE.cpu.maxProviders != 0)
+            maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
 
         var jobLocal = this.job;
         if (jobLocal == null) {
