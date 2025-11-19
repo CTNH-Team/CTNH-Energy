@@ -62,12 +62,11 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     @Nullable
     protected ISubscription tankSubs;
 
-    //static to make sure its init before Inventory
-    private static final List<Runnable> changeListeners = new ArrayList<>();
+    private List<Runnable> changeListeners;
 
     public MEDualOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.OUT, args);
-        tank = new InaccessibleInfiniteTank(this, changeListeners, internalBuffer);
+        tank = new InaccessibleInfiniteTank(this, getChangeListeners(), internalBuffer);
         internalBuffer.setOnContentsChanged(()-> changeListeners.forEach(Runnable::run));
     }
 
@@ -78,7 +77,13 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler(this, changeListeners, internalBuffer);
+        return new InaccessibleInfiniteHandler(this, getChangeListeners(), internalBuffer);
+    }
+
+    List<Runnable> getChangeListeners(){
+        if(changeListeners == null)
+            changeListeners = new ArrayList<>();
+        return changeListeners;
     }
 
     @Override

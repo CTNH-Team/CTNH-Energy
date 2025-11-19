@@ -842,6 +842,8 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
     @Nullable
     protected ISubscription inventorySubs, tankSubs;
 
+    private final List<Runnable> changeListeners = new ArrayList<>();
+
     private void initOutput(){
         internalBuffer = new KeyStorage();
         outputInventory = new MEDualOutputHatchPartMachine.InaccessibleInfiniteHandler(this, changeListeners, internalBuffer);
@@ -865,7 +867,5 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
             this.updateInventorySubscription();
         }
     }
-
-    private static final List<Runnable> changeListeners = new ArrayList<>();
 
 }
