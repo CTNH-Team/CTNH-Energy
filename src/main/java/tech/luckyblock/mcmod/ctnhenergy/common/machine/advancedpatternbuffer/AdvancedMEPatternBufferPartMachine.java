@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.*;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -48,6 +49,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -472,15 +474,17 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
+                MutableComponent name = Component.translatable(controllerDefinition.getDescriptionId());
+                if(controller instanceof WorkableMultiblockMachine workableMultiblockMachine){
+                    name.append(" - ").append(Component.translatable(workableMultiblockMachine.getRecipeType().registryName.toLanguageKey()));
+                }
                 ItemStack circuitStack = isHasCircuitSlot() ? circuitInventory.storage.getStackInSlot(0) :
                         ItemStack.EMPTY;
                 int circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
 
                 Component groupName = circuitConfiguration != -1 ?
-                        Component.translatable(controllerDefinition.getDescriptionId())
-                                .append(" - " + circuitConfiguration) :
-                        Component.translatable(controllerDefinition.getDescriptionId());
+                        name.append(" - " + circuitConfiguration) : name;
 
                 return new PatternContainerGroup(
                         AEItemKey.of(controllerDefinition.asStack()), groupName, Collections.emptyList());
