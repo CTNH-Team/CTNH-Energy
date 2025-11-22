@@ -94,8 +94,7 @@ public class CEMultiblock {
                         )
                         .build())
                 .workableCasingModel(CTNHEnergy.id("block/casings/steady_state_computing_matrix_shell"),
-                        CTNHEnergy.id("block/machine/quantum_computer"))
-                .tooltips(jiuzhang_tooltip)
+                        CTNHEnergy.id("block/machine/quantum_computer")).tooltips(jiuzhang_tooltip)
                 .register();
 
 
