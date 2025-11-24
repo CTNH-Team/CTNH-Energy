@@ -45,7 +45,10 @@ public class CEMultiblock {
             "§d§o策定乾坤算因果§r§r"
     })
     @EN({
-            "","","","","","",""
+            "","","","","","",
+            "§d§oScheming the cosmos, Computing karma.§r§r"
+
+
     })
     static Lang[] jiuzhang_tooltip;
 
