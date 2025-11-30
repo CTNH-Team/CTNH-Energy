@@ -49,6 +49,8 @@ dependencies {
     //modCompileOnly("dev.emi:emi-forge:${emi_version}")
     //modCompileOnly("curse.maven:emi-580555:6420945")
     modImplementation("dev.architectury:architectury-forge:${architectury_version}")
+    modImplementation("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    modImplementation("dev.latvian.mods:rhino-forge:${rhino_version}")
 
     modRuntimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}")
     modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")

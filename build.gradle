@@ -100,12 +100,12 @@ obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
 }
 //apply from: "$rootDir/gradle/scripts/spotless.gradle"
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
-}
+//idea {
+//    module {
+//        downloadSources = true
+//        downloadJavadoc = true
+//    }
+//}
 
 
 // See com.example.examplemod.mixin.DummyMixin for information about mixins
