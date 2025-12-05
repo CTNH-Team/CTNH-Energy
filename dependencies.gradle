@@ -8,8 +8,7 @@ dependencies {
     // JEI, EMI, Jade
     //modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     //modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-    modCompileOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
+    //modCompileOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
     //modRuntimeOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
     modImplementation("curse.maven:jade-324717:6855440")
 
