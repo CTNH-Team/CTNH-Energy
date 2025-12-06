@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.common.pattern.DynamicProcessingPattern;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.patternprovider.PatternProviderLogicAccessor;
+import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider.PatternProviderLogicAccessor;
 import tech.luckyblock.mcmod.ctnhenergy.utils.ProviderRecord;
 
 import java.util.*;
