@@ -19,6 +19,7 @@
     "ae2.patternencodingpanel.ProcessingEncodingPanelMixin",
     "ae2.patternencodingpanel.StyleManagerMixin",
     "ae2.patternprovider.PatternContainerGroupMixin",
+    "ae2.patternprovider.PatternProviderBlockEntityMixin",
     "ae2.patternprovider.PatternProviderLogicAccessor",
     "ae2.patternprovider.PatternProviderLogicMixin",
     "ae2.patternprovider.PatternProviderMenuAccessor",

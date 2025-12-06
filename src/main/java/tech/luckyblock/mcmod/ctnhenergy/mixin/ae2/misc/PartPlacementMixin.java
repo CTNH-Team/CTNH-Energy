@@ -2,6 +2,7 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.parts.PartPlacement;
 import appeng.parts.crafting.PatternProviderPart;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -34,7 +35,7 @@ public class PartPlacementMixin {
             Direction side,
             CallbackInfoReturnable<T> cir) {
         T placedPart = cir.getReturnValue();
-        if (!(placedPart instanceof PatternProviderPart) || level.isClientSide()) {
+        if (!(placedPart instanceof PatternProviderLogicHost) || level.isClientSide()) {
             return;
         }
         BlockPos targetPos = pos.relative(side);
