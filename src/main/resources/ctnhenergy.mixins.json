@@ -15,6 +15,7 @@
     "ae2.emi.AbstractRecipeHandlerMixin",
     "ae2.misc.AEBaseMenuMixin",
     "ae2.misc.ColorApplicatorItemMixin",
+    "ae2.misc.IOBusPartMixin",
     "ae2.misc.PartPlacementMixin",
     "ae2.patternencodingpanel.ProcessingEncodingPanelMixin",
     "ae2.patternencodingpanel.StyleManagerMixin",
