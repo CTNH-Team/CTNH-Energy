@@ -11,8 +11,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.client.render.EUKeyRenderHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
-import tech.luckyblock.mcmod.ctnhenergy.common.me.EUKey;
-import tech.luckyblock.mcmod.ctnhenergy.common.me.EUKeyType;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui.QuantumComputerScreen;
 

@@ -1,12 +1,9 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.me;
+package tech.luckyblock.mcmod.ctnhenergy.common.me.key;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;

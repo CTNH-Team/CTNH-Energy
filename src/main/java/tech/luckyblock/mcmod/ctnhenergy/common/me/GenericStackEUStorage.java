@@ -5,6 +5,7 @@ import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import net.minecraft.core.Direction;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 

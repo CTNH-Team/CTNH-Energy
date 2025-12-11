@@ -1,8 +1,8 @@
 package tech.luckyblock.mcmod.ctnhenergy.common;
 
 import appeng.api.behaviors.GenericSlotCapacities;
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
+import appeng.api.storage.StorageCells;
 import appeng.capabilities.Capabilities;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -17,7 +17,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
@@ -25,7 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
-import tech.luckyblock.mcmod.ctnhenergy.common.me.EUKeyType;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.cell.EuCellHandler;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.GenericStackEUStorage;
 import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
 import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProvider;
@@ -58,6 +58,7 @@ public class CommonProxy {
         });
 
         GenericSlotCapacities.register(EUKeyType.INSTANCE, (long)Integer.MAX_VALUE);
+        StorageCells.addCellHandler(EuCellHandler.HANDLER);
         MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, (AttachCapabilitiesEvent<BlockEntity> event) -> {
             var blockEntity = event.getObject();
             event.addCapability(CTNHEnergy.id("generic_eu_wrapper"), new ICapabilityProvider() {

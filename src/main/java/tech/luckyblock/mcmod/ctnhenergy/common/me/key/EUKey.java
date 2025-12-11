@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.me;
+package tech.luckyblock.mcmod.ctnhenergy.common.me.key;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;

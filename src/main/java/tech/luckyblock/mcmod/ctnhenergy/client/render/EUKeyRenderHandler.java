@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
-import tech.luckyblock.mcmod.ctnhenergy.common.me.EUKey;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 
 public class EUKeyRenderHandler implements AEKeyRenderHandler<EUKey> {
 
