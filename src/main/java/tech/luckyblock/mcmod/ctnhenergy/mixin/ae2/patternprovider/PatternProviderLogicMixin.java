@@ -12,12 +12,15 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.api.crafting.IPatternDetails;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
@@ -26,14 +29,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
+import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc.MachineUpgradeInventoryAccessor;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
 import java.util.*;
 
 @Mixin(value = PatternProviderLogic.class, remap = false)
-public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin{
+public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin, IEnergyDistributor, IUpgradeableObject {
 
     @Final
     @Shadow
@@ -91,12 +99,15 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Unique
     private final Map<AEItemKey, Set<AEKey>> CE$patternInputsMap = new HashMap<>();
 
+
+
     @Inject(
             method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
             at = @At("TAIL")
     )
     private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
         configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.SMART);
+        mainNode.addService(IEnergyDistributor.class, this);
     }
 
     @Unique
@@ -138,6 +149,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
      */
     @Overwrite
     public List<IPatternDetails> getAvailablePatterns() {
+        CE$injectUpgradeCallback();
         return CE$patternsMap.values().stream().toList();
     }
 
@@ -248,4 +260,75 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
         cir.setReturnValue(false);
     }
 
+
+    @Unique
+    private EnergyDistributeService CE$service = null;
+    @Unique
+    private List<Direction> CE$sides = List.of();
+
+    @Override
+    public void setServiceHost(@Nullable EnergyDistributeService service) {
+        CE$service = service;
+        CE$updateSleep();
+        if(service != null){
+            CE$sides = CEUtil.getSides(host);
+        }
+    }
+
+    @Unique
+    public void CE$updateSleep(){
+        if(CE$service != null){
+            if(getUpgrades().isInstalled(CEItems.DYNAMO_CARD)){
+                CE$service.wake(this);
+            }
+            else{
+                CE$service.sleep(this);
+            }
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return mainNode.isActive();
+    }
+
+    @Override
+    public void distribute() {
+        var self = host.getBlockEntity();
+        if(self.getLevel() != null){
+            for(Direction side : CE$sides){
+                var oppositeSide = side.getOpposite();
+                var source = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos(), side);
+                var target = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos().relative(side), oppositeSide);
+                if(source != null && target != null && !CEUtil.isInSameGrid(source, target)){
+                    if(!source.outputsEnergy(side)) continue;
+                    long outputVoltage = source.getOutputVoltage();
+                    long outputAmperes = Math.min(source.getEnergyStored() / outputVoltage, source.getOutputAmperage());
+                    if (outputAmperes == 0) return;
+                    if(target.inputsEnergy(oppositeSide)){
+                        outputAmperes = target.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes);
+                        source.changeEnergy(- outputAmperes * outputVoltage);
+                    }
+                }
+            }
+        }
+
+    }
+
+    @Unique
+    boolean CE$injected = false;
+
+    @Unique
+    private void CE$injectUpgradeCallback(){
+        if(CE$injected) return;
+        if(getUpgrades() instanceof MachineUpgradeInventoryAccessor accessor){
+            CE$injected = true;
+            var oldCallback = accessor.getChangeCallback();
+            accessor.setChangeCallback(() ->{
+                if(oldCallback != null)
+                    oldCallback.onUpgradesChanged();
+                this.CE$updateSleep();
+            });
+        }
+    }
 }

@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 
 public class EUCellInventory implements StorageCell {
 
@@ -34,6 +35,9 @@ public class EUCellInventory implements StorageCell {
         hasVoidUpgrade = UpgradeInventories.forItem(stack, 3).isInstalled(AEItems.VOID_CARD);
     }
 
+    public int getTier(){
+        return cell.getTier();
+    }
 
     @Override
     public CellState getStatus() {
@@ -43,7 +47,6 @@ public class EUCellInventory implements StorageCell {
             return CellState.FULL;
         return CellState.NOT_EMPTY;
     }
-
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
@@ -55,6 +58,10 @@ public class EUCellInventory implements StorageCell {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if(what instanceof VoltageKey voltageKey && voltageKey.getTier() <= cell.getTier() && mode.isSimulate()){
+            return 1;
+        }
+
         if(what != EUKey.EU) return 0;
 
         return cell.discharge(amount, GTValues.MAX, true, true, mode.isSimulate());

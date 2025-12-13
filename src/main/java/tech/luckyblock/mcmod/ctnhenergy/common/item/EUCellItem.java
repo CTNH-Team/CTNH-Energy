@@ -28,7 +28,7 @@ public class EUCellItem extends ComponentItem implements IEUCell{
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         var handler = EuCellHandler.HANDLER.getCellInventory(stack, null);
         if(handler != null){
-            tooltipComponents.add(1, Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
+            tooltipComponents.add(2, Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
         }
     }
 }

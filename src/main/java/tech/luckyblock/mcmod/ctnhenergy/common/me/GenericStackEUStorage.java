@@ -129,6 +129,6 @@ public class GenericStackEUStorage implements IEnergyContainer {
 
     @Override
     public long getInputVoltage() {
-        return V[MAX];
+        return V[UV];
     }
 }

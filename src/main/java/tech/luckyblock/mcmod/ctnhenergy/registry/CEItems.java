@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellStats;
 
@@ -18,13 +19,19 @@ public class CEItems {
     }
 
     public static ItemEntry<EUCellItem>[] EU_CELL = new ItemEntry[TIER_COUNT];
+    public static ItemEntry<DynamoCardItem> DYNAMO_CARD;
 
     public static void init(){
         registerEUCell();
+        DYNAMO_CARD = REGISTRATE.item("dynamo_card", DynamoCardItem::new)
+                .cnlang("动力卡")
+                .lang("Dynamo Card")
+                .model(NonNullBiConsumer.noop())
+                .register();
     }
 
     public static void registerEUCell(){
-        for(int tier : GTValues.tiersBetween(LV, MAX)){
+        for(int tier : GTValues.tiersBetween(ULV, MAX)){
             EU_CELL[tier] = REGISTRATE
                     .item(VN[tier].toLowerCase() + "_eu_cell", EUCellItem::new)
                     .cnlang(VNF[tier] + "§r ME EU存储元件")

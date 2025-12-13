@@ -30,14 +30,10 @@ public class CTNHEnergy {
         final var context = FMLJavaModLoadingContext.get();
         //noinspection InstantiationOfUtilityClass
         DistExecutor.unsafeRunForDist(() -> () -> new ClientProxy(context), () -> () -> new CommonProxy(context));
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(MachineDefinition.class, this::registerMachines);
+
     }
 
-    public void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event){
-        CEMachines.init();
-        CEMultiblock.init();
-    }
+
 
     public static ResourceLocation id(String string){
         return ResourceLocation.tryBuild(MODID, string);

@@ -4,39 +4,31 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
-public class EUKeyType extends AEKeyType {
-    private EUKeyType() {
-        super(CTNHEnergy.id("eu"), EUKey.class, EUKey.EU_NAME);
+public class VoltageKeyType extends AEKeyType {
+    private VoltageKeyType() {
+        super(CTNHEnergy.id("voltage"), VoltageKey.class, Component.literal("Voltage"));
     }
 
-    public static EUKeyType INSTANCE = new EUKeyType();
+    public static VoltageKeyType INSTANCE = new VoltageKeyType();
 
     @Override
     public @Nullable AEKey readFromPacket(FriendlyByteBuf input) {
-        return EUKey.EU;
+        return VoltageKey.of(input.readVarInt());
     }
 
     @Override
     public @Nullable AEKey loadKeyFromTag(CompoundTag tag) {
-        return EUKey.EU;
+        return VoltageKey.of(tag.getInt("tier"));
     }
 
     @Override
     public int getAmountPerByte() {
-        return CEConfig.INSTANCE.appeu.amountPerByte;
+        return 0;
     }
 
-    @Override
-    public int getAmountPerOperation() {
-        return 32;
-    }
-
-    @Override
-    public @Nullable String getUnitSymbol() {
-        return "EU";
-    }
 }

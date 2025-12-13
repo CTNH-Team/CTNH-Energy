@@ -37,5 +37,8 @@ public class PatternProviderBlockEntityMixin extends BlockEntity {
                 tieredMachine.setAllowInputFromOutputSideFluids(true);
             }
         }
+
     }
+
+
 }
