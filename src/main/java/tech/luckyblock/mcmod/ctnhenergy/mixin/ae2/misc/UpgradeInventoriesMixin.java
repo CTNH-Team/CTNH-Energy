@@ -10,9 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class UpgradeInventoriesMixin {
     @ModifyVariable(method = "forMachine", at = @At("HEAD"), argsOnly = true, name = "arg1")
     private static int modifyMaxUpgrades(int maxUpgrades){
-        if (maxUpgrades == 1)
-            return 2;
-        return maxUpgrades;
+        return Math.max(maxUpgrades, 3);
     }
 
 }

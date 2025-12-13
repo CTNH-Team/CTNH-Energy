@@ -41,7 +41,8 @@ public class EUContainerItemStrategy implements ContainerItemStrategy<EUKey, EUI
     @Override
     public @Nullable EUItemContext findCarriedContext(Player player, AbstractContainerMenu menu) {
 
-        if (GTCapabilityHelper.getElectricItem(menu.getCarried()) != null) {
+        if (GTCapabilityHelper.getElectricItem(menu.getCarried()) != null
+                || GTCapabilityHelper.getForgeEnergyItem(menu.getCarried()) != null) {
             return new CarriedContextEU(player, menu);
         }
         return null;

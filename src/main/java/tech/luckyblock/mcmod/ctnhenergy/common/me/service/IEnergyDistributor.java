@@ -1,19 +1,69 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.service;
 
 import appeng.api.networking.IGridNodeService;
+import appeng.api.upgrades.IUpgradeableObject;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
-public interface IEnergyDistributor extends IGridNodeService {
+import java.util.List;
+
+public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject {
     default void distribute() {
-
+        var self = getHostBlockEntity();
+        if(self.getLevel() != null){
+            for(Direction side : getAvailableSides()){
+                var oppositeSide = side.getOpposite();
+                var source = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos(), side);
+                var target = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos().relative(side), oppositeSide);
+                if(source != null && target != null && !CEUtil.isInSameGrid(source, target)){
+                    if(!source.outputsEnergy(side)) continue;
+                    long outputVoltage = source.getOutputVoltage();
+                    long outputAmperes = Math.min(source.getEnergyStored() / outputVoltage, source.getOutputAmperage());
+                    if (outputAmperes == 0) return;
+                    if(target.inputsEnergy(oppositeSide)){
+                        outputAmperes = target.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes);
+                        source.changeEnergy(- outputAmperes * outputVoltage);
+                    }
+                }
+            }
+        }
     }
 
     default void setServiceHost(@Nullable EnergyDistributeService service) {
-
+        setService(service);
+        updateSleep();
+        if(getService() != null){
+            setAAvailableSides(CEUtil.getSides(getHost()));
+        }
     }
 
-    default boolean isActive() {
-        return true;
-    }
+    default void updateSleep(){
+        if(getService() != null){
+            if(getUpgrades().isInstalled(CEItems.DYNAMO_CARD)){
+                getService().wake(this);
+            }
+            else{
+                getService().sleep(this);
+            }
+        }
+    };
+
+    boolean isActive();
+
+    BlockEntity getHostBlockEntity();
+
+    List<Direction> getAvailableSides();
+
+    void setAAvailableSides(List<Direction> sides);
+
+    EnergyDistributeService getService();
+
+    void setService(EnergyDistributeService service);
+
+    Object getHost();
 
 }

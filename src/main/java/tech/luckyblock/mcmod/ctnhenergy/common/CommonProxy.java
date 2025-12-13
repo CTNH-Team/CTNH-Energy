@@ -13,6 +13,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.GuiText;
+import com.glodblock.github.extendedae.common.EPPItemAndBlock;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -84,8 +85,13 @@ public class CommonProxy {
 
                 Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.INTERFACE, 1, GuiText.Interface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, AEParts.INTERFACE, 1, GuiText.Interface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE, 1, GuiText.Interface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE_PART, 1, GuiText.Interface.getTranslationKey());
+
                 Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, AEParts.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1, GuiText.CraftingInterface.getTranslationKey());
             });
         });
 

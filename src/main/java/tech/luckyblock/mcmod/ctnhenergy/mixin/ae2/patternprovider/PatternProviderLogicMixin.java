@@ -19,9 +19,8 @@ import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -266,26 +265,6 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Unique
     private List<Direction> CE$sides = List.of();
 
-    @Override
-    public void setServiceHost(@Nullable EnergyDistributeService service) {
-        CE$service = service;
-        CE$updateSleep();
-        if(service != null){
-            CE$sides = CEUtil.getSides(host);
-        }
-    }
-
-    @Unique
-    public void CE$updateSleep(){
-        if(CE$service != null){
-            if(getUpgrades().isInstalled(CEItems.DYNAMO_CARD)){
-                CE$service.wake(this);
-            }
-            else{
-                CE$service.sleep(this);
-            }
-        }
-    }
 
     @Override
     public boolean isActive() {
@@ -293,26 +272,33 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     }
 
     @Override
-    public void distribute() {
-        var self = host.getBlockEntity();
-        if(self.getLevel() != null){
-            for(Direction side : CE$sides){
-                var oppositeSide = side.getOpposite();
-                var source = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos(), side);
-                var target = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos().relative(side), oppositeSide);
-                if(source != null && target != null && !CEUtil.isInSameGrid(source, target)){
-                    if(!source.outputsEnergy(side)) continue;
-                    long outputVoltage = source.getOutputVoltage();
-                    long outputAmperes = Math.min(source.getEnergyStored() / outputVoltage, source.getOutputAmperage());
-                    if (outputAmperes == 0) return;
-                    if(target.inputsEnergy(oppositeSide)){
-                        outputAmperes = target.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes);
-                        source.changeEnergy(- outputAmperes * outputVoltage);
-                    }
-                }
-            }
-        }
+    public BlockEntity getHostBlockEntity() {
+        return host.getBlockEntity();
+    }
 
+    @Override
+    public List<Direction> getAvailableSides() {
+        return CE$sides;
+    }
+
+    @Override
+    public void setAAvailableSides(List<Direction> sides) {
+        CE$sides = sides;
+    }
+
+    @Override
+    public EnergyDistributeService getService() {
+        return CE$service;
+    }
+
+    @Override
+    public void setService(EnergyDistributeService service) {
+        CE$service = service;
+    }
+
+    @Override
+    public PatternProviderLogicHost getHost() {
+        return host;
     }
 
     @Unique
@@ -327,7 +313,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             accessor.setChangeCallback(() ->{
                 if(oldCallback != null)
                     oldCallback.onUpgradesChanged();
-                this.CE$updateSleep();
+                this.updateSleep();
             });
         }
     }

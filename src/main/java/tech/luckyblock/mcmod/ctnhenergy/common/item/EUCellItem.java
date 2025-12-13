@@ -31,4 +31,9 @@ public class EUCellItem extends ComponentItem implements IEUCell{
             tooltipComponents.add(2, Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
         }
     }
+
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return 1;
+    }
 }
