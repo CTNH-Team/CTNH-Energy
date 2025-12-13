@@ -1,5 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy.common;
 
+import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.behaviors.GenericSlotCapacities;
 import appeng.api.networking.GridServices;
 import appeng.api.networking.security.IActionHost;
@@ -37,9 +38,11 @@ import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.cell.EuCellHandler;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.strategy.EUContainerItemStrategy;
 import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
 import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProvider;
 import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProxyProvider;
@@ -76,6 +79,7 @@ public class CommonProxy {
         eventBus.addListener((FMLCommonSetupEvent event) ->{
             event.enqueueWork(() -> {
                 GridServices.register(EnergyDistributeService.class, EnergyDistributeService.class);
+                ContainerItemStrategy.register(EUKeyType.INSTANCE, EUKey.class, new EUContainerItemStrategy());
                 registerCellUpgrades(CEItems.EU_CELL);
 
                 Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.INTERFACE, 1, GuiText.Interface.getTranslationKey());

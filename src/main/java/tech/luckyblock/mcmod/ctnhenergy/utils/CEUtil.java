@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.utils;
 
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartHost;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
@@ -8,11 +12,13 @@ import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.parts.AEBasePart;
 import appeng.util.inv.AppEngInternalInventory;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 
 import java.util.List;
 
@@ -47,5 +53,14 @@ public class CEUtil {
         } else {
             return List.of();
         }
+    }
+
+    public static int getGridTier(IGridNode node){
+        var storage = node.getGrid().getStorageService().getInventory();
+        for(int i = GTValues.MAX; i >= GTValues.ULV; i--){
+            if(storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, IActionSource.ofMachine(() -> node)) > 0)
+                return i;
+        }
+        return -1;
     }
 }

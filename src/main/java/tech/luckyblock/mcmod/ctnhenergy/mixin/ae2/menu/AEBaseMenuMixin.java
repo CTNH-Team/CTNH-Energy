@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.menu;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,11 +41,13 @@ public class DynamoCardItem extends UpgradeCardItem implements IComponentItem {
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
+    public Component getName(ItemStack stack) {
         var tag = stack.getOrCreateTag();
         if(tag.contains(VOLTAGE)){
-            return GTValues.VNF[tag.getInt(VOLTAGE)] + "§r" + super.getDescriptionId(stack);
+            return Component.literal(GTValues.VNF[tag.getInt(VOLTAGE)])
+                    .append(" ")
+                    .append(super.getName(stack));
         }
-        return super.getDescriptionId(stack);
+        return super.getName(stack);
     }
 }

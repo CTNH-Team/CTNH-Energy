@@ -16,6 +16,7 @@ import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
@@ -46,8 +47,7 @@ public class MEMachineEUHandler implements IEnergyContainer {
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
         if (voltage <= 0L || amperage < 1) return 0;
 
-        var tier =  GTUtil.getTierByVoltage(voltage);
-        if(inv.extract(VoltageKey.of(tier), 1, Actionable.SIMULATE, source) > 0){
+        if(voltage <= getInputVoltage()){
 
             long energyToAdd = voltage * amperage;
 
@@ -95,7 +95,10 @@ public class MEMachineEUHandler implements IEnergyContainer {
 
     @Override
     public long getInputVoltage() {
-        return V[MAX];
+        var tier = CEUtil.getGridTier(node);
+        if(tier >= 0)
+            return V[tier];
+        return 0;
     }
 
     @Override
@@ -110,6 +113,6 @@ public class MEMachineEUHandler implements IEnergyContainer {
 
     @Override
     public boolean outputsEnergy(Direction side) {
-        return outputVoltage > 0;
+        return outputVoltage > 0 && outputVoltage <= getInputVoltage();
     }
 }
