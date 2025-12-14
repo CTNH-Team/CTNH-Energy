@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;

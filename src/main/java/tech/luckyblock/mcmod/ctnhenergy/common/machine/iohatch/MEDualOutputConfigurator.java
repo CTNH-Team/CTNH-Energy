@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;

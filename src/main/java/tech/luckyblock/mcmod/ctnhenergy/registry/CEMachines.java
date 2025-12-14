@@ -4,12 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferProxyPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.mehatch.MEDualOutputHatchPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MESubstationHatch;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputHatchPartMachine;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
@@ -32,6 +34,7 @@ public class CEMachines {
     public static MachineDefinition ADVANCED_ME_PATTERN_BUFFER;
     public static MachineDefinition ADVANCED_ME_PATTERN_BUFFER_PROXY;
     public static MachineDefinition DUAL_OUTPUT_HATCH_ME;
+    public static MachineDefinition ME_SUBSTATION_HATCH;
 
     @CN("具有%s个样板槽位")
     @EN("")
@@ -102,6 +105,17 @@ public class CEMachines {
         initAdvancedMEPatternBuffer();
         initAdvancedMEPatternBufferProxy();
         initDualOutputHatchME();
+
+        ME_SUBSTATION_HATCH = REGISTRATE
+                .machine("me_substation_hatch", MESubstationHatch::new)
+                .cnLangValue("ME变电仓")
+                .langValue("ME Substation Hatch")
+                .tier(IV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY)
+                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_output_hatch_64a"))
+                .register();
 
         GTAEMachines.STOCKING_IMPORT_BUS_ME.setTier(IV);
         GTAEMachines.STOCKING_IMPORT_HATCH_ME.setTier(IV);
