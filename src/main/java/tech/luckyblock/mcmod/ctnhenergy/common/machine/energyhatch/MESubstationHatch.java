@@ -10,12 +10,15 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
+import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -23,8 +26,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.gtm.PowerSubstationMachineAccessor;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 
 import java.math.BigInteger;
 
@@ -42,7 +46,6 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
     protected boolean isOnline;
 
     @Persisted
-    @DescSynced
     @Getter
     private int priority = 0;
 
@@ -58,6 +61,10 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
         nodeHolder.getMainNode().addService(IStorageProvider.class, this);
     }
+
+    //////////////////////////////////////
+    // ***** AE ******//
+    //////////////////////////////////////
 
     protected GridNodeHolder createNodeHolder() {
         return new GridNodeHolder(this);
@@ -83,10 +90,32 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
         IStorageProvider.requestUpdate(getMainNode());
     }
 
+
+
     @Override
     public boolean canShared() {
         return false;
     }
+
+    //////////////////////////////////////
+    // ***** UI ******//
+    //////////////////////////////////////
+    @Override
+    public Widget createUIWidget() {
+        WidgetGroup priorityAmountGroup = new WidgetGroup(0, 0, 100, 20);
+        priorityAmountGroup.addWidgets(
+                new TextTextureWidget(25, -10, 50, 15, "gui.ae2.Priority"),
+                new IntInputWidget(0, 5, 100, 20, this::getPriority, this::setPriority){
+                    @Override
+                    protected Integer defaultMin() {
+                        return Integer.MIN_VALUE;
+                    }
+                }
+        );
+        return priorityAmountGroup;
+    }
+
+
 
     @Override
     public void addedToController(IMultiController controller) {
@@ -103,12 +132,12 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
         storage.reset();
+        remountStorage();
     }
 
     public class SubstationEUStorage implements MEStorage{
 
         PowerSubstationMachine powerStation;
-        //PowerSubstationMachine.PowerStationEnergyBank getPowerBank();
 
         @Override
         public Component getDescription() {
@@ -127,8 +156,8 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
         }
 
         public PowerSubstationMachine.PowerStationEnergyBank getPowerBank() {
-            if(getPowerStation() instanceof PowerSubstationMachineAccessor accessor){
-                return accessor.getEnergyBank();
+            if(getPowerStation() != null){
+                return getPowerStation().getEnergyBank();
             }
             return null;
         }
@@ -140,13 +169,13 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
 
         @Override
         public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-            if(what == EUKey.EU && getPowerBank() != null){
+            if(what == EUKey.EU && getPowerBank() != null && getPowerStation().isWorkingEnabled()){
                 if(mode.isSimulate()) {
-                    var canInsert =  getPowerBank().getCapacity().subtract(getPowerBank().getStored());
-                    return Math.min(amount, canInsert.longValue());
+                    long canInsert = clampToLong(getPowerBank().getCapacity().subtract(getPowerBank().getStored()));
+                    return Math.min(amount, canInsert);
                 }
                 else {
-                    ((PowerSubstationMachineAccessor)getPowerStation()).getSubscription().updateSubscription();
+                    getPowerStation().getTickSubscription().updateSubscription();
                     return getPowerBank().fill(amount);
                 }
 
@@ -156,13 +185,19 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
 
         @Override
         public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-            if(what == EUKey.EU && getPowerBank() != null){
+            if(getPowerBank() == null || !getPowerStation().isWorkingEnabled()) return 0;
+
+            if(what instanceof VoltageKey voltageKey && voltageKey.getTier() <= getPowerBank().getTier() && mode.isSimulate()){
+                return 1;
+            }
+
+            if(what == EUKey.EU){
                 if(mode.isSimulate()) {
-                    var canExtract = getPowerBank().getStored();
-                    return Math.min(amount, canExtract.longValue());
+                    long canExtract = clampToLong(getPowerBank().getStored());
+                    return Math.min(amount, canExtract);
                 }
                 else {
-                    ((PowerSubstationMachineAccessor)getPowerStation()).getSubscription().updateSubscription();
+                    getPowerStation().getTickSubscription().updateSubscription();
                     return getPowerBank().drain(amount);
                 }
             }
@@ -171,13 +206,24 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
 
         @Override
         public void getAvailableStacks(KeyCounter out) {
-            if(getPowerBank() != null && getPowerBank().getStored().compareTo(BigInteger.ZERO) > 0){
-                out.add(EUKey.EU, getPowerBank().getStored().longValue());
+            if(getPowerBank() != null && getPowerStation().isWorkingEnabled()){
+                out.add(EUKey.EU, clampToLong(getPowerBank().getStored()));
             }
         }
 
         void reset(){
             powerStation = null;
+        }
+
+        private static long clampToLong(BigInteger v) {
+            if (v.signum() <= 0) {
+                return 0L;
+            } else if (v.bitLength() > 63) {
+                return Long.MAX_VALUE;
+            } else {
+                long r = v.longValue();
+                return r < 0L ? Long.MAX_VALUE : r;
+            }
         }
     }
 

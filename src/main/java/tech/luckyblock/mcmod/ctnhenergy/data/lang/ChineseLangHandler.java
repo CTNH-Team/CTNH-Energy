@@ -17,7 +17,7 @@ public class ChineseLangHandler {
         provider.add("gui.ctnhenergy.enable_circuit.tooltip", "在样板输入中加入编程电路");
         provider.add("gui.ctnhenergy.disable_circuit", "禁用编程电路");
         provider.add("gui.ctnhenergy.disable_circuit.tooltip", "忽略配方中的编程电路");
-        provider.add("ctnhenergy.copyright.info", "§6由CTNH添加§r");
+        provider.add("ctnhenergy.copyright.info", "§6由CTNH Energy添加§r");
 
         provider.add("config.jade.plugin_ctnhenergy.ad_me_pattern_buffer_proxy", "高级ME样板总成");
         provider.add("config.jade.plugin_ctnhenergy.ad_me_pattern_buffer", "高级ME样板总成镜像");

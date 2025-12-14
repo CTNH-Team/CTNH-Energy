@@ -35,7 +35,6 @@
     "EUP2P.EUP2PMixin",
     "gtm.BlockPatternMixin",
     "gtm.MultiblockStateMixin",
-    "gtm.PowerSubstationMachineAccessor",
     "gtm.GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
     "gtm.GTmepatternbuffer.MEPatternBufferPartMachineMixin",
     "omni.OmniCraftingBlockEntityMixin",
