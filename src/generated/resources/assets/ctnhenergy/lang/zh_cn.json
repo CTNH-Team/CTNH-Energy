@@ -60,6 +60,9 @@
   "machine.ctnhenergy.jiuzhang_tooltip.7": "按住shift可翻倍/减半",
   "machine.ctnhenergy.output_ability": "兼具§6输出功能§r，直接将产物存入ME网络",
   "machine.ctnhenergy.slot_number": "具有%s个样板槽位",
+  "machine.ctnhenergy.substation_hatch.0": "将蓄能变电站接入ME网络",
+  "machine.ctnhenergy.substation_hatch.1": "允许通过ME网络为蓄能变电站输入或输出能量",
+  "machine.ctnhenergy.substation_hatch.2": "可设置优先级",
   "machine.ctnhenergy.work_status.0": "§a运行中§r",
   "machine.ctnhenergy.work_status.1": "§4能量不足§r",
   "machine.ctnhenergy.work_status.2": "§4算力不足§r",
@@ -71,6 +74,9 @@
   "multiblock.ctnhenergy.jiuzhang_tooltip.4": "可通过主界面设置并行数，每4并行需要消耗1算力",
   "multiblock.ctnhenergy.jiuzhang_tooltip.5": "能量消耗：(总内存x32 + 并行数x1920) EU/t",
   "multiblock.ctnhenergy.jiuzhang_tooltip.6": "§d§o策定乾坤算因果§r§r",
+  "multiblock.ctnhenergy.powerstation_voltage.0": "§e电压等级§r由§7电压等级最高的电容§f决定",
+  "multiblock.ctnhenergy.powerstation_voltage.1": "§4任何能源仓室的电压等级不能超过蓄能变电站§r",
+  "power_station.ctnhenergy.voltage_tier": "电压等级：",
   "ui.ctnhenergy.dualoutput": "ME输出",
   "ui.ctnhenergy.dualoutputtooltip": "ME输出缓存"
 }

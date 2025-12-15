@@ -29,6 +29,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 import java.math.BigInteger;
 
@@ -171,7 +172,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
         public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
             if(what == EUKey.EU && getPowerBank() != null && getPowerStation().isWorkingEnabled()){
                 if(mode.isSimulate()) {
-                    long canInsert = clampToLong(getPowerBank().getCapacity().subtract(getPowerBank().getStored()));
+                    long canInsert = CEUtil.clampToLong(getPowerBank().getCapacity().subtract(getPowerBank().getStored()));
                     return Math.min(amount, canInsert);
                 }
                 else {
@@ -193,7 +194,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
 
             if(what == EUKey.EU){
                 if(mode.isSimulate()) {
-                    long canExtract = clampToLong(getPowerBank().getStored());
+                    long canExtract = CEUtil.clampToLong(getPowerBank().getStored());
                     return Math.min(amount, canExtract);
                 }
                 else {
@@ -207,7 +208,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
         @Override
         public void getAvailableStacks(KeyCounter out) {
             if(getPowerBank() != null && getPowerStation().isWorkingEnabled()){
-                out.add(EUKey.EU, clampToLong(getPowerBank().getStored()));
+                out.add(EUKey.EU, CEUtil.clampToLong(getPowerBank().getStored()));
             }
         }
 
@@ -215,16 +216,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
             powerStation = null;
         }
 
-        private static long clampToLong(BigInteger v) {
-            if (v.signum() <= 0) {
-                return 0L;
-            } else if (v.bitLength() > 63) {
-                return Long.MAX_VALUE;
-            } else {
-                long r = v.longValue();
-                return r < 0L ? Long.MAX_VALUE : r;
-            }
-        }
+
     }
 
 }

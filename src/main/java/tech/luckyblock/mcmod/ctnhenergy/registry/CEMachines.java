@@ -101,6 +101,18 @@ public class CEMachines {
                 .register();
     }
 
+    @CN({
+            "将蓄能变电站接入ME网络",
+            "允许通过ME网络为蓄能变电站输入或输出能量",
+            "可设置优先级"
+    })
+    @EN({
+            "Connects the Power Substation to the ME Network",
+            "Allows energy stored in the Power Substation to be input or output via the ME Network",
+            "Supports priority configuration"
+    })
+    static Lang[] substation_hatch;
+
     public static void init() {
         initAdvancedMEPatternBuffer();
         initAdvancedMEPatternBufferProxy();
@@ -110,6 +122,12 @@ public class CEMachines {
                 .machine("me_substation_hatch", MESubstationHatch::new)
                 .cnLangValue("ME变电仓")
                 .langValue("ME Substation Hatch")
+                .tooltips(
+                        substation_hatch[0].translate(),
+                        substation_hatch[1].translate(),
+                        substation_hatch[2].translate(),
+                        Component.translatable("gtceu.part_sharing.disabled")
+                )
                 .tier(IV)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY)

@@ -103,7 +103,7 @@ public class MEMachineEUHandler implements IEnergyContainer {
 
     @Override
     public long getOutputAmperage() {
-        return 1;
+        return 4;
     }
 
     @Override

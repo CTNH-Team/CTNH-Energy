@@ -45,11 +45,17 @@
   "machine.ctnhenergy.jiuzhang_tooltip.5": " :buıssǝɔoɹԀ-oƆ ןɐʇo⟘",
   "machine.ctnhenergy.jiuzhang_tooltip.6": " :buıssǝɔoɹԀ-oƆ ʇuǝɹɹnƆ",
   "machine.ctnhenergy.jiuzhang_tooltip.7": "˙ǝʌןɐɥ/ǝןqnop oʇ ʇɟıɥS pןoH",
+  "machine.ctnhenergy.substation_hatch.0": "ʞɹoʍʇǝN ƎW ǝɥʇ oʇ uoıʇɐʇsqnS ɹǝʍoԀ ǝɥʇ sʇɔǝuuoƆ",
+  "machine.ctnhenergy.substation_hatch.1": "ʞɹoʍʇǝN ƎW ǝɥʇ ɐıʌ ʇndʇno ɹo ʇnduı ǝq oʇ uoıʇɐʇsqnS ɹǝʍoԀ ǝɥʇ uı pǝɹoʇs ʎbɹǝuǝ sʍoןןⱯ",
+  "machine.ctnhenergy.substation_hatch.2": "uoıʇɐɹnbıɟuoɔ ʎʇıɹoıɹd sʇɹoddnS",
   "machine.ctnhenergy.work_status.0": "ɹ§buıʞɹoMɐ§",
   "machine.ctnhenergy.work_status.1": "ɹ§ʎbɹǝuƎ ɥbnouƎ ʇoNㄣ§",
   "machine.ctnhenergy.work_status.2": "ɹ§uoıʇɐʇndɯoƆ ɥbnouƎ ʇoNㄣ§",
   "machine.ctnhenergy.work_status.3": "ɹ§puǝdsnSǝ§",
   "multiblock.ctnhenergy.jiuzhang_tooltip.6": "ɹ§ɹ§˙ɐɯɹɐʞ buıʇndɯoƆ 'soɯsoɔ ǝɥʇ buıɯǝɥɔSo§p§",
+  "multiblock.ctnhenergy.powerstation_voltage.0": "˙ɟ§ɹoʇıɔɐdɐƆ ɹǝıʇ-ʇsǝɥbıɥㄥ§ ǝɥʇ ʎq pǝuıɯɹǝʇǝp sı ɹǝıʇ ǝbɐʇןoΛ",
+  "multiblock.ctnhenergy.powerstation_voltage.1": "ɹ§˙ɹǝıʇ ǝbɐʇןoʌ s,uoıʇɐʇsqnS ǝɥʇ pǝǝɔxǝ ʎɐɯ ɥɔʇɐH ʎbɹǝuƎ oNㄣ§",
+  "power_station.ctnhenergy.voltage_tier": " :ɹǝı⟘ ǝbɐʇןoΛ",
   "ui.ctnhenergy.dualoutput": "ʇndʇnO ƎW",
   "ui.ctnhenergy.dualoutputtooltip": "ɥɔʇɐƆ ʇndʇnO ƎW"
 }

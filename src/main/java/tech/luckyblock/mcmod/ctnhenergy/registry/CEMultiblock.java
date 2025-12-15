@@ -72,6 +72,17 @@ public class CEMultiblock {
     })
     static Lang[] jiuzhang_tooltip;
 
+    @EN({
+            "Voltage tier is determined by the §7highest-tier Capacitor§f.",
+            "§4No Energy Hatch may exceed the Substation's voltage tier.§r"
+    })
+    @CN({
+            "§e电压等级§r由§7电压等级最高的电容§f决定",
+            "§4任何能源仓室的电压等级不能超过蓄能变电站§r"
+    })
+    static Lang[] powerstation_voltage;
+
+
     public static void init() {
         JIUZHANG_QUANTUM_COMPUTER = REGISTRATE.multiblock(
                         "jiuzhang_quantum_computer",
@@ -128,11 +139,12 @@ public class CEMultiblock {
                 .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                 .tooltips(Component.translatable("gtceu.machine.power_substation.tooltip.0"),
                         Component.translatable("gtceu.machine.power_substation.tooltip.1"),
-                        Component.translatable("gtceu.machine.power_substation.tooltip.2",
-                                PowerSubstationMachine.MAX_BATTERY_LAYERS),
+                        Component.translatable("gtceu.machine.power_substation.tooltip.2", PowerSubstationMachine.MAX_BATTERY_LAYERS),
                         Component.translatable("gtceu.machine.power_substation.tooltip.3"),
-                        Component.translatable("gtceu.machine.power_substation.tooltip.4",
-                                PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000))
+                        Component.translatable("gtceu.machine.power_substation.tooltip.4", PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
+                        powerstation_voltage[0].translate(),
+                        powerstation_voltage[1].translate()
+                )
                 .tooltipBuilder(
                         (stack,
                          components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")

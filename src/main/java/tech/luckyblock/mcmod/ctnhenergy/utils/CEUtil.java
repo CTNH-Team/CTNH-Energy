@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class CEUtil {
@@ -62,5 +63,16 @@ public class CEUtil {
                 return i;
         }
         return -1;
+    }
+
+    public static long clampToLong(BigInteger v) {
+        if (v.signum() <= 0) {
+            return 0L;
+        } else if (v.bitLength() > 63) {
+            return Long.MAX_VALUE;
+        } else {
+            long r = v.longValue();
+            return r < 0L ? Long.MAX_VALUE : r;
+        }
     }
 }

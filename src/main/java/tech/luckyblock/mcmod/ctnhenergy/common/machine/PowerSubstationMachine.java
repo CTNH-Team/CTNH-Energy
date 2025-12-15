@@ -1,5 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -42,6 +44,10 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -50,6 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Prefix("power_station")
 public class PowerSubstationMachine extends WorkableMultiblockMachine
         implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
 
@@ -128,8 +135,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
-            if(part instanceof TieredMachine machine && machine.getTier() > energyBank.getTier())
-                continue;
+
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
                 if (!handlerList.isValid(io)) continue;
@@ -138,6 +144,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
                         .toList();
+
+                if(!containers.isEmpty()
+                        && part instanceof TieredPartMachine machine
+                        && machine.getTier() > energyBank.getTier())
+                {
+                    onStructureInvalid();
+                    return;
+                }
 
                 if (handlerList.getHandlerIO().support(IO.IN)) {
                     inputs.addAll(containers);
@@ -186,7 +200,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 // Bank from Energy Input Hatches
                 long energyBanked = energyBank.fill(inputHatches.getEnergyStored());
                 inputHatches.changeEnergy(-energyBanked);
-                netInLastSec += energyBanked;
+                //netInLastSec += energyBanked;
 
                 // Passive drain
                 long energyPassiveDrained = energyBank.drain(getPassiveDrain());
@@ -196,10 +210,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 long energyDebanked = energyBank
                         .drain(outputHatches.getEnergyCapacity() - outputHatches.getEnergyStored());
                 outputHatches.changeEnergy(energyDebanked);
-                netOutLastSec += energyDebanked;
+                //netOutLastSec += energyDebanked;
             }
         }
     }
+
+    @CN("电压等级：")
+    @EN("Voltage Tier: ")
+    static Lang voltage_tier;
 
     @Override
     public void addDisplayText(List<Component> textList) {
@@ -227,6 +245,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 var STYLE_DARK_RED = Style.EMPTY.withColor(ChatFormatting.DARK_RED);
                 var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
                 var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
+
+                var voltageComponent = voltage_tier.translate().append(Component.literal(GTValues.VNF[energyBank.getTier()]));
+                textList.add(voltageComponent);
 
                 var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.stored",
@@ -393,12 +414,17 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
          * 构造 / 创建
          * ---------------------------- */
 
-        private PowerStationEnergyBank(MetaMachine machine) {
+        private PowerStationEnergyBank(PowerSubstationMachine machine) {
             super(machine);
         }
 
-        public static PowerStationEnergyBank createEnergyBank(MetaMachine machine) {
+        public static PowerStationEnergyBank createEnergyBank(PowerSubstationMachine machine) {
             return new PowerStationEnergyBank(machine);
+        }
+
+        @Override
+        public PowerSubstationMachine getMachine() {
+            return (PowerSubstationMachine)super.getMachine();
         }
 
         /* ----------------------------
@@ -414,6 +440,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
             storage.clear();
             maximums.clear();
+            tier = 0;
 
             for (IBatteryData battery : batteries) {
                 storage.add(0L);
@@ -424,7 +451,44 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             index = 0;
             capacity = null; // 强制重新计算
 
-            fill(stored.min(getCapacity()).longValue());
+            fillBig(stored);
+        }
+
+        private BigInteger fillBig(BigInteger amount) {
+            if (amount == null || amount.signum() <= 0 || storage.isEmpty()) {
+                return BigInteger.ZERO;
+            }
+
+            BigInteger filled = BigInteger.ZERO;
+
+            ensureIndexValid();
+
+            while (amount.signum() > 0 && index < storage.size()) {
+                long stored = storage.get(index);
+                long max = maximums.get(index);
+
+                long space = max - stored;
+                if (space > 0) {
+                    long toFill;
+                    if (amount.compareTo(BigInteger.valueOf(space)) >= 0) {
+                        toFill = space;
+                    } else {
+                        toFill = amount.longValue();
+                    }
+
+                    storage.set(index, stored + toFill);
+                    amount = amount.subtract(BigInteger.valueOf(toFill));
+                    filled = filled.add(BigInteger.valueOf(toFill));
+                }
+
+                if (storage.get(index).equals(max) && index < storage.size() - 1) {
+                    index++;
+                } else {
+                    break;
+                }
+            }
+
+            return filled;
         }
 
         /* ----------------------------
@@ -455,7 +519,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     break;
                 }
             }
-
+            getMachine().netInLastSec += filled;
             return filled;
         }
 
@@ -482,7 +546,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     break;
                 }
             }
-
+            getMachine().netOutLastSec += drained;
             return drained;
         }
 
