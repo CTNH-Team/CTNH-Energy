@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -53,8 +54,9 @@ import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonProxy {
-    public CommonProxy(FMLJavaModLoadingContext context) {
-        IEventBus eventBus = context.getModEventBus();
+    @SuppressWarnings("removal")
+    public CommonProxy() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
         init(eventBus);
     }
@@ -69,6 +71,9 @@ public class CommonProxy {
         eventBus.addGenericListener(GTRecipeType.class, CommonProxy::registerRecipeTypes);
         eventBus.addGenericListener(MachineDefinition.class, CommonProxy::registerMachines);
         eventBus.addListener((RegisterEvent event) -> {
+            if (!event.getRegistryKey().equals(Registries.BLOCK)) {
+                return;
+            }
             AEKeyTypes.register(EUKeyType.INSTANCE);
             AEKeyTypes.register(VoltageKeyType.INSTANCE);
 

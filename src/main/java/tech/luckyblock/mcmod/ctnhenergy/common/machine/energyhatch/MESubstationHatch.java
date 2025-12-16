@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -103,10 +104,11 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
-        WidgetGroup priorityAmountGroup = new WidgetGroup(0, 0, 100, 20);
+        WidgetGroup priorityAmountGroup = new WidgetGroup(0, 0, 100, 70);
         priorityAmountGroup.addWidgets(
-                new TextTextureWidget(25, -10, 50, 15, "gui.ae2.Priority"),
-                new IntInputWidget(0, 5, 100, 20, this::getPriority, this::setPriority){
+                new LabelWidget(0, 2, () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"),
+                new TextTextureWidget(25, 20, 50, 15, "gui.ae2.Priority"),
+                new IntInputWidget(0, 35, 100, 20, this::getPriority, this::setPriority){
                     @Override
                     protected Integer defaultMin() {
                         return Integer.MIN_VALUE;

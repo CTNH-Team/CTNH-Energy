@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "ctnhenergy:block/machine/me_energy_output_hatch",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ctnhenergy:block/machine/me_energy_output_hatch"
+    },
+    "facing=south": {
+      "model": "ctnhenergy:block/machine/me_energy_output_hatch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ctnhenergy:block/machine/me_energy_output_hatch",
+      "y": 270
+    }
+  }
+}

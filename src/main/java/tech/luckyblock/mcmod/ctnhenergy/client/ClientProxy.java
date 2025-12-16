@@ -20,10 +20,10 @@ import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CE
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE,value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
-    public ClientProxy(FMLJavaModLoadingContext context) {
-        super(context);
-        init(context.getModEventBus());
-
+    @SuppressWarnings("removal")
+    public ClientProxy() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        init(modEventBus);
     }
 
     public static void init(IEventBus eventBus) {

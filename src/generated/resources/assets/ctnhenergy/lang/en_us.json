@@ -5,6 +5,8 @@
   "block.ctnhenergy.assembler_matrix_wall_no_entity": "Assembler Matrix Wall No Entity",
   "block.ctnhenergy.jiuzhang_quantum_computer": "§6JIUZHANG§r | §dQuantum Supercomputing§r",
   "block.ctnhenergy.me_dual_output_hatch": "ME Dual Output Hatch",
+  "block.ctnhenergy.me_energy_input_hatch": "ME Energy Hatch",
+  "block.ctnhenergy.me_energy_output_hatch": "ME Dynamo Hatch",
   "block.ctnhenergy.me_substation_hatch": "ME Substation Hatch",
   "block.ctnhenergy.power_substation": "Power Substation",
   "block.ctnhenergy.quantum_computer_casing": "Quantum Computer Casing",

@@ -1,5 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy;
 
+import appeng.api.stacks.AEKeyTypes;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.mojang.logging.LogUtils;
@@ -8,9 +9,12 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 import tech.luckyblock.mcmod.ctnhenergy.client.ClientProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMultiblock;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERegistrate;
@@ -27,13 +31,9 @@ public class CTNHEnergy {
     public CTNHEnergy() {
         LangProcessor langProcessor = new LangProcessor(REGISTRATE);
         langProcessor.processAll();
-        final var context = FMLJavaModLoadingContext.get();
-        //noinspection InstantiationOfUtilityClass
-        DistExecutor.unsafeRunForDist(() -> () -> new ClientProxy(context), () -> () -> new CommonProxy(context));
 
+        DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     }
-
-
 
     public static ResourceLocation id(String string){
         return ResourceLocation.tryBuild(MODID, string);

@@ -5,6 +5,8 @@
   "block.ctnhenergy.assembler_matrix_wall_no_entity": "装配矩阵墙壁（无实体）",
   "block.ctnhenergy.jiuzhang_quantum_computer": "§6九章§r | §d量子超算§r",
   "block.ctnhenergy.me_dual_output_hatch": "ME输出总成",
+  "block.ctnhenergy.me_energy_input_hatch": "ME能源仓",
+  "block.ctnhenergy.me_energy_output_hatch": "ME动力仓",
   "block.ctnhenergy.me_substation_hatch": "ME变电仓",
   "block.ctnhenergy.power_substation": "蓄能变电站",
   "block.ctnhenergy.quantum_computer_casing": "量子计算机外壳",

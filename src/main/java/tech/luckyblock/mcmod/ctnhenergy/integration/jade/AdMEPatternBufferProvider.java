@@ -116,4 +116,9 @@ public class AdMEPatternBufferProvider implements IBlockComponentProvider, IServ
             }
         }
     }
+
+    @Override
+    public int getDefaultPriority() {
+        return IBlockComponentProvider.super.getDefaultPriority();
+    }
 }
