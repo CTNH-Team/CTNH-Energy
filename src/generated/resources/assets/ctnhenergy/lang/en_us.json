@@ -1,6 +1,6 @@
 {
-  "block.ctnhenergy.advanced_me_pattern_buffer": "§5Advanced ME Pattern Buffer§r",
-  "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "Advanced ME Pattern Buffer Proxy",
+  "block.ctnhenergy.advanced_me_pattern_buffer": "§5ME Advanced Pattern Buffer§r",
+  "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "ME Advanced Pattern Buffer Proxy",
   "block.ctnhenergy.assembler_matrix_frame_no_entity": "Assembler Matrix Frame No Entity",
   "block.ctnhenergy.assembler_matrix_wall_no_entity": "Assembler Matrix Wall No Entity",
   "block.ctnhenergy.jiuzhang_quantum_computer": "§6JIUZHANG§r | §dQuantum Supercomputing§r",
@@ -8,6 +8,8 @@
   "block.ctnhenergy.me_energy_input_hatch": "ME Energy Hatch",
   "block.ctnhenergy.me_energy_output_hatch": "ME Dynamo Hatch",
   "block.ctnhenergy.me_substation_hatch": "ME Substation Hatch",
+  "block.ctnhenergy.me_ultimate_pattern_buffer": "§6ME Ultimate Pattern Buffer§r",
+  "block.ctnhenergy.me_ultimate_pattern_buffer_proxy": "ME Ultimate Pattern Buffer Proxy",
   "block.ctnhenergy.power_substation": "Power Substation",
   "block.ctnhenergy.quantum_computer_casing": "Quantum Computer Casing",
   "block.ctnhenergy.quantum_computer_me_network_port": "Quantum Computer ME Network Port",
@@ -39,6 +41,7 @@
   "item.ctnhenergy.uxv_eu_cell": "§eUXV§r ME EU Storage Cell",
   "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU Storage Cell",
   "machine.ctnhenergy.craft_ui": "Open Crafting UI",
+  "machine.ctnhenergy.hatch_terminator": "§6§oHatch Terminator§r",
   "machine.ctnhenergy.jiuzhang_tooltip.0": "Work Status: ",
   "machine.ctnhenergy.jiuzhang_tooltip.1": "Power: ",
   "machine.ctnhenergy.jiuzhang_tooltip.2": "Total Memory: ",
@@ -59,5 +62,7 @@
   "multiblock.ctnhenergy.powerstation_voltage.1": "§4No Energy Hatch may exceed the Substation's voltage tier.§r",
   "power_station.ctnhenergy.voltage_tier": "Voltage Tier: ",
   "ui.ctnhenergy.dualoutput": "ME Output",
-  "ui.ctnhenergy.dualoutputtooltip": "ME Output Catch"
+  "ui.ctnhenergy.dualoutputtooltip": "ME Output Catch",
+  "ui.ctnhenergy.energyinput": "ME Energy Config",
+  "ui.ctnhenergy.energyinputtooltip": "ME Energy Input"
 }

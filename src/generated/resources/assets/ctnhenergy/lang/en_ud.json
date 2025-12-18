@@ -1,6 +1,6 @@
 {
-  "block.ctnhenergy.advanced_me_pattern_buffer": "ɹ§ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝɔuɐʌpⱯϛ§",
-  "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "ʎxoɹԀ ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝɔuɐʌpⱯ",
+  "block.ctnhenergy.advanced_me_pattern_buffer": "ɹ§ɹǝɟɟnᗺ uɹǝʇʇɐԀ pǝɔuɐʌpⱯ ƎWϛ§",
+  "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "ʎxoɹԀ ɹǝɟɟnᗺ uɹǝʇʇɐԀ pǝɔuɐʌpⱯ ƎW",
   "block.ctnhenergy.assembler_matrix_frame_no_entity": "ʎʇıʇuƎ oN ǝɯɐɹℲ xıɹʇɐW ɹǝןqɯǝssⱯ",
   "block.ctnhenergy.assembler_matrix_wall_no_entity": "ʎʇıʇuƎ oN ןןɐM xıɹʇɐW ɹǝןqɯǝssⱯ",
   "block.ctnhenergy.jiuzhang_quantum_computer": "ɹ§buıʇndɯoɔɹǝdnS ɯnʇuɐnὉp§ | ɹ§⅁NⱯHZ∩Iſ9§",
@@ -8,6 +8,8 @@
   "block.ctnhenergy.me_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ ƎW",
   "block.ctnhenergy.me_energy_output_hatch": "ɥɔʇɐH oɯɐuʎᗡ ƎW",
   "block.ctnhenergy.me_substation_hatch": "ɥɔʇɐH uoıʇɐʇsqnS ƎW",
+  "block.ctnhenergy.me_ultimate_pattern_buffer": "ɹ§ɹǝɟɟnᗺ uɹǝʇʇɐԀ ǝʇɐɯıʇן∩ ƎW9§",
+  "block.ctnhenergy.me_ultimate_pattern_buffer_proxy": "ʎxoɹԀ ɹǝɟɟnᗺ uɹǝʇʇɐԀ ǝʇɐɯıʇן∩ ƎW",
   "block.ctnhenergy.power_substation": "uoıʇɐʇsqnS ɹǝʍoԀ",
   "block.ctnhenergy.quantum_computer_casing": "buısɐƆ ɹǝʇndɯoƆ ɯnʇuɐnὉ",
   "block.ctnhenergy.quantum_computer_me_network_port": "ʇɹoԀ ʞɹoʍʇǝN ƎW ɹǝʇndɯoƆ ɯnʇuɐnὉ",
@@ -39,6 +41,7 @@
   "item.ctnhenergy.uxv_eu_cell": "ןןǝƆ ǝbɐɹoʇS ∩Ǝ ƎW ɹ§ΛX∩ǝ§",
   "item.ctnhenergy.zpm_eu_cell": "ןןǝƆ ǝbɐɹoʇS ∩Ǝ ƎW ɹ§WԀZɔ§",
   "machine.ctnhenergy.craft_ui": "I∩ buıʇɟɐɹƆ uǝdO",
+  "machine.ctnhenergy.hatch_terminator": "ɹ§ɹoʇɐuıɯɹǝ⟘ ɥɔʇɐHo§9§",
   "machine.ctnhenergy.jiuzhang_tooltip.0": " :snʇɐʇS ʞɹoM",
   "machine.ctnhenergy.jiuzhang_tooltip.1": " :ɹǝʍoԀ",
   "machine.ctnhenergy.jiuzhang_tooltip.2": " :ʎɹoɯǝW ןɐʇo⟘",
@@ -59,5 +62,7 @@
   "multiblock.ctnhenergy.powerstation_voltage.1": "ɹ§˙ɹǝıʇ ǝbɐʇןoʌ s,uoıʇɐʇsqnS ǝɥʇ pǝǝɔxǝ ʎɐɯ ɥɔʇɐH ʎbɹǝuƎ oNㄣ§",
   "power_station.ctnhenergy.voltage_tier": " :ɹǝı⟘ ǝbɐʇןoΛ",
   "ui.ctnhenergy.dualoutput": "ʇndʇnO ƎW",
-  "ui.ctnhenergy.dualoutputtooltip": "ɥɔʇɐƆ ʇndʇnO ƎW"
+  "ui.ctnhenergy.dualoutputtooltip": "ɥɔʇɐƆ ʇndʇnO ƎW",
+  "ui.ctnhenergy.energyinput": "bıɟuoƆ ʎbɹǝuƎ ƎW",
+  "ui.ctnhenergy.energyinputtooltip": "ʇnduI ʎbɹǝuƎ ƎW"
 }

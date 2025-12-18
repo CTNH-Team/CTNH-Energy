@@ -1,6 +1,6 @@
 {
-  "block.ctnhenergy.advanced_me_pattern_buffer": "§5高级ME样板总成§r",
-  "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "高级ME样板总成镜像",
+  "block.ctnhenergy.advanced_me_pattern_buffer": "§5ME高级样板总成§r",
+  "block.ctnhenergy.advanced_me_pattern_buffer_proxy": "ME高级样板总成镜像",
   "block.ctnhenergy.assembler_matrix_frame_no_entity": "装配矩阵框架（无实体）",
   "block.ctnhenergy.assembler_matrix_wall_no_entity": "装配矩阵墙壁（无实体）",
   "block.ctnhenergy.jiuzhang_quantum_computer": "§6九章§r | §d量子超算§r",
@@ -8,6 +8,8 @@
   "block.ctnhenergy.me_energy_input_hatch": "ME能源仓",
   "block.ctnhenergy.me_energy_output_hatch": "ME动力仓",
   "block.ctnhenergy.me_substation_hatch": "ME变电仓",
+  "block.ctnhenergy.me_ultimate_pattern_buffer": "§6ME究极样板总成§r",
+  "block.ctnhenergy.me_ultimate_pattern_buffer_proxy": "ME究极样板总成镜像",
   "block.ctnhenergy.power_substation": "蓄能变电站",
   "block.ctnhenergy.quantum_computer_casing": "量子计算机外壳",
   "block.ctnhenergy.quantum_computer_me_network_port": "量子计算机ME网络接口",
@@ -52,6 +54,8 @@
   "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU存储元件",
   "machine.ctnhenergy.circuit_ability": "支持带有§6编程电路§r的样板，每个样板槽位有§6独立§r的虚拟电路槽",
   "machine.ctnhenergy.craft_ui": "打开合成界面",
+  "machine.ctnhenergy.energy_ability": "§6使用ME网络中的EU为机器供能§r，可设置电压和电流",
+  "machine.ctnhenergy.hatch_terminator": "§6§o仓室终结者§r",
   "machine.ctnhenergy.jiuzhang_tooltip.0": "工作状态：",
   "machine.ctnhenergy.jiuzhang_tooltip.1": "耗电量：",
   "machine.ctnhenergy.jiuzhang_tooltip.2": "总内存：",
@@ -80,5 +84,7 @@
   "multiblock.ctnhenergy.powerstation_voltage.1": "§4任何能源仓室的电压等级不能超过蓄能变电站§r",
   "power_station.ctnhenergy.voltage_tier": "电压等级：",
   "ui.ctnhenergy.dualoutput": "ME输出",
-  "ui.ctnhenergy.dualoutputtooltip": "ME输出缓存"
+  "ui.ctnhenergy.dualoutputtooltip": "ME输出缓存",
+  "ui.ctnhenergy.energyinput": "ME能源设置",
+  "ui.ctnhenergy.energyinputtooltip": "ME能源输入"
 }

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.*;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -24,7 +25,6 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -86,22 +86,18 @@ import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IAEPattern;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
+public class MEAdvancedPatternBufferPartMachine extends MEBusPartMachine
         implements ICraftingProvider, PatternContainer, IDataStickInteractable, IPatternProviderLogicMixin {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedMEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
-    protected static final int MAX_PATTERN_COUNT = 54;
+            MEAdvancedPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
+    public static final int MAX_PATTERN_COUNT = 54;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
 
         @Override
@@ -153,7 +149,7 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
     @Persisted
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
-    private final Set<AdvancedMEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
+    private final Set<MEAdvancedPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
     @Getter
     protected final ProgrammableSlotRecipeHandler internalRecipeHandler;
@@ -163,7 +159,7 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
 
 
-    public AdvancedMEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
+    public MEAdvancedPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
@@ -263,22 +259,22 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
         }
     }
 
-    public void addProxy(AdvancedMEPatternBufferProxyPartMachine proxy) {
+    public void addProxy(MEAdvancedPatternBufferProxyPartMachine proxy) {
         proxies.add(proxy.getPos());
         proxyMachines.add(proxy);
     }
 
-    public void removeProxy(AdvancedMEPatternBufferProxyPartMachine proxy) {
+    public void removeProxy(MEAdvancedPatternBufferProxyPartMachine proxy) {
         proxies.remove(proxy.getPos());
         proxyMachines.remove(proxy);
     }
 
     @UnmodifiableView
-    public Set<AdvancedMEPatternBufferProxyPartMachine> getProxies() {
+    public Set<MEAdvancedPatternBufferProxyPartMachine> getProxies() {
         if (proxyMachines.size() != proxies.size()) {
             proxyMachines.clear();
             for (var pos : proxies) {
-                if (MetaMachine.getMachine(getLevel(), pos) instanceof AdvancedMEPatternBufferProxyPartMachine proxy) {
+                if (MetaMachine.getMachine(getLevel(), pos) instanceof MEAdvancedPatternBufferProxyPartMachine proxy) {
                     proxyMachines.add(proxy);
                 }
             }
@@ -349,9 +345,9 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
         sideTabs.attachSubTab(new MEDualOutputConfigurator(this, internalBuffer));
 
-        var directionalConfigurator = CombinedDirectionalFancyConfigurator.of(self(), self());
-        if (directionalConfigurator != null)
-            sideTabs.attachSubTab(directionalConfigurator);
+//        var directionalConfigurator = CombinedDirectionalFancyConfigurator.of(self(), self());
+//        if (directionalConfigurator != null)
+//            sideTabs.attachSubTab(directionalConfigurator);
     }
 
     @Override
@@ -821,14 +817,14 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
 
     public record BufferData(Object2LongMap<ItemStack> items, Object2LongMap<FluidStack> fluids) {}
 
-    public MEPatternBufferPartMachine.BufferData mergeInternalSlots() {
+    public BufferData mergeInternalSlots() {
         var items = new Object2LongOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
         var fluids = new Object2LongOpenHashMap<FluidStack>();
         for (InternalSlot slot : internalInventory) {
             slot.itemInventory.object2LongEntrySet().fastForEach(e -> items.addTo(e.getKey(), e.getLongValue()));
             slot.fluidInventory.object2LongEntrySet().fastForEach(e -> fluids.addTo(e.getKey(), e.getLongValue()));
         }
-        return new MEPatternBufferPartMachine.BufferData(items, fluids);
+        return new BufferData(items, fluids);
     }
 
     @Persisted
@@ -871,4 +867,17 @@ public class AdvancedMEPatternBufferPartMachine extends MEBusPartMachine
         }
     }
 
+    @Override
+    public @UnmodifiableView SortedSet<IMultiController> getControllers() {
+        var set = new ReferenceLinkedOpenHashSet<IMultiController>();
+        if (controllers.size() != controllerPositions.size()) {
+            onControllersUpdated(controllerPositions, Collections.emptySet());
+        }
+        set.addAll(controllers);
+        getProxies().stream()
+                .map(MultiblockPartMachine::getControllers)
+                .forEach(set::addAll);
+
+        return set;
+    }
 }

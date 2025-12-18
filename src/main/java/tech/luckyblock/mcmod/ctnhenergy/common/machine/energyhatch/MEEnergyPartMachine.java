@@ -136,9 +136,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         public MEEnergyContainer(MetaMachine machine, IO io) {
             super(machine);
             handlerIO = io;
-
-
-
         }
 
         public void setTier(int tier) {
@@ -148,9 +145,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                 if(getMachine() instanceof IMultiPart part){
                     part.getControllers().forEach(IMultiController::onStructureFormed);
                 }
-
             }
-
         }
 
         public void setInputAmperage(long inputAmperage) {
@@ -160,7 +155,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                     part.getControllers().forEach(IMultiController::onStructureFormed);
                 }
             }
-
         }
 
         @Override

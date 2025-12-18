@@ -56,6 +56,6 @@ public class EUCellStats extends ElectricStats {
     }
 
     public static EUCellStats createCell(int tier){
-        return new EUCellStats(1000000L * (1L << 2 *(tier - GTValues.LV)), tier, true, true);
+        return new EUCellStats((1L << 16) * (1L << 3 *(tier - GTValues.ULV)), tier, true, true);
     }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "ctnhenergy:me_energy_input_hatch",
+  "machine": "ctnhenergy:me_ultimate_pattern_buffer_proxy",
   "replaceable_textures": [
     "bottom",
     "top",
@@ -13,7 +13,7 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
-          "overlay": "ctnhenergy:block/overlay/machine/me_energy_in",
+          "overlay": "gtceu:block/overlay/appeng/me_buffer_hatch_proxy",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
         }
@@ -24,7 +24,7 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
-          "overlay": "ctnhenergy:block/overlay/machine/me_energy_in",
+          "overlay": "gtceu:block/overlay/appeng/me_buffer_hatch_proxy",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
         }
@@ -35,7 +35,7 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
-          "overlay": "ctnhenergy:block/overlay/machine/me_energy_in",
+          "overlay": "gtceu:block/overlay/appeng/me_buffer_hatch_proxy",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
         }
@@ -46,7 +46,7 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
-          "overlay": "ctnhenergy:block/overlay/machine/me_energy_in",
+          "overlay": "gtceu:block/overlay/appeng/me_buffer_hatch_proxy",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
         }

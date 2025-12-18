@@ -27,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 
 import java.util.List;
 
@@ -34,11 +35,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class AdvancedMEPatternBufferProxyPartMachine extends TieredIOPartMachine
+public class MEAdvancedPatternBufferProxyPartMachine extends TieredIOPartMachine
         implements IMachineLife, IDataStickInteractable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedMEPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+            MEAdvancedPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     private final ProgrammableProxySlotRecipeHandler proxySlotRecipeHandler;
@@ -48,12 +49,12 @@ public class AdvancedMEPatternBufferProxyPartMachine extends TieredIOPartMachine
     @DescSynced
     private @Nullable BlockPos bufferPos;
 
-    private @Nullable AdvancedMEPatternBufferPartMachine buffer = null;
+    private @Nullable MEAdvancedPatternBufferPartMachine buffer = null;
     private boolean bufferResolved = false;
 
-    public AdvancedMEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
+    public MEAdvancedPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.ZPM, IO.IN);
-        proxySlotRecipeHandler = new ProgrammableProxySlotRecipeHandler(this, AdvancedMEPatternBufferPartMachine.MAX_PATTERN_COUNT);
+        proxySlotRecipeHandler = new ProgrammableProxySlotRecipeHandler(this, MEAdvancedPatternBufferPartMachine.MAX_PATTERN_COUNT);
     }
 
     @Override
@@ -74,18 +75,27 @@ public class AdvancedMEPatternBufferProxyPartMachine extends TieredIOPartMachine
         var level = getLevel();
         if (level == null || pos == null) {
             buffer = null;
-        } else if (MetaMachine.getMachine(level, pos) instanceof AdvancedMEPatternBufferPartMachine machine) {
+        } else if (MetaMachine.getMachine(level, pos) instanceof MEAdvancedPatternBufferPartMachine machine
+                && isBuffer(machine)) {
             bufferPos = pos;
             buffer = machine;
             machine.addProxy(this);
-            if (!isRemote()) proxySlotRecipeHandler.updateProxy(machine);
+            if (!isRemote()) updateProxy(machine);
         } else {
             buffer = null;
         }
     }
 
+    public void updateProxy(MEAdvancedPatternBufferPartMachine machine){
+        proxySlotRecipeHandler.updateProxy(machine);
+    }
+
+    public boolean isBuffer(MetaMachine machine){
+        return machine.getDefinition() == CEMachines.ME_ADVANCED_PATTERN_BUFFER;
+    }
+
     @Nullable
-    public AdvancedMEPatternBufferPartMachine getBuffer() {
+    public MEAdvancedPatternBufferPartMachine getBuffer() {
         if (!bufferResolved) setBuffer(bufferPos);
         return buffer;
     }
@@ -111,8 +121,12 @@ public class AdvancedMEPatternBufferProxyPartMachine extends TieredIOPartMachine
         var buf = getBuffer();
         if (buf != null) {
             buf.removeProxy(this);
-            proxySlotRecipeHandler.clearProxy();
+            clearProxy();
         }
+    }
+
+    public void clearProxy(){
+        proxySlotRecipeHandler.clearProxy();
     }
 
     @Override

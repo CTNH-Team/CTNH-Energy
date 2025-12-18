@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferPartMachine.InternalSlot;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferPartMachine.InternalSlot;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -25,7 +25,7 @@ public final class ProgrammableSlotRecipeHandler {
 
     private final List<RecipeHandlerList> slotHandlers;
 
-    public ProgrammableSlotRecipeHandler(AdvancedMEPatternBufferPartMachine buffer, InternalSlot[] slots) {
+    public ProgrammableSlotRecipeHandler(MEAdvancedPatternBufferPartMachine buffer, InternalSlot[] slots) {
         this.slotHandlers = new ArrayList<>(slots.length);
         for (int i = 0; i < slots.length; i++) {
             var rhl = new SlotRHL(buffer, slots[i], i);
@@ -44,7 +44,7 @@ public final class ProgrammableSlotRecipeHandler {
         private final SlotFluidRecipeHandler fluidRecipeHandler;
         private final NotifiableItemStackHandler circuitInventory;
 
-        public SlotRHL(AdvancedMEPatternBufferPartMachine buffer, InternalSlot slot, int idx) {
+        public SlotRHL(MEAdvancedPatternBufferPartMachine buffer, InternalSlot slot, int idx) {
             super(IO.IN);
             itemRecipeHandler = new SlotItemRecipeHandler(buffer, slot, idx);
             fluidRecipeHandler = new SlotFluidRecipeHandler(buffer, slot, idx);
@@ -76,7 +76,7 @@ public final class ProgrammableSlotRecipeHandler {
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
 
-        private SlotItemRecipeHandler(AdvancedMEPatternBufferPartMachine buffer, InternalSlot slot, int index) {
+        private SlotItemRecipeHandler(MEAdvancedPatternBufferPartMachine buffer, InternalSlot slot, int index) {
             super(buffer);
             this.slot = slot;
             this.priority = IFilteredHandler.HIGH + index + 1;
@@ -111,7 +111,7 @@ public final class ProgrammableSlotRecipeHandler {
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
 
-        private SlotFluidRecipeHandler(AdvancedMEPatternBufferPartMachine buffer, InternalSlot slot, int index) {
+        private SlotFluidRecipeHandler(MEAdvancedPatternBufferPartMachine buffer, InternalSlot slot, int index) {
             super(buffer);
             this.slot = slot;
             this.priority = IFilteredHandler.HIGH + index + 1;

@@ -22,13 +22,13 @@ import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.ui.IElementHelper;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.AdvancedMEPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferPartMachine;
 
 public class AdMEPatternBufferProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof AdvancedMEPatternBufferPartMachine) {
+            if (blockEntity.getMetaMachine() instanceof MEAdvancedPatternBufferPartMachine) {
                 CompoundTag serverData = blockAccessor.getServerData();
                 if (!serverData.getBoolean("formed")) return;
 
@@ -42,7 +42,7 @@ public class AdMEPatternBufferProvider implements IBlockComponentProvider, IServ
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof AdvancedMEPatternBufferPartMachine buffer) {
+            if (blockEntity.getMetaMachine() instanceof MEAdvancedPatternBufferPartMachine buffer) {
                 if (!buffer.isFormed()) {
                     compoundTag.putBoolean("formed", false);
                     return;
@@ -59,7 +59,7 @@ public class AdMEPatternBufferProvider implements IBlockComponentProvider, IServ
         return CTNHEnergy.id("ad_me_pattern_buffer");
     }
 
-    public static void writeBufferTag(CompoundTag compoundTag, AdvancedMEPatternBufferPartMachine buffer) {
+    public static void writeBufferTag(CompoundTag compoundTag, MEAdvancedPatternBufferPartMachine buffer) {
         var merged = buffer.mergeInternalSlots();
         var items = merged.items();
         var fluids = merged.fluids();

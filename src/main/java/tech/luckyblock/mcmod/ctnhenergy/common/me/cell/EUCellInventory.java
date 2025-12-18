@@ -69,7 +69,7 @@ public class EUCellInventory implements StorageCell {
 
     @Override
     public double getIdleDrain() {
-        return 0;
+        return 1000;
     }
 
     @Override

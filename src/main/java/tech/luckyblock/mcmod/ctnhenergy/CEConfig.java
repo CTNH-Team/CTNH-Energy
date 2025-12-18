@@ -45,6 +45,6 @@ public class CEConfig {
         @Configurable
         @Configurable.Comment({"Amount of EU per byte can storage", "Default: 0"})
         @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
-        public int amountPerByte = 32;
+        public int amountPerByte = 1024;
     }
 }

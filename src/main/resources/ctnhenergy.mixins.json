@@ -13,6 +13,7 @@
     "ae2.cpu.ExecutingCraftingJobAccessor",
     "ae2.cpu.TaskProgressAccessor",
     "ae2.emi.AbstractRecipeHandlerMixin",
+    "ae2.energy.EnergyServiceMixin",
     "ae2.energy.InterfaceEnergyDistributorLogic",
     "ae2.energy.PatternProviderEnergyDistributorLogic",
     "ae2.energy.StorageBusPartMixin",
