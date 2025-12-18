@@ -149,7 +149,7 @@ public class CEMachines {
                 .tier(UV)
                 .abilities(PartAbility.INPUT_ENERGY)
                 .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_input_hatch_16a"))
+                .colorOverlayTieredHullModel("me_energy_out", null, null)
                 .register();
 
         ENERGY_OUTPUT_HATCH_ME = REGISTRATE
@@ -159,7 +159,7 @@ public class CEMachines {
                 .tier(UV)
                 .abilities(PartAbility.OUTPUT_ENERGY)
                 .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_output_hatch_16a"))
+                .colorOverlayTieredHullModel("me_energy_out", null, null)
                 .register();
 
         GTAEMachines.STOCKING_IMPORT_BUS_ME.setTier(IV);

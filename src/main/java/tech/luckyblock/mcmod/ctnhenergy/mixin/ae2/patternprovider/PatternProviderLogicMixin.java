@@ -40,7 +40,7 @@ import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 import java.util.*;
 
 @Mixin(value = PatternProviderLogic.class, remap = false)
-public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin, IEnergyDistributor, IUpgradeableObject {
+public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin, IUpgradeableObject {
 
     @Final
     @Shadow
@@ -106,7 +106,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     )
     private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
         configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.SMART);
-        mainNode.addService(IEnergyDistributor.class, this);
+
     }
 
     @Unique
@@ -148,7 +148,6 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
      */
     @Overwrite
     public List<IPatternDetails> getAvailablePatterns() {
-        CE$injectUpgradeCallback();
         return CE$patternsMap.values().stream().toList();
     }
 
@@ -260,61 +259,5 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     }
 
 
-    @Unique
-    private EnergyDistributeService CE$service = null;
-    @Unique
-    private List<Direction> CE$sides = List.of();
 
-
-    @Override
-    public boolean isActive() {
-        return mainNode.isActive();
-    }
-
-    @Override
-    public BlockEntity getHostBlockEntity() {
-        return host.getBlockEntity();
-    }
-
-    @Override
-    public List<Direction> getAvailableSides() {
-        return CE$sides;
-    }
-
-    @Override
-    public void setAAvailableSides(List<Direction> sides) {
-        CE$sides = sides;
-    }
-
-    @Override
-    public EnergyDistributeService getService() {
-        return CE$service;
-    }
-
-    @Override
-    public void setService(EnergyDistributeService service) {
-        CE$service = service;
-    }
-
-    @Override
-    public PatternProviderLogicHost getHost() {
-        return host;
-    }
-
-    @Unique
-    boolean CE$injected = false;
-
-    @Unique
-    private void CE$injectUpgradeCallback(){
-        if(CE$injected) return;
-        if(getUpgrades() instanceof MachineUpgradeInventoryAccessor accessor){
-            CE$injected = true;
-            var oldCallback = accessor.getChangeCallback();
-            accessor.setChangeCallback(() ->{
-                if(oldCallback != null)
-                    oldCallback.onUpgradesChanged();
-                this.updateSleep();
-            });
-        }
-    }
 }

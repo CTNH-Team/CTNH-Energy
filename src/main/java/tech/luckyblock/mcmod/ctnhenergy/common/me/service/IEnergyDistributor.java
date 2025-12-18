@@ -1,15 +1,23 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.service;
 
+import appeng.api.networking.GridHelper;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.me.service.EnergyService;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject {
     default void distribute() {
@@ -37,7 +45,7 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
         setService(service);
         updateSleep();
         if(getService() != null){
-            setAAvailableSides(CEUtil.getSides(getHost()));
+            setAvailableSides(CEUtil.getSides(getHost()));
         }
     }
 
@@ -50,7 +58,29 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
                 getService().sleep(this);
             }
         }
-    };
+    }
+
+    default List<EnergyService> getOtherEnergyServices() {
+        var self = getHostBlockEntity();
+        if (self == null || self.getLevel() == null) {
+            return List.of();
+        }
+
+        var level = self.getLevel();
+        var pos = self.getBlockPos();
+
+        return getAvailableSides().stream()
+                .map(side -> (EnergyService) Optional.ofNullable(
+                                GridHelper.getNodeHost(level, pos.relative(side)))
+                        .map(host -> host.getGridNode(side.getOpposite()))
+                        .map(IGridNode::getGrid)
+                        .map(node -> node.getService(IEnergyService.class))
+                        .orElse(null)
+                )
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
 
     boolean isActive();
 
@@ -58,7 +88,7 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
 
     List<Direction> getAvailableSides();
 
-    void setAAvailableSides(List<Direction> sides);
+    void setAvailableSides(List<Direction> sides);
 
     EnergyDistributeService getService();
 

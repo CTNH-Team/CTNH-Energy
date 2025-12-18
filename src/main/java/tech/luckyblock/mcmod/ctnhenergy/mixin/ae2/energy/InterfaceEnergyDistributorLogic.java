@@ -1,8 +1,9 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
 
 import appeng.api.networking.IManagedGridNode;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
+import appeng.me.energy.IEnergyOverlayGridConnection;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,7 +20,7 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
 import java.util.List;
 
 @Mixin(value = InterfaceLogic.class, remap = false)
-public class InterfaceLogicMixin implements IEnergyDistributor {
+public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
     @Shadow
     @Final
     protected IManagedGridNode mainNode;
@@ -30,8 +31,10 @@ public class InterfaceLogicMixin implements IEnergyDistributor {
 
     @Inject(method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/InterfaceLogicHost;Lnet/minecraft/world/item/Item;I)V",
     at = @At("TAIL"))
+    @SuppressWarnings("all")
     private void addEnergyService(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots, CallbackInfo ci){
-        gridNode.addService(IEnergyDistributor.class, this);
+        gridNode.addService(IEnergyDistributor.class, this)
+                .addService(IEnergyOverlayGridConnection.class, this::getOtherEnergyServices);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class InterfaceLogicMixin implements IEnergyDistributor {
     }
 
     @Override
-    public void setAAvailableSides(List<Direction> sides) {
+    public void setAvailableSides(List<Direction> sides) {
         CE$sides = sides;
     }
 

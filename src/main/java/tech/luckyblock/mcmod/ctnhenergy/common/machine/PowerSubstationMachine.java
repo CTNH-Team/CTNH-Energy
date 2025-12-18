@@ -204,7 +204,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
                 // Passive drain
                 long energyPassiveDrained = energyBank.drain(getPassiveDrain());
-                netOutLastSec += energyPassiveDrained;
+                //netOutLastSec += energyPassiveDrained;
 
                 // Debank to Dynamo Hatches
                 long energyDebanked = energyBank
