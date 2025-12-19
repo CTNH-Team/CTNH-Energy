@@ -3,6 +3,7 @@ package tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -32,6 +34,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +44,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 
@@ -62,6 +66,9 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
     @Persisted
     public final MEEnergyContainer energyContainer;
 
+    @Nullable
+    protected TickableSubscription energySubs;
+
     @DescSynced
     @Getter
     @Setter
@@ -80,6 +87,28 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
     @Override
     public IManagedGridNode getMainNode() {
         return nodeHolder.getMainNode();
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        IGridConnectedMachine.super.onMainNodeStateChanged(reason);
+        updateEnergySubscription();
+    }
+
+    protected void updateEnergySubscription(){
+        if(isWorkingEnabled() && isOnline()){
+            energySubs = subscribeServerTick(energySubs, this::updateEnergy);
+        } else if (energySubs != null){
+            energySubs.unsubscribe();
+            energySubs = null;
+        }
+    }
+
+    protected void updateEnergy(){
+        if (shouldSyncME() && updateMEStatus()) {
+            energyContainer.updateEnergyCapacity();
+            updateEnergySubscription();
+        }
     }
 
     @Override
@@ -128,6 +157,9 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         long inputAmperage = 0;
 
         @Getter
+        long energyCapacity;
+
+        @Getter
         final IO handlerIO;
 
         IGridNode gridNode;
@@ -136,12 +168,14 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         public MEEnergyContainer(MetaMachine machine, IO io) {
             super(machine);
             handlerIO = io;
+            updateEnergyCapacity();
         }
 
         public void setTier(int tier) {
             if(this.tier != tier)
             {
                 this.tier = tier;
+                updateEnergyCapacity();
                 if(getMachine() instanceof IMultiPart part){
                     part.getControllers().forEach(IMultiController::onStructureFormed);
                 }
@@ -151,6 +185,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         public void setInputAmperage(long inputAmperage) {
             if(this.inputAmperage != inputAmperage){
                 this.inputAmperage = inputAmperage;
+                updateEnergyCapacity();
                 if(getMachine() instanceof IMultiPart part){
                     part.getControllers().forEach(IMultiController::onStructureFormed);
                 }
@@ -236,17 +271,22 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
             return handlerIO == IO.IN ? getEnergyCapacity() : 0;
         }
 
-        @Override
-        public long getEnergyCapacity() {
-            if(getStorage() == null) return 0;
+
+        public void updateEnergyCapacity() {
+            if(getStorage() == null){
+                energyCapacity = 0;
+                return;
+            }
             if(handlerIO == IO.IN){
                 if(checkGridTier())
-                    return getStorage().extract(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
+                    energyCapacity = getStorage().extract(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
+                else
+                    energyCapacity = 0;
             }
             else{
-                return getStorage().insert(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
+                energyCapacity = getStorage().insert(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
             }
-            return 0;
+
         }
 
         @Override

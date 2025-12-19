@@ -85,6 +85,7 @@ public class MEMachineEUHandler implements IEnergyContainer {
 
     @Override
     public long getEnergyCapacity() {
+        //可能会有性能问题
         return inv.insert(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, source) + getEnergyStored();
     }
 
