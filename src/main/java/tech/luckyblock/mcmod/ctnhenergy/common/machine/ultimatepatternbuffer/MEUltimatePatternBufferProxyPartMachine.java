@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -16,6 +17,7 @@ import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEA
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferProxyPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MEUltimatePatternBufferProxyPartMachine extends MEAdvancedPatternBufferProxyPartMachine {
@@ -39,6 +41,7 @@ public class MEUltimatePatternBufferProxyPartMachine extends MEAdvancedPatternBu
         super.updateProxy(machine);
         if(machine instanceof MEUltimatePatternBufferPartMachine buffer)
             proxyEnergyRecipeHandler.setProxy(buffer.getEnergyContainer());
+        getControllers().forEach(IMultiController::onStructureFormed);
     }
 
     @Override
@@ -49,7 +52,7 @@ public class MEUltimatePatternBufferProxyPartMachine extends MEAdvancedPatternBu
 
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
-        var list = super.getRecipeHandlers();
+        var list = new ArrayList<>(super.getRecipeHandlers());
         list.add(RecipeHandlerList.of(IO.IN, proxyEnergyRecipeHandler));
         return list;
     }

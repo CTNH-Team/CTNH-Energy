@@ -178,6 +178,8 @@ public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
             return delegate().getEnergyInfo();
         }
 
+
+
         @Override
         public boolean supportsBigIntEnergyValues() {
             return delegate().supportsBigIntEnergyValues();

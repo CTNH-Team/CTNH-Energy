@@ -42,7 +42,7 @@ public class MEAdvancedPatternBufferProxyPartMachine extends TieredIOPartMachine
             MEAdvancedPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
-    private final ProgrammableProxySlotRecipeHandler proxySlotRecipeHandler;
+    protected final ProgrammableProxySlotRecipeHandler proxySlotRecipeHandler;
 
     @Persisted
     @Getter
