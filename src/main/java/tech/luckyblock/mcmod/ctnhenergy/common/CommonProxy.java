@@ -58,14 +58,18 @@ public class CommonProxy {
     public CommonProxy() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
-        init(eventBus);
+        CEConfig.init();
+        CommonProxy.init();
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static void init(IEventBus eventBus) {
+    @SuppressWarnings({"UnstableApiUsage", "removal"})
+    public static void init() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         CTNHEnergy.REGISTRATE.registerRegistrate();
         AEMenus.DR.register(eventBus);
-        CEConfig.init();
+
+        CENetWorking.init();
+
         CEDatagen.init();
         CECreativeModeTabs.init();
         eventBus.addGenericListener(GTRecipeType.class, CommonProxy::registerRecipeTypes);

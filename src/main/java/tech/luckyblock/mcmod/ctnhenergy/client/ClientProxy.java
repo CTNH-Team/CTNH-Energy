@@ -22,6 +22,7 @@ import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CE
 public class ClientProxy extends CommonProxy {
     @SuppressWarnings("removal")
     public ClientProxy() {
+        super();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         init(modEventBus);
     }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -93,7 +94,7 @@ public class CEMachines {
     static Lang hatch_terminator;
 
 
-    @CN("§6使用ME网络中的EU为机器供能§r，可设置电压和电流")
+    @CN("§6使用ME网络中存储的EU为机器供能§r，可设置电压和电流")
     @EN("")
     static Lang energy_ability;
 
@@ -133,6 +134,77 @@ public class CEMachines {
                 .register();
     }
 
+
+
+   @CN({
+           "直接使用ME网络中存储的EU为机器供能",
+           "§a可以通过UI设置电压、电流§r",
+           "§4输入电压等级不能超过ME网络的电压等级,输入电流不能超过64A§r",
+           "§a输入电压：§r",
+           "§e输入电流：§r"
+   })
+   @EN({
+           "Directly  uses the stored EU in ME network to supply energy for Multiblocks",
+           "§Input Voltage and Amperage can be set inside UI§r",
+           "§4Input Voltage Tier must not exceed ME Network Voltage Tier and the Input Amperage is capped at  64A§r",
+           "§aVoltage IN: §r",
+           "§eAmperage IN: §r"
+   })
+    static Lang[] me_energy_in;
+
+    @CN({
+            "将发电机产出的能量直接存入到ME网络中",
+            "§4最大输出功率为 1024A §r"
+    })
+    @EN({
+            "Output Energy into ME Network from generators",
+            "§4The max Output Power is 1024A §r"
+    })
+    static Lang[] me_energy_out;
+
+    @CN("可配置")
+    @EN("Configurable")
+    static Lang configurable;
+
+    private static void initMEEnergyHatch(){
+        ENERGY_INPUT_HATCH_ME = REGISTRATE
+                .machine("me_energy_input_hatch", holder -> new MEEnergyPartMachine(holder, IO.IN))
+                .cnLangValue("ME能源仓")
+                .langValue("ME Energy Hatch")
+                .tooltips(
+                        me_energy_in[0].translate(),
+                        me_energy_in[1].translate(),
+                        me_energy_in[2].translate()
+                )
+                .tooltipBuilder((is, components) -> {
+                    components.add(me_energy_in[3].translate().append(
+                            configurable.translate().withStyle(TooltipHelper.RAINBOW_HSL_SLOW)));
+                    components.add(me_energy_in[4].translate().append(
+                            configurable.translate().withStyle(TooltipHelper.RAINBOW_HSL_SLOW)));
+                    components.add(Component.translatable("gtceu.part_sharing.enabled"));
+                })
+                .tier(UV)
+                .abilities(PartAbility.INPUT_ENERGY)
+                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                .colorOverlayTieredHullModel("me_energy_in", null, null)
+                .register();
+
+        ENERGY_OUTPUT_HATCH_ME = REGISTRATE
+                .machine("me_energy_output_hatch", holder -> new MEEnergyPartMachine(holder, IO.OUT))
+                .cnLangValue("ME动力仓")
+                .langValue("ME Dynamo Hatch")
+                .tooltips(
+                        me_energy_out[0].translate(),
+                        me_energy_out[1].translate().append(Component.literal(VNF[MAX])),
+                        Component.translatable("gtceu.part_sharing.enabled")
+                )
+                .tier(UV)
+                .abilities(PartAbility.OUTPUT_ENERGY)
+                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                .colorOverlayTieredHullModel("me_energy_out", null, null)
+                .register();
+    }
+
     private static void initDualOutputHatchME() {
         DUAL_OUTPUT_HATCH_ME = REGISTRATE
                 .machine("me_dual_output_hatch", MEDualOutputHatchPartMachine::new)
@@ -164,7 +236,7 @@ public class CEMachines {
         initAdvancedMEPatternBuffer();
         initUltimateMEPatternBuffer();
         initDualOutputHatchME();
-
+        initMEEnergyHatch();
         ME_SUBSTATION_HATCH = REGISTRATE
                 .machine("me_substation_hatch", MESubstationHatch::new)
                 .cnLangValue("ME变电仓")
@@ -182,28 +254,7 @@ public class CEMachines {
                 .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_output_hatch_64a"))
                 .register();
 
-        ENERGY_INPUT_HATCH_ME = REGISTRATE
-                .machine("me_energy_input_hatch", holder -> new MEEnergyPartMachine(holder, IO.IN))
-                .cnLangValue("ME能源仓")
-                .langValue("ME Energy Hatch")
-                .tooltips(
 
-                )
-                .tier(UV)
-                .abilities(PartAbility.INPUT_ENERGY)
-                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .colorOverlayTieredHullModel("me_energy_in", null, null)
-                .register();
-
-        ENERGY_OUTPUT_HATCH_ME = REGISTRATE
-                .machine("me_energy_output_hatch", holder -> new MEEnergyPartMachine(holder, IO.OUT))
-                .cnLangValue("ME动力仓")
-                .langValue("ME Dynamo Hatch")
-                .tier(UV)
-                .abilities(PartAbility.OUTPUT_ENERGY)
-                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .colorOverlayTieredHullModel("me_energy_out", null, null)
-                .register();
 
         GTAEMachines.STOCKING_IMPORT_BUS_ME.setTier(IV);
         GTAEMachines.STOCKING_IMPORT_HATCH_ME.setTier(IV);
