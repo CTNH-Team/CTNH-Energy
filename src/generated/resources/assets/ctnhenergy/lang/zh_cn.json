@@ -37,6 +37,7 @@
   "gui.ctnhenergy.enable_circuit": "启用编程电路",
   "gui.ctnhenergy.enable_circuit.tooltip": "在样板输入中加入编程电路",
   "item.ctnhenergy.dynamo_card": "动力卡",
+  "item.ctnhenergy.eu_cell_housing": "EU存储元件外壳",
   "item.ctnhenergy.ev_eu_cell": "§5EV§r ME EU存储元件",
   "item.ctnhenergy.hv_eu_cell": "§6HV§r ME EU存储元件",
   "item.ctnhenergy.iv_eu_cell": "§9IV§r ME EU存储元件",
