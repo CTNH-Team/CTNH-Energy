@@ -17,6 +17,7 @@ import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui.QuantumComputerScreen;
 
 import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CELL;
+import static tech.luckyblock.mcmod.ctnhenergy.registry.CEItems.DYNAMO_CARD;
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE,value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -67,6 +68,15 @@ public class ClientProxy extends CommonProxy {
                             }
                         }
                         return 0.0F; // 默认值
+                    }
+            );
+
+            ItemProperties.register(
+                    DYNAMO_CARD.get(),
+                    CTNHEnergy.id("voltage"),
+                    (stack, level, entity, seed) -> {
+                        var tag = stack.getTag();
+                        return tag != null ? tag.getInt("voltage") : 0;
                     }
             );
         });

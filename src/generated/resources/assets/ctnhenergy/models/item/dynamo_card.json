@@ -1,0 +1,92 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "ctnhenergy:item/dynamo_card_lv",
+      "predicate": {
+        "ctnhenergy:voltage": 1.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_mv",
+      "predicate": {
+        "ctnhenergy:voltage": 2.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_hv",
+      "predicate": {
+        "ctnhenergy:voltage": 3.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_ev",
+      "predicate": {
+        "ctnhenergy:voltage": 4.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_iv",
+      "predicate": {
+        "ctnhenergy:voltage": 5.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_luv",
+      "predicate": {
+        "ctnhenergy:voltage": 6.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_zpm",
+      "predicate": {
+        "ctnhenergy:voltage": 7.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_uv",
+      "predicate": {
+        "ctnhenergy:voltage": 8.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_uhv",
+      "predicate": {
+        "ctnhenergy:voltage": 9.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_uev",
+      "predicate": {
+        "ctnhenergy:voltage": 10.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_uiv",
+      "predicate": {
+        "ctnhenergy:voltage": 11.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_uxv",
+      "predicate": {
+        "ctnhenergy:voltage": 12.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_opv",
+      "predicate": {
+        "ctnhenergy:voltage": 13.0
+      }
+    },
+    {
+      "model": "ctnhenergy:item/dynamo_card_max",
+      "predicate": {
+        "ctnhenergy:voltage": 14.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "ctnhenergy:item/dynamo_card/ulv"
+  }
+}

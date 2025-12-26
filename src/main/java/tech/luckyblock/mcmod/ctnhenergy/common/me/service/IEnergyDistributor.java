@@ -25,9 +25,12 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
         if(self.getLevel() != null){
             for(Direction side : getAvailableSides()){
                 var oppositeSide = side.getOpposite();
-                var source = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos(), side);
+
                 var target = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos().relative(side), oppositeSide);
-                if(source != null && target != null && !CEUtil.isInSameGrid(source, target)){
+                if(target == null) continue;
+                
+                var source = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos(), side);
+                if(source != null && !CEUtil.isInSameGrid(source, target)){
                     if(!source.outputsEnergy(side)) continue;
                     long outputVoltage = source.getOutputVoltage();
                     long outputAmperes = Math.min(source.getEnergyStored() / outputVoltage, source.getOutputAmperage());

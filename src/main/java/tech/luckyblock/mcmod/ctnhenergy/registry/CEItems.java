@@ -7,6 +7,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.client.model.generators.ModelFile;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellStats;
@@ -28,7 +29,29 @@ public class CEItems {
         DYNAMO_CARD = REGISTRATE.item("dynamo_card", DynamoCardItem::new)
                 .cnlang("动力卡")
                 .lang("Dynamo Card")
-                .model(NonNullBiConsumer.noop())
+                .model((ctx, prov) -> {
+                    // 基础模型
+                    var baseModel = prov.withExistingParent(ctx.getName(), prov.mcLoc("item/generated"))
+                            .texture("layer0", prov.modLoc("item/dynamo_card/" + VN[0].toLowerCase()));
+
+                    // 先创建所有变体模型
+                    for (int v = 0; v < VN.length; v++) {
+                        String name = "dynamo_card_" + VN[v].toLowerCase();
+                        prov.getBuilder(name)
+                                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                                .texture("layer0", "ctnhenergy:item/dynamo_card/" + VN[v].toLowerCase());
+                    }
+
+                    // 然后添加 override
+                    for (int v = 1; v < VN.length; v++) {
+                        baseModel.override()
+                                .predicate(prov.modLoc("voltage"), v)
+                                .model(new ModelFile.UncheckedModelFile(
+                                        prov.modLoc("item/dynamo_card_" + VN[v].toLowerCase())
+                                ))
+                                .end();
+                    }
+                })
                 .register();
 
         EU_CELL_HOUSING = REGISTRATE.item("eu_cell_housing",Item::new)
