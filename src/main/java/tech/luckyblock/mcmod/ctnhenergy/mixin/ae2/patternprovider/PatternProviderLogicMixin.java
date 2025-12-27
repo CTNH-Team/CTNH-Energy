@@ -13,6 +13,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.api.crafting.IPatternDetails;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
@@ -230,7 +231,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
                 canPush = switch (CE$getBlockingMode()) {
                     case ALL -> adapter.getStorage().getAvailableStacks().isEmpty();
                     case SMART -> adapter.getStorage().getAvailableStacks().isEmpty()
-                            || adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()));
+                            || adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()), isUpgradedWith(AEItems.FUZZY_CARD));
                     case DEFAULT -> !adapter.containsPatternInput(this.patternInputs);
                 };
             }

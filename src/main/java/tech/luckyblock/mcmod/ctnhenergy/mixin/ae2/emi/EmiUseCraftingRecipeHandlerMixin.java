@@ -9,36 +9,23 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.platform.EmiClient;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.world.inventory.ClickType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(targets = "appeng.integration.modules.emi.AbstractRecipeHandler", remap = false)
-public abstract class AbstractRecipeHandlerMixin<T extends CraftingTermMenu> implements StandardRecipeHandler<T> {
-
-    @Redirect(
-            method = "canCraft",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ldev/emi/emi/api/recipe/handler/EmiCraftContext;getType()Ldev/emi/emi/api/recipe/handler/EmiCraftContext$Type;")
-    )
-    public EmiCraftContext.Type canCraft(EmiCraftContext instance) {
-        if((Object)this instanceof EmiUseCraftingRecipeHandler)
-            return EmiCraftContext.Type.FILL_BUTTON;
-        else
-            return instance.getType();
+@Mixin(value = EmiUseCraftingRecipeHandler.class, remap = false)
+public abstract class EmiUseCraftingRecipeHandlerMixin implements StandardRecipeHandler<CraftingTermMenu> {
+    @Inject(method = "canCraft", at = @At("HEAD"), cancellable = true)
+    void canCraft(EmiRecipe recipe, EmiCraftContext<?> context, CallbackInfoReturnable<Boolean> cir){
+        cir.setReturnValue(true);
     }
 
     @Inject(
             method = "craft",
             at = @At("RETURN")
     )
-    public void craftClick(EmiRecipe recipe, EmiCraftContext<T> context, CallbackInfoReturnable<Boolean> cir) {
+    public void craftClick(EmiRecipe recipe, EmiCraftContext<CraftingTermMenu> context, CallbackInfoReturnable<Boolean> cir) {
         if(cir.getReturnValue() && EmiClient.onServer){
             var destination = context.getDestination();
             var outputSlot = this.getOutputSlot(context.getScreenHandler());
@@ -61,5 +48,4 @@ public abstract class AbstractRecipeHandlerMixin<T extends CraftingTermMenu> imp
 
         }
     }
-
 }

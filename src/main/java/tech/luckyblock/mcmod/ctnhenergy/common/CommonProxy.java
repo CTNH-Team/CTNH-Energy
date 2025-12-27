@@ -92,6 +92,11 @@ public class CommonProxy {
                 ContainerItemStrategy.register(EUKeyType.INSTANCE, EUKey.class, new EUContainerItemStrategy());
                 registerCellUpgrades(CEItems.EU_CELL);
 
+                Upgrades.add(AEItems.FUZZY_CARD, AEBlocks.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, AEParts.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1, GuiText.CraftingInterface.getTranslationKey());
+
                 Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.INTERFACE, 1, GuiText.Interface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, AEParts.INTERFACE, 1, GuiText.Interface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE, 1, GuiText.Interface.getTranslationKey());

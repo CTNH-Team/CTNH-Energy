@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tech.luckyblock.mcmod.ctnhenergy.utils.CircuitConfigManager;
+import tech.luckyblock.mcmod.ctnhenergy.mixin.pcc.ConfigClientAccessor;
 import tech.luckyblock.mcmod.ctnhenergy.utils.button.Blitters;
 import tech.luckyblock.mcmod.ctnhenergy.utils.button.ToggleBlitterButton;
 
@@ -27,7 +27,7 @@ public abstract class ProcessingEncodingPanelMixin {
         CE$circuitButton = new ToggleBlitterButton(
                 Blitters.CIRCUIT_ON,
                 Blitters.CIRCUIT_OFF,
-                CircuitConfigManager::setEnabled
+                ConfigClientAccessor.getJeiIntegrationValue()::set
         );
         CE$circuitButton.setHalfSize(true);
         CE$circuitButton.setTooltipOn(List.of(
@@ -48,6 +48,6 @@ public abstract class ProcessingEncodingPanelMixin {
 
     @Inject(method = "updateBeforeRender", at = @At("TAIL"))
     public void updateBeforeRender(CallbackInfo ci) {
-        CE$circuitButton.setState(CircuitConfigManager.enabled);
+        CE$circuitButton.setState(ConfigClientAccessor.getJeiIntegrationValue().get());
     }
 }

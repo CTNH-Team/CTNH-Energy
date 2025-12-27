@@ -12,7 +12,9 @@
     "ae2.cpu.ElapsedTimeTrackerInvoker",
     "ae2.cpu.ExecutingCraftingJobAccessor",
     "ae2.cpu.TaskProgressAccessor",
-    "ae2.emi.AbstractRecipeHandlerMixin",
+
+    "ae2.emi.EmiEncodePatternHandlerMixin",
+    "ae2.emi.EmiUseCraftingRecipeHandlerMixin",
     "ae2.energy.EnergyServiceMixin",
     "ae2.energy.InterfaceEnergyDistributorLogic",
     "ae2.energy.PatternProviderEnergyDistributorLogic",
@@ -41,7 +43,7 @@
     "gtm.GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
     "gtm.GTmepatternbuffer.MEPatternBufferPartMachineMixin",
     "omni.OmniCraftingBlockEntityMixin",
-    "pcc.ConfigClientMixin"
+    "pcc.ConfigClientAccessor"
   ],
   "client": [
     "ae2.patternprovider.PatternProviderScreenMixin",
