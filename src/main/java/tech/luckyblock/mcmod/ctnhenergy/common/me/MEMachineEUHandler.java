@@ -31,12 +31,12 @@ public class MEMachineEUHandler implements IEnergyContainer {
         node = gridNode;
         inv =  node.getGrid().getStorageService().getInventory();
         source = IActionSource.ofMachine(() -> node);
-        if(upgradeable.isUpgradedWith(CEItems.DYNAMO_CARD)
-                && upgradeable.getUpgrades() instanceof AppEngInternalInventory inventory){
+        if(upgradeable.getUpgrades() instanceof AppEngInternalInventory inventory){
             for (var itemStack : inventory) {
-                var tag = itemStack.getOrCreateTag();
-                if(itemStack.is(CEItems.DYNAMO_CARD.asItem()) && tag.contains(DynamoCardItem.VOLTAGE)){
-                    outputVoltage = V[tag.getInt(DynamoCardItem.VOLTAGE)];
+                if(itemStack.is(CEItems.DYNAMO_CARD.asItem()) && itemStack.hasTag()){
+                    var tag = itemStack.getTag();
+                    if(tag.contains(DynamoCardItem.VOLTAGE))
+                        outputVoltage = V[tag.getInt(DynamoCardItem.VOLTAGE)];
                 }
             }
         }
