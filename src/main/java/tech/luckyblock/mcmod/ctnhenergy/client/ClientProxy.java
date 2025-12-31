@@ -1,6 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.client;
 
 import appeng.init.client.InitScreens;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -11,6 +12,8 @@ import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
 import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui.QuantumComputerScreen;
 
+import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CELL;
+
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE,value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
     public ClientProxy(FMLJavaModLoadingContext context) {
@@ -19,8 +22,9 @@ public class ClientProxy extends CommonProxy {
 
     }
 
-    public static void init(IEventBus eventBus){
+    public static void init(IEventBus eventBus) {
         eventBus.addListener(ClientProxy::initClientAE2);
+        eventBus.addListener(ClientProxy::onClientSetup);
     }
 
     private static void initClientAE2(FMLClientSetupEvent event) {
@@ -32,6 +36,33 @@ public class ClientProxy extends CommonProxy {
 
                 throw new RuntimeException(e);
             }
+        });
+    }
+
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            // 注册内容类型谓词
+            ItemProperties.register(
+                    INFINITY_CELL.asItem(),
+                    CTNHEnergy.id("cell_content"),
+                    (stack, level, entity, seed) -> {
+                        if (stack.hasTag()) {
+                            var tag = stack.getTag();
+                            if (tag != null && tag.contains("record")) {
+                                var record = tag.getCompound("record");
+                                if (record.contains("id")) {
+                                    String contentType = record.getString("id");
+                                    if ("minecraft:water".equals(contentType)) {
+                                        return 0.1F;
+                                    } else if ("minecraft:cobblestone".equals(contentType)) {
+                                        return 0.2F;
+                                    }
+                                }
+                            }
+                        }
+                        return 0.0F; // 默认值
+                    }
+            );
         });
     }
 }
