@@ -21,5 +21,7 @@ public class ChineseLangHandler {
 
         provider.add("config.jade.plugin_ctnhenergy.ad_me_pattern_buffer_proxy", "高级ME样板总成");
         provider.add("config.jade.plugin_ctnhenergy.ad_me_pattern_buffer", "高级ME样板总成镜像");
+
+        provider.add("gui.ctnhenergy.moveitem", "将可用原料转移至物品栏");
     }
 }

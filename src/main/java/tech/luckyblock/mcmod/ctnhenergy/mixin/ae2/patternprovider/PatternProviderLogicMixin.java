@@ -159,7 +159,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             cancellable = true
     )
     public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
-        if (!sendList.isEmpty() || !this.mainNode.isActive() || !CE$patternsMap.containsKey(patternDetails.getDefinition())) {
+        if (!sendList.isEmpty() || !this.mainNode.isActive() ) {
             cir.setReturnValue(false);
             return;
         }
