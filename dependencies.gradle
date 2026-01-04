@@ -41,6 +41,8 @@ dependencies {
     modImplementation("curse.maven:merequester-688367:5689932")
     //ae2wt
     modImplementation("curse.maven:applied-energistics-2-wireless-terminals-459929:7154316")
+    //ae2ct
+    modImplementation("curse.maven:ae2-crafting-tree-1086241:7182165")
     //betterp2p
     implementation("thedarkcolour:kotlinforforge:4.10.0")
     modImplementation("curse.maven:betterp2p-538092:6015618")

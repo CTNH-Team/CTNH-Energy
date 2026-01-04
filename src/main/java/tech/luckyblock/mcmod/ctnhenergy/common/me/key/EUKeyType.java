@@ -32,7 +32,7 @@ public class EUKeyType extends AEKeyType {
 
     @Override
     public int getAmountPerOperation() {
-        return 32;
+        return Integer.MAX_VALUE;
     }
 
     @Override
