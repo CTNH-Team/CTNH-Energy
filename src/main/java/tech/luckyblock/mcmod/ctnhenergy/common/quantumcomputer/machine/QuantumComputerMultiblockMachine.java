@@ -3,12 +3,9 @@ package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -18,13 +15,17 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
+import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.IRubiksRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
@@ -33,9 +34,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -54,18 +54,21 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
-
-import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
+import java.util.stream.Collectors;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @Prefix("machine")
-public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver {
+public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver, IRubiksRotationMultiblock {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             QuantumComputerMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
+    public List<RubiksCubeContraptionEntity> rotatingEntities;
+    public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
 
+    protected TickableSubscription rotatingSubs;
     @Getter
     private int storageKilobyte = 0;
 
@@ -117,7 +120,13 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         this.storageKilobyte = getMultiblockState().getMatchContext().getOrPut("StorageKb", 0);
         this.workStatus = WorkStatus.SUSPEND;
         qcCasings = getMultiblockState().getMatchContext().getOrDefault("qcCasings", LongSets.emptySet());
-        //onLoad();
+        if (rotatingEntities == null) {
+            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 6), this.getFrontFacing());
+            if (rotatingEntities != null) {
+                this.rotatingEntities = new ArrayList<>(rotatingEntities.values());
+            }
+            this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
+        }
     }
 
     private boolean findMENetworkBlockEntity(){
@@ -140,6 +149,14 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
         return false;
     }
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (rotatingEntities != null) {
+            this.rotatingEntities.forEach(AbstractContraptionEntity::disassemble);
+        }
+        this.rotatingEntities = null;
+    }
 
     @Override
     public void onStructureInvalid() {
@@ -155,9 +172,26 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
         updateCasings(QuantumComputerCasingBlock.State.GREY);
         qcCasings = null;
-        //onUnload();
+        if (rotatingEntities != null) {
+            this.rotatingEntities.forEach(AbstractContraptionEntity::disassemble);
+        }
+        this.rotatingEntities = null;
+        if (rotatingSubs != null) {
+            unsubscribe(rotatingSubs);
+        }
     }
 
+    public void rotatingTick() {
+        if (isFormed && rotatingEntities != null) {
+            if (getOffsetTimer() % 20 == 0) {
+                int index = RandomSource.create().nextInt(avalibleMoving.size());
+                rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
+            }
+            if (getOffsetTimer() % 20 == 10) {
+                rotatingEntities.forEach(entity -> entity.performStandardMove("STOP"));
+            }
+        }
+    }
 
     @CN({
             "工作状态：",
