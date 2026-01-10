@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
+import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.ProgrammableSlotRecipeHandler.SlotRHL;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
@@ -25,18 +26,18 @@ import java.util.List;
 public final class ProgrammableProxySlotRecipeHandler {
 
     private final List<RecipeHandlerList> proxySlotHandlers;
-    private final ProxyItemRecipeHandler itemOutput;
-    private final ProxyFluidRecipeHandler fluidOutput;
+    private final ProxyRecipeHandler<Ingredient> itemOutput;
+    private final ProxyRecipeHandler<FluidIngredient> fluidOutput;
     private final int slots;
 
-    public ProgrammableProxySlotRecipeHandler(AdvancedMEPatternBufferProxyPartMachine machine, int slots) {
+    public ProgrammableProxySlotRecipeHandler(MEAdvancedPatternBufferProxyPartMachine machine, int slots) {
         this.slots = slots;
         proxySlotHandlers = new ArrayList<>(slots + 1);
         for (int i = 0; i < slots; ++i) {
             proxySlotHandlers.add(new ProxyRHL(machine));
         }
-        itemOutput = new ProxyItemRecipeHandler(machine, IO.OUT);
-        fluidOutput = new ProxyFluidRecipeHandler(machine, IO.OUT);
+        itemOutput = ProxyRecipeHandler.createItemHandler(machine, IO.OUT);
+        fluidOutput = ProxyRecipeHandler.createFluidHandler(machine, IO.OUT);
 
         List<IRecipeHandler<?>> handlers = new ArrayList<>();
         handlers.add(itemOutput);
@@ -44,7 +45,7 @@ public final class ProgrammableProxySlotRecipeHandler {
         proxySlotHandlers.add(RecipeHandlerList.of(IO.OUT, handlers));
     }
 
-    public void updateProxy(AdvancedMEPatternBufferPartMachine patternBuffer) {
+    public void updateProxy(MEAdvancedPatternBufferPartMachine patternBuffer) {
         var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
         for (int i = 0; i <slots; ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
@@ -63,27 +64,27 @@ public final class ProgrammableProxySlotRecipeHandler {
 
     private static class ProxyRHL extends RecipeHandlerList {
 
-        private final ProxyItemRecipeHandler circuit;
-        private final ProxyItemRecipeHandler sharedItem;
-        private final ProxyItemRecipeHandler slotItem;
-        private final ProxyFluidRecipeHandler sharedFluid;
-        private final ProxyFluidRecipeHandler slotFluid;
+        private final ProxyRecipeHandler<Ingredient> circuit;
+        private final ProxyRecipeHandler<Ingredient> sharedItem;
+        private final ProxyRecipeHandler<Ingredient> slotItem;
+        private final ProxyRecipeHandler<FluidIngredient> sharedFluid;
+        private final ProxyRecipeHandler<FluidIngredient> slotFluid;
 
 
-        public ProxyRHL(AdvancedMEPatternBufferProxyPartMachine machine) {
+        public ProxyRHL(MEAdvancedPatternBufferProxyPartMachine machine) {
             super(IO.IN);
-            circuit = new ProxyItemRecipeHandler(machine);
-            sharedItem = new ProxyItemRecipeHandler(machine);
-            slotItem = new ProxyItemRecipeHandler(machine);
-            sharedFluid = new ProxyFluidRecipeHandler(machine);
-            slotFluid = new ProxyFluidRecipeHandler(machine);
+            circuit = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
+            sharedItem = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
+            slotItem = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
+            sharedFluid = ProxyRecipeHandler.createFluidHandler(machine, IO.IN);
+            slotFluid = ProxyRecipeHandler.createFluidHandler(machine, IO.IN);
 
 
             addHandlers(circuit, sharedItem, slotItem, sharedFluid, slotFluid);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
 
-        public void setBuffer(AdvancedMEPatternBufferPartMachine buffer, SlotRHL slotRHL) {
+        public void setBuffer(MEAdvancedPatternBufferPartMachine buffer, SlotRHL slotRHL) {
             circuit.setProxy(slotRHL.getCircuitInventory());
             sharedItem.setProxy(buffer.getShareInventory());
             sharedFluid.setProxy(buffer.getShareTank());
@@ -107,126 +108,5 @@ public final class ProgrammableProxySlotRecipeHandler {
 
         @Override
         public void setDistinct(boolean ignored, boolean notify) {}
-    }
-
-    @Getter
-    private static class ProxyItemRecipeHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
-
-        private IRecipeHandlerTrait<Ingredient> proxy = null;
-        private ISubscription proxySub = null;
-
-        private final IO handlerIO;
-        private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
-        private final boolean isDistinct = true;
-
-        public ProxyItemRecipeHandler(MetaMachine machine, IO io) {
-            super(machine);
-            handlerIO = io;
-        }
-
-        public ProxyItemRecipeHandler(MetaMachine machine) {
-            this(machine, IO.IN);
-        }
-
-        public void setProxy(IRecipeHandlerTrait<Ingredient> proxy) {
-            this.proxy = proxy;
-            if (proxySub != null) {
-                proxySub.unsubscribe();
-                proxySub = null;
-            }
-            if (proxy != null) {
-                proxySub = proxy.addChangedListener(this::notifyListeners);
-            }
-        }
-
-        @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
-            if (proxy == null) return left;
-            return proxy.handleRecipeInner(io, recipe, left, simulate);
-        }
-
-        @Override
-        public int getSize() {
-            if (proxy == null) return 0;
-            return proxy.getSize();
-        }
-
-        @Override
-        public @NotNull List<Object> getContents() {
-            if (proxy == null) return Collections.emptyList();
-            return proxy.getContents();
-        }
-
-        @Override
-        public double getTotalContentAmount() {
-            if (proxy == null) return 0;
-            return proxy.getTotalContentAmount();
-        }
-
-        public int getPriority() {
-            if (proxy == null) return IFilteredHandler.LOW;
-            return proxy.getPriority();
-        }
-    }
-
-    @Getter
-    private static class ProxyFluidRecipeHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
-
-        private IRecipeHandlerTrait<FluidIngredient> proxy = null;
-        private ISubscription proxySub = null;
-
-        private final IO handlerIO;
-        private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
-        private final boolean isDistinct = true;
-
-        public ProxyFluidRecipeHandler(MetaMachine machine, IO io) {
-            super(machine);
-            handlerIO = io;
-        }
-
-        public ProxyFluidRecipeHandler(MetaMachine machine) {
-            this(machine, IO.IN);
-        }
-
-        public void setProxy(IRecipeHandlerTrait<FluidIngredient> proxy) {
-            this.proxy = proxy;
-            if (proxySub != null) {
-                proxySub.unsubscribe();
-                proxySub = null;
-            }
-            if (proxy != null) {
-                proxySub = proxy.addChangedListener(this::notifyListeners);
-            }
-        }
-
-        @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       boolean simulate) {
-            if (proxy == null) return left;
-            return proxy.handleRecipeInner(io, recipe, left, simulate);
-        }
-
-        @Override
-        public int getSize() {
-            if (proxy == null) return 0;
-            return proxy.getSize();
-        }
-
-        @Override
-        public @NotNull List<Object> getContents() {
-            if (proxy == null) return Collections.emptyList();
-            return proxy.getContents();
-        }
-
-        @Override
-        public double getTotalContentAmount() {
-            if (proxy == null) return 0;
-            return proxy.getTotalContentAmount();
-        }
-
-        public int getPriority() {
-            if (proxy == null) return IFilteredHandler.LOW;
-            return proxy.getPriority();
-        }
     }
 }

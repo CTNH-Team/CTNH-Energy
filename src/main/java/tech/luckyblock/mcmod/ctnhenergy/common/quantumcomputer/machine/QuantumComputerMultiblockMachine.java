@@ -1,7 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine;
 
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
@@ -9,16 +7,17 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+import com.lowdragmc.lowdraglib.networking.LDLNetworking;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
@@ -42,10 +41,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.block.QuantumComputerCasingBlock;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
-import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
+import tech.luckyblock.mcmod.ctnhenergy.network.packets.QCOpenCPUMenuPacket;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERecipeTypes;
 import tech.luckyblock.mcmod.ctnhenergy.utils.button.CETextures;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
@@ -57,6 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -83,9 +82,6 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     protected LongSet qcCasings;
 
     private WorkStatus workStatus;
-
-    Player player;
-//    private int tickDelay = 0;
 
     public QuantumComputerMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -278,15 +274,19 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     }
 
-    @Override
-    public InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        this.player = player;
-        return super.tryToOpenUI(player, hand, hit);
+    private void openCPU(ClickData clickData){
+        if(isRemote()){
+            if(meNetworkPortBlockEntity != null || findMENetworkBlockEntity()){
+                LDLNetworking.NETWORK.sendToServer(new QCOpenCPUMenuPacket(meNetworkPortBlockEntity.getBlockPos()));
+            }
+        }
+//        if(!isRemote())
+//            MenuOpener.open(AEMenus.QUANTUM_COMPUTER.get(), player, MenuLocators.forBlockEntity(meNetworkPortBlockEntity));
     }
 
-    private void openCPU(ClickData clickData){
-        if(!isRemote())
-            MenuOpener.open(AEMenus.QUANTUM_COMPUTER.get(), player, MenuLocators.forBlockEntity(meNetworkPortBlockEntity));
+    @Override
+    public ModularUI createUI(Player entityPlayer) {
+        return super.createUI(entityPlayer);
     }
 
     public int getMaxCWUt() {

@@ -20,7 +20,7 @@ public class MEPatternBufferPartMachineMixin {
             return instance.containsKey(obj);
         }
         for (IPatternDetails existing : instance.keySet()) {
-            if (existing.getDefinition().equals(pattern.getDefinition())) {
+            if (existing != null && existing.getDefinition().equals(pattern.getDefinition())) {
                 return true;
             }
         }
@@ -38,7 +38,7 @@ public class MEPatternBufferPartMachineMixin {
             return instance.get(obj);
         }
         for (IPatternDetails existing : instance.keySet()) {
-            if (existing.getDefinition().equals(pattern.getDefinition())) {
+            if (existing != null && existing.getDefinition().equals(pattern.getDefinition())) {
                 return instance.get(existing);
             }
         }

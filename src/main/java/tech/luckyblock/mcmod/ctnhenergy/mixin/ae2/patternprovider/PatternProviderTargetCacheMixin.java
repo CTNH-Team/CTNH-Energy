@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", remap = false)
 public class PatternProviderTargetCacheMixin {
@@ -48,17 +49,41 @@ public class PatternProviderTargetCacheMixin {
                     }
 
                     @Override
-                    public boolean onlyHasPatternInput(Set<AEKey> patternInputs) {
+                    public boolean onlyHasPatternInput(Set<AEKey> patternInputs, boolean fuzzy) {
+
+                        Set<AEKey> matchSet = fuzzy
+                                ? patternInputs.stream()
+                                .map(AEKey::dropSecondary)
+                                .collect(Collectors.toSet())
+                                : patternInputs;
+
+                        boolean allCircuit = true;
+                        boolean allMatch = true;
+
                         for (var stack : storage.getAvailableStacks()) {
-                            var key = stack.getKey();
-                            if(key instanceof AEItemKey itemKey && itemKey.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem())
-                                continue;
-                            if (patternInputs.contains(key.dropSecondary()))
-                                continue;
-                            return false;
+                            AEKey key = stack.getKey();
+
+                            boolean isCircuit = key instanceof AEItemKey itemKey && itemKey.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem();
+
+                            if (!isCircuit) {
+                                allCircuit = false;
+                            }
+
+                            boolean matches = fuzzy&!isCircuit ? matchSet.contains(key.dropSecondary()) : matchSet.contains(key);
+
+                            if (!matches) {
+                                allMatch = false;
+
+                                // 非电路且不匹配，直接失败
+                                if (!isCircuit) {
+                                    return false;
+                                }
+                            }
                         }
-                        return true;
+
+                        return allCircuit || allMatch;
                     }
+
 
                     public MEStorage getStorage() {
                         return storage;

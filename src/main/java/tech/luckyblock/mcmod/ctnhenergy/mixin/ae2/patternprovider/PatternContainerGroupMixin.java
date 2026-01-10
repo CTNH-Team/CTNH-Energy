@@ -62,7 +62,8 @@ public class PatternContainerGroupMixin {
 
 
             int circuitConfiguration = -1;
-            if(machine instanceof IHasCircuitSlot circuitSlot){
+            if(machine instanceof IHasCircuitSlot circuitSlot
+                    && circuitSlot.getCircuitInventory().storage.getSlots() > 0){
                 ItemStack circuitStack = circuitSlot.isCircuitSlotEnabled() ? circuitSlot.getCircuitInventory().storage.getStackInSlot(0) :
                         ItemStack.EMPTY;
                 circuitConfiguration = circuitStack.isEmpty() ? -1 : IntCircuitBehaviour.getCircuitConfiguration(circuitStack);

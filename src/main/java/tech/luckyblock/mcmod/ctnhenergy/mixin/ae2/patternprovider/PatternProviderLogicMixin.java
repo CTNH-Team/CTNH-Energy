@@ -12,6 +12,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.api.crafting.IPatternDetails;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
@@ -19,6 +21,7 @@ import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,14 +29,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
+import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc.MachineUpgradeInventoryAccessor;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
 import java.util.*;
 
 @Mixin(value = PatternProviderLogic.class, remap = false)
-public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin{
+public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin, IUpgradeableObject {
 
     @Final
     @Shadow
@@ -91,12 +99,15 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Unique
     private final Map<AEItemKey, Set<AEKey>> CE$patternInputsMap = new HashMap<>();
 
+
+
     @Inject(
             method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
             at = @At("TAIL")
     )
     private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
         configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.SMART);
+
     }
 
     @Unique
@@ -148,7 +159,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             cancellable = true
     )
     public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
-        if (!sendList.isEmpty() || !this.mainNode.isActive() || !CE$patternsMap.containsKey(patternDetails.getDefinition())) {
+        if (!sendList.isEmpty() || !this.mainNode.isActive() ) {
             cir.setReturnValue(false);
             return;
         }
@@ -220,7 +231,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
                 canPush = switch (CE$getBlockingMode()) {
                     case ALL -> adapter.getStorage().getAvailableStacks().isEmpty();
                     case SMART -> adapter.getStorage().getAvailableStacks().isEmpty()
-                            || adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()));
+                            || adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()), isUpgradedWith(AEItems.FUZZY_CARD));
                     case DEFAULT -> !adapter.containsPatternInput(this.patternInputs);
                 };
             }
@@ -247,5 +258,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
         }
         cir.setReturnValue(false);
     }
+
+
 
 }

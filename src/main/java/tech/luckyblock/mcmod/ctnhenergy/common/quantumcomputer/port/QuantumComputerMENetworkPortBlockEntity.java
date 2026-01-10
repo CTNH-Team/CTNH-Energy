@@ -173,11 +173,7 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
 
     @Override
     public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
-        if (isFormed()) {
-            return EnumSet.of(Direction.UP);
-        } else {
-            return EnumSet.noneOf(Direction.class);
-        }
+        return EnumSet.of(Direction.UP);
     }
 
     public boolean isFormed() {

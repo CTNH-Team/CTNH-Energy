@@ -42,7 +42,7 @@ public interface CEPatternProviderTarget extends PatternProviderTarget {
 //        };
 //    }
 
-    boolean onlyHasPatternInput(Set<AEKey> var1);
+    boolean onlyHasPatternInput(Set<AEKey> var1, boolean fuzzy);
 
     MEStorage getStorage();
 }
