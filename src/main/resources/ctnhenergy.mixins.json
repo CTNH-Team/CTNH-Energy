@@ -44,6 +44,7 @@
     "gtm.WorkableElectricMultiblockMachineMixin",
     "gtm.GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
     "gtm.GTmepatternbuffer.MEPatternBufferPartMachineMixin",
+    "omni.OCItemsMixin",
     "omni.OmniCraftingBlockEntityMixin",
     "pcc.ConfigClientAccessor"
   ],
