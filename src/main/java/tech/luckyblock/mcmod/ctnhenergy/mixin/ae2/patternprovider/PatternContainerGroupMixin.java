@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,19 +29,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static yuuki1293.pccard.impl.PatternProviderLogicImpl.getSendPosSubnet;
+
 @Mixin(value = PatternContainerGroup.class, remap = false)
 public class PatternContainerGroupMixin {
     @Inject(
             method = "fromMachine",
-            at = @At(value = "RETURN"),
+            at = @At(value = "HEAD"),
             cancellable = true
     )
     private static void getMachineName(Level level, BlockPos pos, Direction side, CallbackInfoReturnable<PatternContainerGroup> cir){
         var target = level.getBlockEntity(pos);
-        AEItemKey icon;
-        Component groupName;
-        List<Component> tooltip = new ArrayList<>();
+        if(!(target instanceof MetaMachineBlockEntity)){
+            target = getSendPosSubnet(level, pos, side).stream()
+                    .map(Tuple::getA)
+                    .map(level::getBlockEntity)
+                    .filter(b -> b instanceof MetaMachineBlockEntity)
+                    .findFirst()
+                    .orElse(null);
+        }
+
         if(target instanceof MetaMachineBlockEntity blockEntity){
+            AEItemKey icon;
+            Component groupName;
+            List<Component> tooltip = new ArrayList<>();
             MachineDefinition machineDefinition;
             MetaMachine machine = blockEntity.getMetaMachine();
             MutableComponent name;
