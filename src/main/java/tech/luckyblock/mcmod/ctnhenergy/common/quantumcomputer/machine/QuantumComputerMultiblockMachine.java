@@ -183,11 +183,11 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     public void rotatingTick() {
         if (isFormed && rotatingEntities != null) {
-            if (getOffsetTimer() % 20 == 0) {
+            if (getOffsetTimer() % 40 == 0) {
                 int index = RandomSource.create().nextInt(avalibleMoving.size());
                 rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
-            if (getOffsetTimer() % 20 == 10) {
+            if (getOffsetTimer() % 40 == 20) {
                 rotatingEntities.forEach(entity -> entity.performStandardMove("STOP"));
             }
         }
