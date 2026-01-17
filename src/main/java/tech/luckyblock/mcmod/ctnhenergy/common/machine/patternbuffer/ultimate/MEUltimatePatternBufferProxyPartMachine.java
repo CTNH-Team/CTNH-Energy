@@ -1,20 +1,17 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine.ultimatepatternbuffer;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate;
 
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import org.jetbrains.annotations.NotNull;
 import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 
 import java.util.ArrayList;
@@ -27,17 +24,17 @@ public class MEUltimatePatternBufferProxyPartMachine extends MEAdvancedPatternBu
     private final ProxyRecipeHandler.ProxyEnergyRecipeHandler proxyEnergyRecipeHandler;
 
     public MEUltimatePatternBufferProxyPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+        super(holder, GTValues.UV);
         proxyEnergyRecipeHandler = ProxyRecipeHandler.createEnergyHandler(this, IO.IN);
     }
 
     @Override
-    public boolean isBuffer(MetaMachine machine) {
+    public boolean isBuffer(@NotNull MetaMachine machine) {
         return machine.getDefinition() == CEMachines.ME_ULTIMATE_PATTERN_BUFFER;
     }
 
     @Override
-    public void updateProxy(MEAdvancedPatternBufferPartMachine machine) {
+    public void updateProxy(MEPatternBufferPartMachine machine) {
         super.updateProxy(machine);
         if(machine instanceof MEUltimatePatternBufferPartMachine buffer)
             proxyEnergyRecipeHandler.setProxy(buffer.getEnergyContainer());
@@ -51,7 +48,7 @@ public class MEUltimatePatternBufferProxyPartMachine extends MEAdvancedPatternBu
     }
 
     @Override
-    public List<RecipeHandlerList> getRecipeHandlers() {
+    public @NotNull List<RecipeHandlerList> getRecipeHandlers() {
         var list = new ArrayList<>(super.getRecipeHandlers());
         list.add(RecipeHandlerList.of(IO.IN, proxyEnergyRecipeHandler));
         return list;

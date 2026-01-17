@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine.ultimatepatternbuffer;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate;
 
 import appeng.api.networking.IGridNodeListener;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -11,7 +11,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyInputConfigurator;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
 

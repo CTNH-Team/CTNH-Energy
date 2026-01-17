@@ -40,10 +40,10 @@
     "betterP2P.CommonProxyMixin",
     "EUP2P.EUP2PMixin",
     "gtm.BlockPatternMixin",
+    "gtm.MEPatternBufferPartMachineMixin",
+    "gtm.MEPatternBufferProxyPartMachineMixin",
     "gtm.MultiblockStateMixin",
     "gtm.WorkableElectricMultiblockMachineMixin",
-    "gtm.GTmepatternbuffer.MEPatternBufferPartMachineAccessor",
-    "gtm.GTmepatternbuffer.MEPatternBufferPartMachineMixin",
     "omni.OCItemsMixin",
     "omni.OmniCraftingBlockEntityMixin",
     "pcc.ConfigClientAccessor"

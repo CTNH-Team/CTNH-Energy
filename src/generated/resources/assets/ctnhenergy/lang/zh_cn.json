@@ -7,6 +7,8 @@
   "block.ctnhenergy.me_dual_output_hatch": "ME输出总成",
   "block.ctnhenergy.me_energy_input_hatch": "ME能源仓",
   "block.ctnhenergy.me_energy_output_hatch": "ME动力仓",
+  "block.ctnhenergy.me_pattern_buffer": "ME样板总成",
+  "block.ctnhenergy.me_pattern_buffer_proxy": "ME样板总成镜像",
   "block.ctnhenergy.me_substation_hatch": "ME变电仓",
   "block.ctnhenergy.me_ultimate_pattern_buffer": "§6ME究极样板总成§r",
   "block.ctnhenergy.me_ultimate_pattern_buffer_proxy": "ME究极样板总成镜像",

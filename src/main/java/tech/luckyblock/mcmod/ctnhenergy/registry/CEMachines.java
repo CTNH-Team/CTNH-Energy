@@ -8,22 +8,22 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferProxyPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MESubstationHatch;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputHatchPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.ultimatepatternbuffer.MEUltimatePatternBufferPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.ultimatepatternbuffer.MEUltimatePatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate.MEUltimatePatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate.MEUltimatePatternBufferProxyPartMachine;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
-
-import java.util.List;
-import java.util.function.BiConsumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_OUTPUT_HATCH_ABILITIES;
@@ -35,6 +35,9 @@ public class CEMachines {
     static {
         REGISTRATE.creativeModeTab(() -> CECreativeModeTabs.ITEM);
     }
+
+    public static MachineDefinition ME_PATTERN_BUFFER;
+    public static MachineDefinition ME_PATTERN_BUFFER_PROXY;
 
     public static MachineDefinition ME_ADVANCED_PATTERN_BUFFER;
     public static MachineDefinition ME_ADVANCED_PATTERN_BUFFER_PROXY;
@@ -57,6 +60,40 @@ public class CEMachines {
     static Lang output_ability;
 
     private static void initAdvancedMEPatternBuffer() {
+        ME_PATTERN_BUFFER = REGISTRATE
+                .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
+                .cnLangValue("ME样板总成")
+                .tier(LuV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
+                .langValue("ME Pattern Buffer")
+                .tooltips(
+                        slot_number.translate(MEPatternBufferPartMachine.MAX_PATTERN_COUNT),
+                        Component.translatable("block.gtceu.pattern_buffer.desc.0"),
+                        Component.translatable("block.gtceu.pattern_buffer.desc.1"),
+                        circuit_ability.translate(),
+                        Component.translatable("block.gtceu.pattern_buffer.desc.2"),
+                        Component.translatable("gtceu.part_sharing.enabled"))
+                .register();
+
+        ME_PATTERN_BUFFER_PROXY = REGISTRATE
+                .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
+                .cnLangValue("ME样板总成镜像")
+                .tier(LuV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
+                        PartAbility.EXPORT_ITEMS)
+                .rotationState(RotationState.ALL)
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch_proxy"))
+                .langValue("ME Pattern Buffer Proxy")
+                .tooltips(
+                        Component.translatable("block.gtceu.pattern_buffer_proxy.desc.0"),
+                        Component.translatable("block.gtceu.pattern_buffer_proxy.desc.1"),
+                        Component.translatable("block.gtceu.pattern_buffer_proxy.desc.2"),
+                        Component.translatable("gtceu.part_sharing.enabled"))
+                .register();
+
         ME_ADVANCED_PATTERN_BUFFER = REGISTRATE
                 .machine("advanced_me_pattern_buffer", MEAdvancedPatternBufferPartMachine::new)
                 .cnLangValue("§5ME高级样板总成§r")
@@ -144,7 +181,7 @@ public class CEMachines {
            "§e输入电流：§r"
    })
    @EN({
-           "Directly  uses the stored EU in ME network to supply energy for Multiblocks",
+           "Directly uses the stored EU in ME network to supply energy for Multiblocks",
            "§Input Voltage and Amperage can be set inside UI§r",
            "§4Input Voltage Tier must not exceed ME Network Voltage Tier and the Input Amperage is capped at  64A§r",
            "§aVoltage IN: §r",
@@ -258,7 +295,7 @@ public class CEMachines {
 
         GTAEMachines.STOCKING_IMPORT_BUS_ME.setTier(IV);
         GTAEMachines.STOCKING_IMPORT_HATCH_ME.setTier(IV);
-        BiConsumer<ItemStack, List<Component>> builder = (i, l)-> l.add(slot_number.translate(27));
-        GTAEMachines.ME_PATTERN_BUFFER.setTooltipBuilder(builder.andThen(GTAEMachines.ME_PATTERN_BUFFER.getTooltipBuilder()));
+        //BiConsumer<ItemStack, List<Component>> builder = (i, l)-> l.add(slot_number.translate(27));
+        //GTAEMachines.ME_PATTERN_BUFFER.setTooltipBuilder(builder.andThen(GTAEMachines.ME_PATTERN_BUFFER.getTooltipBuilder()));
     }
 }

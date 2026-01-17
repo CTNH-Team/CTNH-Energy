@@ -1,59 +1,46 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
 import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.ProgrammableSlotRecipeHandler.SlotRHL;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ProgrammableSlotRecipeHandler.SlotRHL;
 
 import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferProxyPartMachine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Getter
 public final class ProgrammableProxySlotRecipeHandler {
 
     private final List<RecipeHandlerList> proxySlotHandlers;
-    private final ProxyRecipeHandler<Ingredient> itemOutput;
-    private final ProxyRecipeHandler<FluidIngredient> fluidOutput;
     private final int slots;
 
-    public ProgrammableProxySlotRecipeHandler(MEAdvancedPatternBufferProxyPartMachine machine, int slots) {
+    public ProgrammableProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine, int slots) {
         this.slots = slots;
         proxySlotHandlers = new ArrayList<>(slots + 1);
         for (int i = 0; i < slots; ++i) {
             proxySlotHandlers.add(new ProxyRHL(machine));
         }
-        itemOutput = ProxyRecipeHandler.createItemHandler(machine, IO.OUT);
-        fluidOutput = ProxyRecipeHandler.createFluidHandler(machine, IO.OUT);
 
         List<IRecipeHandler<?>> handlers = new ArrayList<>();
-        handlers.add(itemOutput);
-        handlers.add(fluidOutput);
         proxySlotHandlers.add(RecipeHandlerList.of(IO.OUT, handlers));
     }
 
-    public void updateProxy(MEAdvancedPatternBufferPartMachine patternBuffer) {
+    public void updateProxy(MEPatternBufferPartMachine patternBuffer) {
         var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
         for (int i = 0; i <slots; ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
             ProgrammableSlotRecipeHandler.SlotRHL slotRHL = (SlotRHL) slotHandlers.get(i);
             proxyRHL.setBuffer(patternBuffer, slotRHL);
         }
-        itemOutput.setProxy(patternBuffer.getOutputInventory());
-        fluidOutput.setProxy(patternBuffer.getOutputTank());
     }
 
     public void clearProxy() {
@@ -71,7 +58,7 @@ public final class ProgrammableProxySlotRecipeHandler {
         private final ProxyRecipeHandler<FluidIngredient> slotFluid;
 
 
-        public ProxyRHL(MEAdvancedPatternBufferProxyPartMachine machine) {
+        public ProxyRHL(MEPatternBufferProxyPartMachine machine) {
             super(IO.IN);
             circuit = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
             sharedItem = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
@@ -84,7 +71,7 @@ public final class ProgrammableProxySlotRecipeHandler {
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
 
-        public void setBuffer(MEAdvancedPatternBufferPartMachine buffer, SlotRHL slotRHL) {
+        public void setBuffer(MEPatternBufferPartMachine buffer, SlotRHL slotRHL) {
             circuit.setProxy(slotRHL.getCircuitInventory());
             sharedItem.setProxy(buffer.getShareInventory());
             sharedFluid.setProxy(buffer.getShareTank());
