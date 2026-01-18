@@ -2,9 +2,11 @@ package tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -17,6 +19,8 @@ import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.ME
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -49,6 +53,15 @@ public class MEAdvancedPatternBufferProxyPartMachine extends MEPatternBufferProx
             itemOutput.setProxy(amachine.getOutputInventory());
             fluidOutput.setProxy(amachine.getOutputTank());
         }
+    }
+
+    @Override
+    public List<RecipeHandlerList> getRecipeHandlers() {
+        var all = new ArrayList<>(super.getRecipeHandlers());
+        List<IRecipeHandler<?>> handlers = List.of(itemOutput, fluidOutput);
+        var outList = RecipeHandlerList.of(IO.OUT, getPaintingColor(), handlers);
+        all.add(outList);
+        return all;
     }
 
     @Override

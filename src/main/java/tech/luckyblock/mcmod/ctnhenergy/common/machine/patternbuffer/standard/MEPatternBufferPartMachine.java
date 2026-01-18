@@ -383,7 +383,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             if(IntCircuitBehaviour.isIntegratedCircuit(machineCircuit))
                 circuit = IntCircuitBehaviour.getCircuitConfiguration(machineCircuit);
 
-            if(patternDetails instanceof IAEPattern patternDetailsW)
+            if(patternDetails instanceof IAEPattern patternDetailsW && patternDetailsW.pCCard$getNumber() != -1)
                 circuit = patternDetailsW.pCCard$getNumber();
 
             if(circuit != null)

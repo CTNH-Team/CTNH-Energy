@@ -46,7 +46,8 @@
     "gtm.WorkableElectricMultiblockMachineMixin",
     "omni.OCItemsMixin",
     "omni.OmniCraftingBlockEntityMixin",
-    "pcc.ConfigClientAccessor"
+    "pcc.ConfigClientAccessor",
+    "pcc.PatternProviderLogicImplMixin"
   ],
   "client": [
     "ae2.patternprovider.PatternProviderScreenMixin",
