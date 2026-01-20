@@ -4,22 +4,34 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.*;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
+import appeng.core.AELog;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
+import appeng.util.CustomNameUtil;
+import appeng.util.InteractionUtil;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.PlayerInternalInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -30,9 +42,12 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigura
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -43,9 +58,12 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -70,20 +88,27 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputConfigurator;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputHatchPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ProgrammableSlotRecipeHandler;
 
+import tech.luckyblock.mcmod.ctnhenergy.utils.FakePccCard;
+import tech.vixhentx.mcmod.ctnhlib.client.gui.IRCFancyUIProvider;
+import tech.vixhentx.mcmod.ctnhlib.client.gui.RCUIWidget;
+import tech.vixhentx.mcmod.ctnhlib.client.gui.RightConfiguratorPanel;
 import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IAEPattern;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
@@ -91,13 +116,30 @@ import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
+import static appeng.helpers.patternprovider.PatternProviderLogic.NBT_MEMORY_CARD_PATTERNS;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEPatternBufferPartMachine extends MEBusPartMachine
-        implements ICraftingProvider, PatternContainer, IDataStickInteractable, IPatternProviderLogicMixin {
+public class MEPatternBufferPartMachine extends TieredIOPartMachine
+        implements ICraftingProvider, PatternContainer, IDataStickInteractable, IMachineLife, IHasCircuitSlot, IGridConnectedMachine, IRCFancyUIProvider {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
+            MEPatternBufferPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+
+    @Getter
+    @Persisted
+    protected final NotifiableItemStackHandler circuitInventory;
+
+    @Persisted
+    protected final GridNodeHolder nodeHolder;
+
+    @DescSynced
+    @Getter
+    @Setter
+    protected boolean isOnline;
+
+    protected final IActionSource actionSource;
+
     public static final int MAX_PATTERN_COUNT = 27;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
 
@@ -121,7 +163,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Getter
     @Persisted
-    @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
+    //@DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
     // version.
     private final CustomItemStackHandler patternInventory = new CustomItemStackHandler(getMaxPatternCount());
 
@@ -162,8 +204,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         return MAX_PATTERN_COUNT;
     }
 
-    public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+    public MEPatternBufferPartMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier, IO.IN);
+        circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
+
+        this.nodeHolder = createNodeHolder();
+        this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
+
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
@@ -175,6 +223,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     }
 
+    protected GridNodeHolder createNodeHolder() {
+        return new GridNodeHolder(this);
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -183,7 +235,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 for (int i = 0; i < patternInventory.getSlots(); i++) {
                     var pattern = patternInventory.getStackInSlot(i);
                     var patternDetails = PatternDetailsHelper.decodePattern(
-                            PatternProviderLogicImpl.updatePatterns(this, pattern), getLevel()
+                            PatternProviderLogicImpl.updatePatterns(FakePccCard.INSTANCE, pattern), getLevel()
                     );
                     if (patternDetails != null) {
                         patternKeyDetailsMap.put(patternDetails.getDefinition(), patternDetails);
@@ -209,17 +261,24 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void setWorkingEnabled(boolean ignored) {}
 
     @Override
-    public boolean isDistinct() {
-        return true;
+    public IManagedGridNode getMainNode() {
+        return nodeHolder.getMainNode();
     }
 
     @Override
-    public void setDistinct(boolean ignored) {}
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        IGridConnectedMachine.super.onMainNodeStateChanged(reason);
+        this.updateSubscription();
+    }
+
+    protected boolean shouldSubscribe() {
+        return isWorkingEnabled() && isOnline();
+    }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        super.onMainNodeStateChanged(reason);
-        this.updateSubscription();
+    public void onRotated(Direction oldFacing, Direction newFacing) {
+        super.onRotated(oldFacing, newFacing);
+        getMainNode().setExposedOnSides(EnumSet.of(newFacing));
     }
 
     protected void updateSubscription() {
@@ -275,7 +334,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         var internalInv = internalInventory[index];
         var newPattern = patternInventory.getStackInSlot(index);
         var newPatternDetails = PatternDetailsHelper.decodePattern(
-                PatternProviderLogicImpl.updatePatterns(this, newPattern), getLevel()
+                PatternProviderLogicImpl.updatePatterns(FakePccCard.INSTANCE, newPattern), getLevel()
         );
         var oldPatternKey = patternKeySlotIndexMap.inverse().get(index);
         var oldPatternDetails = patternKeyDetailsMap.get(oldPatternKey);
@@ -303,9 +362,19 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
-        if (isHasCircuitSlot() && isCircuitSlotEnabled()) {
+        if (isCircuitSlotEnabled()) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
+    }
+
+    @Override
+    public ModularUI createUI(Player entityPlayer) {
+        return new ModularUI(176, 166, this, entityPlayer).widget(new RCUIWidget(this, 176, 166));
+    }
+
+    @Override
+    public void attachRightConfigurators(RightConfiguratorPanel configuratorPanel) {
+        IRCFancyUIProvider.super.attachRightConfigurators(configuratorPanel);
         configuratorPanel.attachConfigurators(new FancyInvConfigurator(
                 shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
                 .setTooltips(List.of(
@@ -445,10 +514,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 if(controller instanceof WorkableMultiblockMachine workableMultiblockMachine){
                     name.append(" - ").append(Component.translatable(workableMultiblockMachine.getRecipeType().registryName.toLanguageKey()));
                 }
-                ItemStack circuitStack = isHasCircuitSlot() ? circuitInventory.storage.getStackInSlot(0) :
-                        ItemStack.EMPTY;
-                int circuitConfiguration = circuitStack.isEmpty() ? -1 :
-                        IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
+
+                int circuitConfiguration = getCircuit();
 
                 Component groupName = circuitConfiguration != -1 ?
                         name.append(" - " + circuitConfiguration) : name;
@@ -475,48 +542,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void onMachineRemoved() {
         clearInventory(patternInventory);
         clearInventory(shareInventory);
-
     }
 
     @Override
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
         dataStick.getOrCreateTag().putIntArray("pos", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public void pCCard$setPCNumber(IPatternDetails patternDetails) {
-
-    }
-
-    @Override
-    public boolean pCCard$hasPCCard() {
-        return true;
-    }
-
-    @Override
-    public List<BlockPos> pCCard$getSendPos() {
-        return List.of();
-    }
-
-    @Override
-    public Direction pCCard$getSendDirection() {
-        return null;
-    }
-
-    @Override
-    public void pCCard$setSendDirection(Direction direction) {
-
-    }
-
-    @Override
-    public BlockEntity pCCard$getBlockEntity() {
-        return null;
-    }
-
-    @Override
-    public Level pCCard$getLevel() {
-        return null;
     }
 
     public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
@@ -805,5 +836,119 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 .forEach(set::addAll);
 
         return set;
+    }
+
+    @Override
+    public InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!player.getItemInHand(hand).isEmpty()) {
+            var heldItem = player.getItemInHand(hand);
+            if (heldItem.getItem() instanceof IMemoryCard memoryCard){
+                final String name = getDefinition().getDescriptionId();
+                if (InteractionUtil.isInAlternateUseMode(player)) {
+                    var data = new CompoundTag();
+                    CustomNameUtil.setCustomName(data, customName);
+                    data.put(NBT_MEMORY_CARD_PATTERNS, patternInventory.serializeNBT().get("Items"));
+                    if(getCircuit() != -1){
+                        data.putInt("Circuit", getCircuit());
+                    }
+                    if (!data.isEmpty()) {
+                        memoryCard.setMemoryCardContents(heldItem, name, data);
+                        memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+                    }
+                }
+                else {
+
+                    clearPatternInventory(player);
+                    final CompoundTag input = memoryCard.getData(heldItem);
+                    var desiredPatterns = new AppEngInternalInventory(internalPatternInventory.size());
+                    desiredPatterns.readFromNBT(input, NBT_MEMORY_CARD_PATTERNS);
+
+                    var playerInv = player.getInventory();
+                    var blankPatternsAvailable = player.getAbilities().instabuild ? Integer.MAX_VALUE
+                            : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
+
+                    var blankPatternsUsed = 0;
+                    for (int i = 0; i < desiredPatterns.size(); i++) {
+                        // Don't restore junk
+                        var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
+                                getLevel(), true);
+                        if (pattern == null) {
+                            continue; // Skip junk / broken recipes
+                        }
+
+                        // Keep track of how many blank patterns we need
+                        ++blankPatternsUsed;
+                        if (blankPatternsAvailable >= blankPatternsUsed) {
+                            if (!internalPatternInventory.addItems(pattern.getDefinition().toStack()).isEmpty()) {
+                                CTNHEnergy.LOGGER.warn("Failed to add pattern to pattern buffer");
+                                blankPatternsUsed--;
+                            }
+                        }
+                    }
+
+                    if (blankPatternsUsed > 0 && !player.getAbilities().instabuild) {
+                        new PlayerInternalInventory(playerInv)
+                                .removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), null);
+                    }
+
+                    if (blankPatternsUsed > blankPatternsAvailable) {
+                        player.sendSystemMessage(
+                                PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
+                    }
+
+                    if(input.contains("Circuit")){
+                        setCircuit(input.getInt("Circuit"));
+                    }
+
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                }
+                return InteractionResult.sidedSuccess(getLevel().isClientSide());
+            }
+        }
+        return super.tryToOpenUI(player, hand, hit);
+    }
+
+    public int getCircuit(){
+        ItemStack circuitStack = circuitInventory.storage.getStackInSlot(0);
+        return circuitStack.isEmpty() ? -1 : IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
+    }
+
+    public void setCircuit(int number){
+        circuitInventory.storage.setStackInSlot(0, IntCircuitBehaviour.stack(number));
+    }
+
+    private void clearPatternInventory(Player player) {
+        // Just clear it for creative mode players
+        if (player.getAbilities().instabuild) {
+            for (int i = 0; i < internalPatternInventory.size(); i++) {
+                internalPatternInventory.setItemDirect(i, ItemStack.EMPTY);
+            }
+            return;
+        }
+
+        var playerInv = player.getInventory();
+
+        // Clear out any existing patterns and give them to the player
+        var blankPatternCount = 0;
+        for (int i = 0; i < internalPatternInventory.size(); i++) {
+            var pattern = internalPatternInventory.getStackInSlot(i);
+            // Auto-Clear encoded patterns to allow them to stack
+            if (pattern.is(AEItems.CRAFTING_PATTERN.asItem())
+                    || pattern.is(AEItems.PROCESSING_PATTERN.asItem())
+                    || pattern.is(AEItems.SMITHING_TABLE_PATTERN.asItem())
+                    || pattern.is(AEItems.STONECUTTING_PATTERN.asItem())
+                    || pattern.is(AEItems.BLANK_PATTERN.asItem())) {
+                blankPatternCount += pattern.getCount();
+            } else {
+                // Give back any non-blank-patterns individually
+                playerInv.placeItemBackInInventory(pattern);
+            }
+            internalPatternInventory.setItemDirect(i, ItemStack.EMPTY);
+        }
+
+        // Place back the removed blank patterns all at once
+        if (blankPatternCount > 0) {
+            playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(blankPatternCount), false);
+        }
     }
 }

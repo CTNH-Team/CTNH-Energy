@@ -100,6 +100,9 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
             MEAdvancedPatternBufferPartMachine.class, MEPatternBufferPartMachine.MANAGED_FIELD_HOLDER);
     public static final int MAX_PATTERN_COUNT = 54;
 
+    @Nullable
+    protected TickableSubscription autoIOSubs;
+
     @Persisted
     private final KeyStorage internalBuffer;
 
@@ -112,12 +115,15 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
     private final NotifiableFluidTank outputTank;
 
     @Nullable
+    protected ISubscription inventorySubs;
+
+    @Nullable
     protected ISubscription tankSubs;
 
     private final List<Runnable> changeListeners = new ArrayList<>();
 
-    public MEAdvancedPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEAdvancedPatternBufferPartMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier);
         internalBuffer = new KeyStorage();
         outputInventory = new MEDualOutputHatchPartMachine.InaccessibleInfiniteHandler(this, changeListeners, internalBuffer);
         outputTank = new MEDualOutputHatchPartMachine.InaccessibleInfiniteTank(this, changeListeners, internalBuffer);
@@ -127,12 +133,26 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
     @Override
     public void onLoad() {
         super.onLoad();
+        inventorySubs = outputInventory.addChangedListener(this::updateInventorySubscription);
         tankSubs = outputTank.addChangedListener(this::updateInventorySubscription);
+    }
+
+    protected void updateInventorySubscription() {
+        if (shouldSubscribe()) {
+            autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
+        } else if (autoIOSubs != null) {
+            autoIOSubs.unsubscribe();
+            autoIOSubs = null;
+        }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
+        if (inventorySubs != null) {
+            inventorySubs.unsubscribe();
+            inventorySubs = null;
+        }
         if (tankSubs != null) {
             tankSubs.unsubscribe();
             tankSubs = null;
@@ -180,7 +200,7 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
         return super.shouldSubscribe() && !internalBuffer.storage.isEmpty();
     }
 
-    @Override
+
     protected void autoIO() {
         if (!this.shouldSyncME()) return;
         if (this.updateMEStatus()) {

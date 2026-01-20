@@ -29,10 +29,9 @@ public class MEUltimatePatternBufferPartMachine extends MEAdvancedPatternBufferP
     @Nullable
     protected TickableSubscription energySubs;
 
-    public MEUltimatePatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEUltimatePatternBufferPartMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier);
         energyContainer = new MEEnergyPartMachine.MEEnergyContainer(this, io);
-
     }
 
     @Override

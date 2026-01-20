@@ -1,6 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -61,7 +62,7 @@ public class CEMachines {
 
     private static void initAdvancedMEPatternBuffer() {
         ME_PATTERN_BUFFER = REGISTRATE
-                .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
+                .machine("me_pattern_buffer", holder -> new MEPatternBufferPartMachine(holder, LuV))
                 .cnLangValue("ME样板总成")
                 .tier(LuV)
                 .rotationState(RotationState.ALL)
@@ -95,7 +96,7 @@ public class CEMachines {
                 .register();
 
         ME_ADVANCED_PATTERN_BUFFER = REGISTRATE
-                .machine("advanced_me_pattern_buffer", MEAdvancedPatternBufferPartMachine::new)
+                .machine("advanced_me_pattern_buffer", holder -> new MEAdvancedPatternBufferPartMachine(holder, GTValues.ZPM))
                 .cnLangValue("§5ME高级样板总成§r")
                 .langValue("§5ME Advanced Pattern Buffer§r")
                 .tier(ZPM)
@@ -137,7 +138,7 @@ public class CEMachines {
 
     private static void initUltimateMEPatternBuffer() {
         ME_ULTIMATE_PATTERN_BUFFER = REGISTRATE
-                .machine("me_ultimate_pattern_buffer", MEUltimatePatternBufferPartMachine::new)
+                .machine("me_ultimate_pattern_buffer", holder -> new MEUltimatePatternBufferPartMachine(holder, UV))
                 .cnLangValue("§6ME究极样板总成§r")
                 .langValue("§6ME Ultimate Pattern Buffer§r")
                 .tier(UV)
