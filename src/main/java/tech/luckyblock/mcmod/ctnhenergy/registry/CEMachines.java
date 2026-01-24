@@ -11,7 +11,10 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 
 
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.network.chat.Component;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEStockingBusPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.METagStockingBusPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferProxyPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
@@ -48,6 +51,9 @@ public class CEMachines {
     public static MachineDefinition ENERGY_OUTPUT_HATCH_ME;
     public static MachineDefinition ME_ULTIMATE_PATTERN_BUFFER;
     public static MachineDefinition ME_ULTIMATE_PATTERN_BUFFER_PROXY;
+    public static MachineDefinition STOCKING_IMPORT_BUS_ME;
+    public static MachineDefinition TAG_STOCKING_IMPORT_BUS_ME;
+
     @CN("具有%s个样板槽位")
     @EN("")
     static Lang slot_number;
@@ -204,6 +210,18 @@ public class CEMachines {
     @EN("Configurable")
     static Lang configurable;
 
+    @CN({
+            "将蓄能变电站接入ME网络",
+            "允许通过ME网络为蓄能变电站输入或输出能量",
+            "可设置优先级"
+    })
+    @EN({
+            "Connects the Power Substation to the ME Network",
+            "Allows energy stored in the Power Substation to be input or output via the ME Network",
+            "Supports priority configuration"
+    })
+    static Lang[] substation_hatch;
+
     private static void initMEEnergyHatch(){
         ENERGY_INPUT_HATCH_ME = REGISTRATE
                 .machine("me_energy_input_hatch", holder -> new MEEnergyPartMachine(holder, IO.IN))
@@ -241,6 +259,23 @@ public class CEMachines {
                 .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                 .colorOverlayTieredHullModel("me_energy_out", null, null)
                 .register();
+
+        ME_SUBSTATION_HATCH = REGISTRATE
+                .machine("me_substation_hatch", MESubstationHatch::new)
+                .cnLangValue("ME变电仓")
+                .langValue("ME Substation Hatch")
+                .tooltips(
+                        substation_hatch[0].translate(),
+                        substation_hatch[1].translate(),
+                        substation_hatch[2].translate(),
+                        Component.translatable("gtceu.part_sharing.disabled")
+                )
+                .tier(IV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY)
+                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_output_hatch_64a"))
+                .register();
     }
 
     private static void initDualOutputHatchME() {
@@ -258,45 +293,50 @@ public class CEMachines {
                 .register();
     }
 
-    @CN({
-            "将蓄能变电站接入ME网络",
-            "允许通过ME网络为蓄能变电站输入或输出能量",
-            "可设置优先级"
-    })
-    @EN({
-            "Connects the Power Substation to the ME Network",
-            "Allows energy stored in the Power Substation to be input or output via the ME Network",
-            "Supports priority configuration"
-    })
-    static Lang[] substation_hatch;
+    @CN("可使用物品标签过滤可被自动拉取的物品")
+    @EN("Allows items to be filtered for Auto-Pull using Item Tags.")
+    static Lang tag_filter;
 
     public static void init() {
         initAdvancedMEPatternBuffer();
         initUltimateMEPatternBuffer();
         initDualOutputHatchME();
         initMEEnergyHatch();
-        ME_SUBSTATION_HATCH = REGISTRATE
-                .machine("me_substation_hatch", MESubstationHatch::new)
-                .cnLangValue("ME变电仓")
-                .langValue("ME Substation Hatch")
-                .tooltips(
-                        substation_hatch[0].translate(),
-                        substation_hatch[1].translate(),
-                        substation_hatch[2].translate(),
-                        Component.translatable("gtceu.part_sharing.disabled")
-                )
+
+        STOCKING_IMPORT_BUS_ME = REGISTRATE
+                .machine("me_stocking_input_bus", MEStockingBusPartMachine::new)
+                .cnLangValue("ME库存输入总线")
+                .langValue("ME Stocking Input Bus")
                 .tier(IV)
                 .rotationState(RotationState.ALL)
-                .abilities(PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY)
-                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_output_hatch_64a"))
+                .abilities(PartAbility.IMPORT_ITEMS)
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
+                .tooltips(
+                        Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                        Component.translatable("gtceu.machine.me.stocking_item.tooltip.0"),
+                        Component.translatable("gtceu.machine.me_import_item_hatch.configs.tooltip"),
+                        Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                        Component.translatable("gtceu.machine.me.stocking_item.tooltip.1"),
+                        Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
+        TAG_STOCKING_IMPORT_BUS_ME = REGISTRATE
+                .machine("me_tag_stocking_input_bus", METagStockingBusPartMachine::new)
+                .cnLangValue("ME标签库存输入总线")
+                .langValue("ME Tag Stocking Input Bus")
+                .tier(LuV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.IMPORT_ITEMS)
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
+                .tooltips(
+                        Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                        Component.translatable("gtceu.machine.me.stocking_item.tooltip.0"),
+                        Component.translatable("gtceu.machine.me_import_item_hatch.configs.tooltip"),
+                        Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                        Component.translatable("gtceu.machine.me.stocking_item.tooltip.1"),
+                        tag_filter.translate(),
+                        Component.translatable("gtceu.part_sharing.enabled"))
+                .register();
 
-
-        GTAEMachines.STOCKING_IMPORT_BUS_ME.setTier(IV);
-        GTAEMachines.STOCKING_IMPORT_HATCH_ME.setTier(IV);
-        //BiConsumer<ItemStack, List<Component>> builder = (i, l)-> l.add(slot_number.translate(27));
-        //GTAEMachines.ME_PATTERN_BUFFER.setTooltipBuilder(builder.andThen(GTAEMachines.ME_PATTERN_BUFFER.getTooltipBuilder()));
     }
 }
