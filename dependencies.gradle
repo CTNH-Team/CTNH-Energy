@@ -30,7 +30,7 @@ dependencies {
 
     //eae
     modImplementation("curse.maven:glodium-957920:5226922")
-    modImplementation("curse.maven:ex-pattern-provider-892005:7064210")
+    modImplementation("curse.maven:ex-pattern-provider-892005:7472662")
     //PCC
     modImplementation("curse.maven:programmed-circuit-card-1150540:7152160")
     //EUp2p

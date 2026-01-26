@@ -6,6 +6,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.me.crafting.CraftingCPUMenu;
+import lombok.Getter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,9 +43,11 @@ public class QuantumComputerMenu extends CraftingCPUMenu {
     @Nullable
     private ICraftingCPU selectedCpu = null;
 
+    @Getter
     @GuiSync(9)
     private int selectedCpuSerial = -1;
 
+    @Getter
     @GuiSync(10)
     public CpuSelectionMode selectionMode = CpuSelectionMode.ANY;
 
@@ -174,14 +177,6 @@ public class QuantumComputerMenu extends CraftingCPUMenu {
                 setCPU(newSelectedCpu);
             }
         }
-    }
-
-    public int getSelectedCpuSerial() {
-        return selectedCpuSerial;
-    }
-
-    public CpuSelectionMode getSelectionMode() {
-        return this.selectionMode;
     }
 
     public record CraftingCpuList(List<CraftingCpuListEntry> cpus) implements PacketWritable {

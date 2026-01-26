@@ -64,9 +64,15 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependency."${mod_id}"]]
+modId = "gtceu"
+mandatory = true
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependency."${mod_id}"]]
 modId = "ae2"
 mandatory = true
-ordering = "NONE"
+ordering = "AFTER"
 side = "BOTH"
 
 [[dependency."${mod_id}"]]

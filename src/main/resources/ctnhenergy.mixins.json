@@ -43,6 +43,7 @@
     "gtm.MEPatternBufferPartMachineMixin",
     "gtm.MEPatternBufferProxyPartMachineMixin",
     "gtm.MultiblockStateMixin",
+    "gtm.PowerSubstationMachineMixin",
     "gtm.WorkableElectricMultiblockMachineMixin",
     "omni.OCItemsMixin",
     "omni.OmniCraftingBlockEntityMixin",

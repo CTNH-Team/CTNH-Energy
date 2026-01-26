@@ -1,28 +1,40 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine;
 
+import appeng.core.definitions.AEItems;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
+import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.networking.LDLNetworking;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -59,13 +71,17 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     @Getter
     private int storageKilobyte = 0;
 
-    @Getter
     @Persisted
     private int coprocessing = 0;
 
     @Getter
+    @Setter
+    @Persisted
+    private int maxMultiplier = 64;
+
+    @Getter
     private IOpticalComputationProvider computationContainer;
-    private final int COMPUTATION2COPROCESSING = 4;
+    private final int COMPUTATION2COPROCESSING = 1;
 
     protected LongSet qcCasings;
 
@@ -105,6 +121,13 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         this.workStatus = WorkStatus.SUSPEND;
         qcCasings = getMultiblockState().getMatchContext().getOrDefault("qcCasings", LongSets.emptySet());
         //onLoad();
+    }
+
+    public int getCoprocessing() {
+        var hatchParallels = getParallelHatch()
+                .map(IParallelHatch::getCurrentParallel)
+                .orElse(1);
+        return hatchParallels * coprocessing;
     }
 
     private boolean findMENetworkBlockEntity(){
@@ -151,9 +174,9 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             "耗电量：",
             "总内存：",
             "空闲内存：",
-            "最大算力：",
-            "最大可用并行：",
-            "当前并行：",
+            "最大可用算力：",
+            "当前并行数：",
+            "当前算力消耗：",
             "按住shift可翻倍/减半"
     })
     @EN({
@@ -161,9 +184,9 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             "Power: ",
             "Total Memory: ",
             "Remaining memory: ",
-            "Total Computation: ",
-            "Total Co-Processing: ",
+            "Total Available Computation: ",
             "Current Co-Processing: ",
+            "Current Computation Consumption: ",
             "Hold Shift to double/halve."
     })
     static Lang[] jiuzhang_tooltip;
@@ -183,11 +206,11 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                 }
             }
             //功率：
-            int calculateEnergyUsage = calculateEnergyUsage();
+            long calculateEnergyUsage = calculateEnergyUsage();
             int energyTier = GTUtil.getFloorTierByVoltage(energyContainer.getInputVoltage());
             long maxVoltage = GTValues.V[energyTier];
             textList.add(jiuzhang_tooltip[1].translate()
-                            .append(Component.literal(calculateEnergyUsage + "/" + maxVoltage + " EU/t (" + GTValues.VNF[energyTier] + ")")
+                            .append(Component.literal( FormattingUtil.formatNumbers(calculateEnergyUsage) + "/" + FormattingUtil.formatNumbers(maxVoltage) + " EU/t (" + GTValues.VNF[energyTier] + ")")
                                     .withStyle(calculateEnergyUsage <= maxVoltage ? ChatFormatting.GREEN : ChatFormatting.DARK_RED)
                             ));
             //总内存：${StorageKilobyte} KB
@@ -199,17 +222,17 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             //总算力：
             textList.add(jiuzhang_tooltip[4].translate()
                     .append(getMaxCWUt() + " CWU/t"));
-            //最大并行：
+            //当前并行：
             textList.add(jiuzhang_tooltip[5].translate()
-                    .append(String.valueOf(getMaxCoProcessing())));
-            //当前并行：[-] [+]
+                    .append(String.valueOf(getCoprocessing())));
+            //当前算力消耗：[-] [+]
             textList.add(jiuzhang_tooltip[6].translate().withStyle(
                     style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, jiuzhang_tooltip[7].translate()))
                     )
                     .append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"))
                     .append(" ")
                     .append(Component.literal(coprocessing + "")
-                            .withStyle(coprocessing > getMaxCoProcessing() ? ChatFormatting.DARK_RED : ChatFormatting.WHITE))
+                            .withStyle(coprocessing > computationContainer.getMaxCWUt() ? ChatFormatting.DARK_RED : ChatFormatting.WHITE))
                     .append(" ")
                     .append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add")));
         }else{
@@ -223,11 +246,17 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-
+        configuratorPanel.attachConfigurators(new MaxMultiplierConfigurator());
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
-                new GuiTextureGroup(GuiTextures.BUTTON, CETextures.CRAFT), this::openCPU)
+                new GuiTextureGroup(CETextures.CRAFT), this::openCPU)
                 .setTooltips(List.of(craft_ui.translate())));
-        super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
+                GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
+                this::isWorkingEnabled, (clickData, pressed) -> setWorkingEnabled(pressed))
+                .setTooltipsSupplier(pressed -> List.of(
+                        Component.translatable(
+                                pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
 
     }
 
@@ -237,8 +266,6 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                 LDLNetworking.NETWORK.sendToServer(new QCOpenCPUMenuPacket(meNetworkPortBlockEntity.getBlockPos()));
             }
         }
-//        if(!isRemote())
-//            MenuOpener.open(AEMenus.QUANTUM_COMPUTER.get(), player, MenuLocators.forBlockEntity(meNetworkPortBlockEntity));
     }
 
     @Override
@@ -250,16 +277,12 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         return computationContainer!= null? computationContainer.getMaxCWUt() : 0;
     }
 
-    public int getMaxCoProcessing() {
-        return computationContainer.getMaxCWUt() * COMPUTATION2COPROCESSING;
-    }
-
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             if (clickData.isShiftClick)
-                this.coprocessing = Mth.clamp((int)(this.coprocessing * (componentData.equals("add") ? 2 : 0.5)), 0, getMaxCoProcessing());
+                this.coprocessing = Mth.clamp((int)(this.coprocessing * (componentData.equals("add") ? 2 : 0.5)), 0, computationContainer.getMaxCWUt());
             else
-                this.coprocessing = Mth.clamp(this.coprocessing + (componentData.equals("add") ? 1 : -1), 0, getMaxCoProcessing());
+                this.coprocessing = Mth.clamp(this.coprocessing + (componentData.equals("add") ? 1 : -1), 0, computationContainer.getMaxCWUt());
         }
     }
 
@@ -294,31 +317,23 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     private boolean consumeEnergy() {
-        int energyToConsume = calculateEnergyUsage();
+        long energyToConsume = calculateEnergyUsage();
 
         if (this.energyContainer != null && this.energyContainer.getEnergyStored() >= energyToConsume) {
             long consumed = this.energyContainer.removeEnergy(energyToConsume);
-            if (consumed == energyToConsume) {
-                return true;
-            } else {
-                return false;
-            }
+            return consumed == energyToConsume;
         } else {
             return false;
         }
     }
 
-    private int calculateEnergyUsage() {
-        return GTValues.VA[GTValues.LV] * storageKilobyte + GTValues.VA[GTValues.EV] * coprocessing;
+    private long calculateEnergyUsage() {
+        return GTValues.V[GTValues.LV] * storageKilobyte + GTValues.V[GTValues.HV] * coprocessing;
     }
 
     private boolean consumeComputation() {
         if (checkComputation(true)) {
-            if (checkComputation(false)) {
-                return true;
-            } else {
-                return false;
-            }
+            return checkComputation(false);
         } else {
             return false;
         }
@@ -425,6 +440,34 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
         WorkStatus(Component localize) {
             this.localize = localize;
+        }
+    }
+
+    public class MaxMultiplierConfigurator implements IFancyConfigurator {
+
+        @CN("设置样板自动翻倍最大倍数")
+        @EN("Config max pattern multiplier")
+        static Lang max_multiplier;
+
+        @Override
+        public Component getTitle() {
+            return max_multiplier.translate();
+        }
+
+        @Override
+        public IGuiTexture getIcon() {
+            return new ItemStackTexture(AEItems.BLANK_PATTERN.asItem());
+        }
+
+        @Override
+        public Widget createConfigurator() {
+            var group = new WidgetGroup(0, 0, 90, 22);
+            group.addWidget(new IntInputWidget(4, 0, 81, 14,
+                    QuantumComputerMultiblockMachine.this::getMaxMultiplier,
+                    QuantumComputerMultiblockMachine.this::setMaxMultiplier)
+                    .setMin(1));
+
+            return group;
         }
     }
 }

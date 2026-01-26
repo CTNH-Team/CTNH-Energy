@@ -57,15 +57,15 @@ public class CEMultiblock {
     public static MultiblockMachineDefinition POWER_SUBSTATION;
     @CN({
             "通过顶部的接口接入ME网络，作为合成CPU处理网络的自动合成任务",
-            "自动分离出量子计算单元以创建子CPU来§e同时处理多个合成任务§r",
-            "所有子CPU具有相同并行数，总内存取决于结构中所有合成存储器容量之和",
-            "有比OMNI CPU更大的§b样板自动翻倍§r倍数",
-            "可通过主界面设置并行数，每4并行需要消耗1算力",
-            "能量消耗：(总内存x32 + 并行数x1920) EU/t",
+            "自动创建子CPU来§e同时处理多个合成任务§r",
+            "所有子CPU具有相同并行数，CPU并行数 = 并行控制仓并行数 * 当前算力消耗",
+            "总内存取决于结构中所有合成存储器容量之和",
+            "可通过UI设置当前算力消耗和§b样板自动翻倍§r倍数",
+            "能量消耗：(总内存x32 + 并行数x512) EU/t",
             "§d§o策定乾坤算因果§r§r"
     })
     @EN({
-            "","","","","","",
+            "","","","","","","",
             "§d§oScheming the cosmos, Computing karma.§r§r"
 
 
@@ -125,6 +125,7 @@ public class CEMultiblock {
                         .where("A", Predicates.blocks(CEBlocks.QUANTUM_COMPUTER_CASING.get()))
                         .where("F", Predicates.blocks(CEBlocks.STEADY_STATE_COMPUTING_MATRIX_SHELL.get())
                                 .or(Predicates.autoAbilities(CERecipeTypes.QUANTUM_COMPUTER))
+                                .or(Predicates.autoAbilities(false, false, true))
                         )
                         .build())
                 .workableCasingModel(CTNHEnergy.id("block/casings/steady_state_computing_matrix_shell"),

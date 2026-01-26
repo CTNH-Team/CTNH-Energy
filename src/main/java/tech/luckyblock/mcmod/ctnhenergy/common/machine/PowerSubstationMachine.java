@@ -31,6 +31,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -97,6 +98,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Getter
     protected ConditionalSubscriptionHandler tickSubscription;
 
+    @Setter
+    BigInteger legacyEnergy = BigInteger.ZERO;
+
     public PowerSubstationMachine(IMachineBlockEntity holder) {
         super(holder);
         this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isFormed);
@@ -123,6 +127,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             return;
         }
         this.energyBank.rebuild(batteries);
+        energyBank.fillBig(legacyEnergy);
+        legacyEnergy = BigInteger.ZERO;
 
         List<IEnergyContainer> inputs = new ArrayList<>();
         List<IEnergyContainer> outputs = new ArrayList<>();
@@ -167,6 +173,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         this.outputHatches = new EnergyContainerList(outputs);
 
         this.passiveDrain = this.energyBank.getPassiveDrainPerTick();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
     }
 
     @Override
@@ -454,7 +465,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             fillBig(stored);
         }
 
-        private BigInteger fillBig(BigInteger amount) {
+        public BigInteger fillBig(BigInteger amount) {
             if (amount == null || amount.signum() <= 0 || storage.isEmpty()) {
                 return BigInteger.ZERO;
             }

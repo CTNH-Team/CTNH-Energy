@@ -521,7 +521,10 @@ public class MEPatternBufferPartMachine extends TieredIOPartMachine
                         name.append(" - " + circuitConfiguration) : name;
 
                 return new PatternContainerGroup(
-                        AEItemKey.of(controllerDefinition.asStack()), groupName, Collections.emptyList());
+                        AEItemKey.of(controllerDefinition.asStack()),
+                        groupName,
+                        List.of(getDefinition().getItem().getDescription())
+                );
             }
         } else {
             if (!customName.isEmpty()) {
