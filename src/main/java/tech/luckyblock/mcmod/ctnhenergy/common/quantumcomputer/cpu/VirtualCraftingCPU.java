@@ -72,6 +72,10 @@ public class VirtualCraftingCPU implements ICraftingCPU {
         return cluster.getCoProcessors();
     }
 
+    public int getMaxMultiplier(){
+        return cluster.getMaxMultiplier();
+    }
+
     @Override
     public @Nullable Component getName() {
         return cluster.getName();

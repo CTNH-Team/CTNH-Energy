@@ -3,6 +3,7 @@ package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -21,10 +22,10 @@ import java.util.List;
 @Prefix("ui")
 public class MEDualOutputConfigurator implements IFancyUIProvider {
 
-    MEBusPartMachine machine;
+    IGridConnectedMachine machine;
     private final KeyStorage internalBuffer;
 
-    public MEDualOutputConfigurator(MEBusPartMachine machine, KeyStorage buffer) {
+    public MEDualOutputConfigurator(IGridConnectedMachine machine, KeyStorage buffer) {
         this.machine = machine;
         internalBuffer = buffer;
     }

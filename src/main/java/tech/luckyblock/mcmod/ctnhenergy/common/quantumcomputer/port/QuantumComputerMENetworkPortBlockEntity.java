@@ -127,6 +127,13 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
         return machine.getCoprocessing();
     }
 
+    public int getMaxMultiplier(){
+        if (machine==null){
+            return 1;
+        }
+        return machine.getMaxMultiplier();
+    }
+
     @Override
     protected Item getItemFromBlockEntity() {
 //        if (this.level == null) {

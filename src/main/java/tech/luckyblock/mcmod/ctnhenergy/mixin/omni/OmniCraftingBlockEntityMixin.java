@@ -3,6 +3,8 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.omni;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import com.wintercogs.ae2omnicells.common.blocks.entities.OmniCraftingBlockEntity;
+import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
+import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingUnitType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,9 +20,13 @@ public class OmniCraftingBlockEntityMixin extends CraftingBlockEntity {
 
     @Override
     public CraftingCPUCluster getCluster() {
-        var cluster = super.getCluster();
-        if(cluster!=null && cluster.craftingLogic instanceof IAutoMultiplyCPU autoMultiplyCPU)
-            autoMultiplyCPU.setEnableMultiply(true);
+        var unitType = getUnitBlock().type;
+        if(unitType instanceof OmniCraftingUnitType omniType && omniType.family == OmniCraftingFamily.COMPLEX)
+        {
+            var cluster = super.getCluster();
+            if(cluster!=null && cluster.craftingLogic instanceof IAutoMultiplyCPU autoMultiplyCPU)
+                autoMultiplyCPU.setEnableMultiply(true);
+        }
         return super.getCluster();
     }
 }

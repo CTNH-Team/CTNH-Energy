@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer;
+package tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -8,12 +8,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
@@ -23,23 +23,24 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.BlockHitResult;
-
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ProgrammableProxySlotRecipeHandler;
+
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEAdvancedPatternBufferProxyPartMachine extends TieredIOPartMachine
+public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
         implements IMachineLife, IDataStickInteractable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEAdvancedPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+            MEPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     protected final ProgrammableProxySlotRecipeHandler proxySlotRecipeHandler;
@@ -49,12 +50,17 @@ public class MEAdvancedPatternBufferProxyPartMachine extends TieredIOPartMachine
     @DescSynced
     private @Nullable BlockPos bufferPos;
 
-    private @Nullable MEAdvancedPatternBufferPartMachine buffer = null;
+    private @Nullable MEPatternBufferPartMachine buffer = null;
     private boolean bufferResolved = false;
 
-    public MEAdvancedPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.ZPM, IO.IN);
-        proxySlotRecipeHandler = new ProgrammableProxySlotRecipeHandler(this, MEAdvancedPatternBufferPartMachine.MAX_PATTERN_COUNT);
+    public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
+        this(holder, GTValues.LuV, MEPatternBufferPartMachine.MAX_PATTERN_COUNT);
+    }
+
+    public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder, int tier, int maxPatternCount) {
+        super(holder, tier, IO.IN);
+        proxySlotRecipeHandler = new ProgrammableProxySlotRecipeHandler(this, maxPatternCount);
+
     }
 
     @Override
@@ -75,7 +81,7 @@ public class MEAdvancedPatternBufferProxyPartMachine extends TieredIOPartMachine
         var level = getLevel();
         if (level == null || pos == null) {
             buffer = null;
-        } else if (MetaMachine.getMachine(level, pos) instanceof MEAdvancedPatternBufferPartMachine machine
+        } else if (MetaMachine.getMachine(level, pos) instanceof MEPatternBufferPartMachine machine
                 && isBuffer(machine)) {
             bufferPos = pos;
             buffer = machine;
@@ -86,16 +92,17 @@ public class MEAdvancedPatternBufferProxyPartMachine extends TieredIOPartMachine
         }
     }
 
-    public void updateProxy(MEAdvancedPatternBufferPartMachine machine){
+    public void updateProxy(MEPatternBufferPartMachine machine){
         proxySlotRecipeHandler.updateProxy(machine);
+
     }
 
     public boolean isBuffer(MetaMachine machine){
-        return machine.getDefinition() == CEMachines.ME_ADVANCED_PATTERN_BUFFER;
+        return machine.getDefinition() == CEMachines.ME_PATTERN_BUFFER;
     }
 
     @Nullable
-    public MEAdvancedPatternBufferPartMachine getBuffer() {
+    public MEPatternBufferPartMachine getBuffer() {
         if (!bufferResolved) setBuffer(bufferPos);
         return buffer;
     }

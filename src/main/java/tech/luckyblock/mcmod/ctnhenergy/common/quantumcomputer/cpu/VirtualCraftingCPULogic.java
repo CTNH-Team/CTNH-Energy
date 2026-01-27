@@ -1,9 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGrid;
@@ -200,7 +197,7 @@ public class VirtualCraftingCPULogic {
             if(nonBlocking != 0) {
                 //神秘公式
                 multiplier = Math.max( (totalCount - blocking -1)/nonBlocking + 1,  1);
-                multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultipleQuantum);
+                multiplier = Math.min(multiplier, cpu.getMaxMultiplier());
             }
 
 
@@ -268,11 +265,15 @@ public class VirtualCraftingCPULogic {
         return pushedPatterns;
     }
 
-    private boolean CE$isBlock(ICraftingProvider provider) {
+    public static boolean CE$isBlock(ICraftingProvider provider) {
         if(provider instanceof PatternProviderLogic){
             var configManager = ((PatternProviderLogicAccessor)provider).getConfigManager();
-            return configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES
-                    && configManager.getSetting(CESettings.BLOCKING_TYPE) != CESettings.BlockingType.SMART;
+            if(configManager.getSetting(Settings.LOCK_CRAFTING_MODE) != LockCraftingMode.NONE)
+                return true;
+            else {
+                return configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES
+                        && configManager.getSetting(CESettings.BLOCKING_TYPE) != CESettings.BlockingType.SMART;
+            }
         }
         return false;
     }

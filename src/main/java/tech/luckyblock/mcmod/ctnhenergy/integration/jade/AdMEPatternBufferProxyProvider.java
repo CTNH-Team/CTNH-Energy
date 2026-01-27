@@ -14,13 +14,14 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.advancedpatternbuffer.MEAdvancedPatternBufferProxyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferProxyPartMachine;
+
 
 public class AdMEPatternBufferProxyProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEAdvancedPatternBufferProxyPartMachine) {
+            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine) {
                 CompoundTag serverData = blockAccessor.getServerData();
                 if (!serverData.getBoolean("formed")) return;
                 if (!serverData.getBoolean("bound")) {
@@ -40,7 +41,7 @@ public class AdMEPatternBufferProxyProvider implements IBlockComponentProvider, 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEAdvancedPatternBufferProxyPartMachine proxy) {
+            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine proxy) {
                 if (!proxy.isFormed()) {
                     compoundTag.putBoolean("formed", false);
                     return;

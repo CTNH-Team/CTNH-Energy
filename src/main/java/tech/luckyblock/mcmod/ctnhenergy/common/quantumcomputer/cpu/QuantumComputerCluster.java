@@ -265,6 +265,10 @@ public class QuantumComputerCluster implements IAECluster{
         return this.meNetworkPortBlockEntity.getCoprocessing();
     }
 
+    public int getMaxMultiplier(){
+        return meNetworkPortBlockEntity.getMaxMultiplier();
+    }
+
     public Component getName() {
         return this.myName;
     }

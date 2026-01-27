@@ -1,9 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.cpu;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.energy.IEnergyService;
@@ -36,6 +33,8 @@ import tech.luckyblock.mcmod.ctnhenergy.utils.ProviderRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu.VirtualCraftingCPULogic.CE$isBlock;
 
 
 @Mixin(value = CraftingCpuLogic.class, remap = false)
@@ -71,15 +70,6 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
     @Unique
     private static final Logger LOG = LoggerFactory.getLogger("CTNHEnergy-CraftingCPU");
 
-    @Unique
-    boolean CE$isBlock(ICraftingProvider provider){
-        if(provider instanceof PatternProviderLogic){
-            var configManager = ((PatternProviderLogicAccessor)provider).getConfigManager();
-            return configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES
-                    && configManager.getSetting(CESettings.BLOCKING_TYPE) != CESettings.BlockingType.SMART;
-        }
-        return false;
-    }
 
     /**
      * 自动翻倍样板
