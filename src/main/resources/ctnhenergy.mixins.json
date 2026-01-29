@@ -28,6 +28,7 @@
     "ae2.misc.MachineUpgradeInventoryAccessor",
     "ae2.misc.PartPlacementMixin",
     "ae2.misc.UpgradeInventoriesMixin",
+    "ae2.misc.WirelessAccessPointBlockEntityMixin",
     "ae2.patternencodingpanel.ProcessingEncodingPanelMixin",
     "ae2.patternencodingpanel.StyleManagerMixin",
     "ae2.patternprovider.PatternContainerGroupMixin",
