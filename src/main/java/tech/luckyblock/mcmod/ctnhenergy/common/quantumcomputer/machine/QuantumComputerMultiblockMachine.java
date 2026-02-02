@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -25,16 +26,17 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.networking.LDLNetworking;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRubiksRotationMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
@@ -47,12 +49,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 import tech.luckyblock.mcmod.ctnhenergy.common.block.QuantumComputerCasingBlock;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
 import tech.luckyblock.mcmod.ctnhenergy.network.packets.QCOpenCPUMenuPacket;
@@ -65,18 +64,21 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @Prefix("machine")
-public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver, IRubiksRotationMultiblock {
+public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver, IRotationMultiblock<RubiksCubeContraptionEntity> {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             QuantumComputerMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
-    public List<RubiksCubeContraptionEntity> rotatingEntities;
+    @Getter
+    @Setter
+    public List<RubiksCubeContraptionEntity> rotatingEntity = new ArrayList<>();
     public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
 
     protected TickableSubscription rotatingSubs;
@@ -132,13 +134,40 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         this.storageKilobyte = getMultiblockState().getMatchContext().getOrPut("StorageKb", 0);
         this.workStatus = WorkStatus.SUSPEND;
         qcCasings = getMultiblockState().getMatchContext().getOrDefault("qcCasings", LongSets.emptySet());
-        if (rotatingEntities == null) {
-            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 6), this.getFrontFacing());
+        if (rotatingEntity.isEmpty()) {
+            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 6));
             if (rotatingEntities != null) {
-                this.rotatingEntities = new ArrayList<>(rotatingEntities.values());
+                this.rotatingEntity = new ArrayList<>(rotatingEntities.values());
             }
             this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
         }
+    }
+    @Override
+    public Map<Integer, RubiksCubeContraptionEntity> assemble(BlockPos pivot) {
+        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        Map<Integer, RubiksCubeContraptionEntity> ce = new HashMap<>();
+        var pattern = self().getDefinition().getPatternFactory().get();
+        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
+            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
+            for (var entry : dymanicPart.entrySet()) {
+                int group = entry.getKey();
+                var part = entry.getValue();
+                BlockPos pos = pivot;
+                BlockPos randomPos = part.get(0);
+                pos = pos.offset((int) Math.signum(randomPos.getX() - pivot.getX()),
+                        (int) Math.signum(randomPos.getY() - pivot.getY()),
+                        (int) Math.signum(randomPos.getZ() - pivot.getZ()));
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                contraption.assemble(this.self().getLevel(), self().getPos());
+                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
+                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter(), getFrontFacing(), pos, this);
+                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
+                this.self().getLevel().addFreshEntity(contraptionEntity);
+                ce.put(group, contraptionEntity);
+            }
+            return ce;
+        }
+        return null;
     }
 
     public int getCoprocessing() {
@@ -168,14 +197,6 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
         return false;
     }
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (rotatingEntities != null) {
-            this.rotatingEntities.forEach(AbstractContraptionEntity::disassemble);
-        }
-        this.rotatingEntities = null;
-    }
 
     @Override
     public void onStructureInvalid() {
@@ -191,23 +212,24 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
         updateCasings(QuantumComputerCasingBlock.State.GREY);
         qcCasings = null;
-        if (rotatingEntities != null) {
-            this.rotatingEntities.forEach(AbstractContraptionEntity::disassemble);
+        if (!rotatingEntity.isEmpty()) {
+            this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
         }
-        this.rotatingEntities = null;
+        this.rotatingEntity.clear();
         if (rotatingSubs != null) {
             unsubscribe(rotatingSubs);
         }
     }
 
     public void rotatingTick() {
-        if (isFormed && rotatingEntities != null) {
-            if (getOffsetTimer() % 20 == 0) {
+        if (isFormed && rotatingEntity != null) {
+            var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
+            if (getOffsetTimer() % (2 * halfTick) == 0) {
                 int index = RandomSource.create().nextInt(avalibleMoving.size());
-                rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
+                rotatingEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
-            if (getOffsetTimer() % 20 == 10) {
-                rotatingEntities.forEach(entity -> entity.performStandardMove("STOP"));
+            if (getOffsetTimer() % (2 * halfTick) == halfTick) {
+                rotatingEntity.forEach(entity -> entity.performStandardMove("STOP"));
             }
         }
     }
