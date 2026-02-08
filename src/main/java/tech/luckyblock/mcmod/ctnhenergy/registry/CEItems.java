@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -23,6 +22,8 @@ public class CEItems {
     public static ItemEntry<EUCellItem>[] EU_CELL = new ItemEntry[TIER_COUNT];
     public static ItemEntry<DynamoCardItem> DYNAMO_CARD;
     public static ItemEntry<Item> EU_CELL_HOUSING;
+
+
 
     public static void init(){
         registerEUCell();

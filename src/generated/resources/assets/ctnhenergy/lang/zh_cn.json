@@ -50,6 +50,7 @@
   "item.ctnhenergy.iv_eu_cell": "§9IV§r ME EU存储元件",
   "item.ctnhenergy.luv_eu_cell": "§dLuV§r ME EU存储元件",
   "item.ctnhenergy.lv_eu_cell": "§7LV§r ME EU存储元件",
+  "item.ctnhenergy.max_amperage": "每面最大输出电流为16A",
   "item.ctnhenergy.max_eu_cell": "§c§lMAX§r ME EU存储元件",
   "item.ctnhenergy.mv_eu_cell": "§bMV§r ME EU存储元件",
   "item.ctnhenergy.opv_eu_cell": "§9§lOpV§r ME EU存储元件",
