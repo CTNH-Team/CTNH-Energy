@@ -46,6 +46,7 @@
     "gtm.MultiblockStateMixin",
     "gtm.PowerSubstationMachineMixin",
     "gtm.WorkableElectricMultiblockMachineMixin",
+    "omni.AEUniversalCellInventoryMixin",
     "omni.OCItemsMixin",
     "omni.OmniCraftingBlockEntityMixin",
     "pcc.ConfigClientAccessor",
