@@ -139,12 +139,13 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             if (rotatingEntities != null) {
                 this.rotatingEntity = new ArrayList<>(rotatingEntities.values());
             }
-            this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
         }
+        this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
     }
     @Override
     public Map<Integer, RubiksCubeContraptionEntity> assemble(BlockPos pivot) {
         if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        if (getLevel().isClientSide) return null;
         Map<Integer, RubiksCubeContraptionEntity> ce = new HashMap<>();
         var pattern = self().getDefinition().getPatternFactory().get();
         if (pattern instanceof StaticBlockPattern staticBlockPattern) {
