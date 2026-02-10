@@ -139,12 +139,14 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
             if (rotatingEntities != null) {
                 this.rotatingEntity = new ArrayList<>(rotatingEntities.values());
             }
-            this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
         }
+        this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
     }
     @Override
     public Map<Integer, RubiksCubeContraptionEntity> assemble(BlockPos pivot) {
-        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        var level = getLevel();
+        if (level == null || level.isClientSide) return null;
+        if (getLevel().isClientSide) return null;
         Map<Integer, RubiksCubeContraptionEntity> ce = new HashMap<>();
         var pattern = self().getDefinition().getPatternFactory().get();
         if (pattern instanceof StaticBlockPattern staticBlockPattern) {
@@ -158,11 +160,11 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                         (int) Math.signum(randomPos.getY() - pivot.getY()),
                         (int) Math.signum(randomPos.getZ() - pivot.getZ()));
                 SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
-                contraption.assemble(this.self().getLevel(), self().getPos());
-                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter(), getFrontFacing(), pos, this);
+                contraption.assemble(level, self().getPos());
+                contraption.removeBlocksFromWorld(level, BlockPos.ZERO);
+                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(level, contraption, pivot.getCenter(), getFrontFacing(), pos, this);
                 contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
-                this.self().getLevel().addFreshEntity(contraptionEntity);
+                level.addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);
             }
             return ce;
