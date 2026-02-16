@@ -217,7 +217,7 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         if (!rotatingEntity.isEmpty()) {
             this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
         }
-        this.rotatingEntity.clear();
+        this.rotatingEntity = new ArrayList<>();
         if (rotatingSubs != null) {
             unsubscribe(rotatingSubs);
         }
