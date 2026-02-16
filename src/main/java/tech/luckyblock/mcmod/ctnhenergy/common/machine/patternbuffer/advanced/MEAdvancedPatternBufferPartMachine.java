@@ -98,7 +98,7 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEAdvancedPatternBufferPartMachine.class, MEPatternBufferPartMachine.MANAGED_FIELD_HOLDER);
-    public static final int MAX_PATTERN_COUNT = 54;
+    public static final int MAX_PATTERN_COUNT = 72;
 
     @Nullable
     protected TickableSubscription autoIOSubs;
@@ -182,7 +182,7 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
 
     @Override
     public int getColSize() {
-        return 6;
+        return 8;
     }
 
     @Override

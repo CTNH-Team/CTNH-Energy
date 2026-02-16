@@ -140,7 +140,7 @@ public class MEPatternBufferPartMachine extends TieredIOPartMachine
 
     protected final IActionSource actionSource;
 
-    public static final int MAX_PATTERN_COUNT = 27;
+    public static final int MAX_PATTERN_COUNT = 36;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
 
         @Override
@@ -388,7 +388,7 @@ public class MEPatternBufferPartMachine extends TieredIOPartMachine
     }
 
     public int getColSize(){
-        return 3;
+        return 4;
     }
 
     @Override
