@@ -25,6 +25,7 @@
     "ae2.menu.AEBaseMenuMixin",
     "ae2.misc.ColorApplicatorItemMixin",
     "ae2.misc.IOBusPartMixin",
+    "gtm.KeyStorageMixin",
     "ae2.misc.MachineUpgradeInventoryAccessor",
     "ae2.misc.PartPlacementMixin",
     "ae2.misc.UpgradeInventoriesMixin",
