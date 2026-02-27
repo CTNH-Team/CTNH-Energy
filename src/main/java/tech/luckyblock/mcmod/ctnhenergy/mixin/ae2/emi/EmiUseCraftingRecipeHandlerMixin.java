@@ -8,6 +8,7 @@ import appeng.helpers.InventoryAction;
 import appeng.integration.modules.emi.EmiStackHelper;
 import appeng.integration.modules.emi.EmiUseCraftingRecipeHandler;
 import appeng.menu.me.items.CraftingTermMenu;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
@@ -31,6 +32,7 @@ import tech.luckyblock.mcmod.ctnhenergy.utils.ResultReflection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Mixin(value = EmiUseCraftingRecipeHandler.class, remap = false)
@@ -103,6 +105,13 @@ public abstract class EmiUseCraftingRecipeHandlerMixin implements StandardRecipe
             }
             else {
                 var templateItems = NonNullList.of(ItemStack.EMPTY);
+                if(!(recipeBase instanceof GTRecipe)){
+                    templateItems = slotToIngredientMap.values().stream()
+                            .filter(item -> !item.isEmpty() && !item.getItems()[0].isEmpty())
+                            .map(item -> item.getItems()[0])
+                            .collect(Collectors.toCollection(NonNullList::create));
+                }
+
                 var recipeId = emiRecipe.getId();
                 NetworkHandler.instance()
                         .sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems, AbstractContainerScreen.hasControlDown()));

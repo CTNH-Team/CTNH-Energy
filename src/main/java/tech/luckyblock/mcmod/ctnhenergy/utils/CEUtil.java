@@ -21,7 +21,10 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
@@ -111,5 +114,9 @@ public abstract class CEUtil {
 
     public static boolean isCrafting(EmiRecipe recipe){
         return recipe.getCategory().equals(VanillaEmiRecipeCategories.CRAFTING);
+    }
+
+    public static boolean isCrafting(Recipe<?> recipe){
+        return recipe instanceof CraftingRecipe && recipe.getType() == RecipeType.CRAFTING;
     }
 }

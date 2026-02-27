@@ -12,14 +12,16 @@ import appeng.integration.modules.emi.EmiStackHelper;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
 import com.google.common.primitives.Ints;
-import dev.emi.emi.api.EmiApi;
-import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -52,12 +54,15 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
     @Shadow
     protected abstract Optional<AEItemKey> findCraftableKey(Ingredient ingredient, ICraftingService craftingService);
 
+    @Shadow
+    private NonNullList<ItemStack> ingredientTemplates;
+
     @Inject(method = "serverPacketData", at = @At("HEAD"), cancellable = true)
     void handNonCraftingRecipe(ServerPlayer player, CallbackInfo ci) {
         if (recipeId == null) return;
 
-        var emiRecipe = EmiApi.getRecipeManager().getRecipe(recipeId);
-        if(emiRecipe == null || CEUtil.isCrafting(emiRecipe)) return;
+        Recipe<?> recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
+        if(CEUtil.isCrafting(recipe)) return;
 
         var menu = player.containerMenu;
         if (!(menu instanceof IMenuCraftingPacket cct)) return;
@@ -82,14 +87,29 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
 
-        for (var list : EmiStackHelper.ofInputs(emiRecipe)) {
-            var ingredient = CEUtil.ingredientFromGenericStacks(list);
+        List<Ingredient> ingredients;
+
+        if(recipe instanceof GTRecipe gtRecipe){
+            ingredients = gtRecipe.getInputContents(ItemRecipeCapability.CAP).stream()
+                    .map(c -> c.content)
+                    .filter(Ingredient.class::isInstance)
+                    .map(Ingredient.class::cast)
+                    .toList();
+        } else {
+            ingredients = ingredientTemplates.stream().map(Ingredient::of).toList();
+        }
+
+        for (var ingredient : ingredients) {
+
             if (ingredient.isEmpty()) continue;
 
             // === ① 计算所需数量 ===
             int required = ingredient.getItems().length > 0
                     ? ingredient.getItems()[0].getCount()
                     : 1;
+            if(ingredient instanceof SizedIngredient sizedIngredient){
+                required = sizedIngredient.getAmount();
+            }
             if (required <= 0) required = 1;
 
             int remaining = required;
