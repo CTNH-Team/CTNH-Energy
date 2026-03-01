@@ -63,6 +63,7 @@ dependencies {
     modRuntimeOnly("curse.maven:constructionwand-399558:4684054")
     modRuntimeOnly("curse.maven:building-gadgets-298187:6850495")
 
+    modImplementation("curse.maven:ae2-crystal-science-1435174:7690555")
     // KubeJS
     // modImplementation("dev.latvian.mods:kubejs-forge:${kubejs_version}")
     // modImplementation("dev.latvian.mods:rhino-forge:${rhino_version}")

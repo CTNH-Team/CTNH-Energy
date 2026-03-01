@@ -18,6 +18,8 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -51,6 +53,7 @@ import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProxyP
 import tech.luckyblock.mcmod.ctnhenergy.registry.*;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
+import yuuki1293.pccard.PCCard;
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonProxy {
@@ -106,6 +109,23 @@ public class CommonProxy {
                 Upgrades.add(CEItems.DYNAMO_CARD, AEParts.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1, GuiText.CraftingInterface.getTranslationKey());
+
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1, "block.ae2cs.simple_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.simple_pattern_provider");
+
+                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1, "block.ae2cs.simple_pattern_provider");
+                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.simple_pattern_provider");
+
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, "block.ae2cs.ender_interface");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, 1, "block.ae2cs.ender_interface");
+
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.RESONATING_PATTERN_PROVIDER_PART, 1, "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART, 1, "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.resonating_pattern_provider");
+
             });
         });
 
