@@ -56,6 +56,8 @@
     "pcc.PatternProviderLogicImplMixin"
   ],
   "client": [
+    "ae2.emi.EmiScreenBaseMixin",
+    "ae2.emi.EmiAeBaseScreenStackProviderMixin",
     "ae2.patternprovider.PatternProviderScreenMixin",
     "ae2.patternprovider.SettingToggleButtonMixin"
   ],
