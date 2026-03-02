@@ -1,6 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
 import appeng.api.implementations.blockentities.PatternContainerGroup;
+import appeng.api.networking.GridHelper;
 import appeng.api.stacks.AEItemKey;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -25,6 +26,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +43,21 @@ public class PatternContainerGroupMixin {
     private static void getMachineName(Level level, BlockPos pos, Direction side, CallbackInfoReturnable<PatternContainerGroup> cir){
         var target = level.getBlockEntity(pos);
         if(!(target instanceof MetaMachineBlockEntity)){
-            target = getSendPosSubnet(level, pos, side).stream()
-                    .map(Tuple::getA)
-                    .map(level::getBlockEntity)
-                    .filter(b -> b instanceof MetaMachineBlockEntity)
-                    .findFirst()
-                    .orElse(null);
+            var sourceNode = GridHelper.getNodeHost(level, pos.relative(side));
+            var targetNode = GridHelper.getNodeHost(level, pos);
+            if(sourceNode == null
+                    || targetNode == null
+                    || sourceNode.getGridNode(side.getOpposite()) == null
+                    || targetNode.getGridNode(side) == null
+                    || sourceNode.getGridNode(side.getOpposite()).getGrid() != targetNode.getGridNode(side).getGrid())
+            {
+                target = getSendPosSubnet(level, pos, side).stream()
+                        .map(Tuple::getA)
+                        .map(level::getBlockEntity)
+                        .filter(b -> b instanceof MetaMachineBlockEntity)
+                        .findFirst()
+                        .orElse(null);
+            }
         }
 
         if(target instanceof MetaMachineBlockEntity blockEntity){
