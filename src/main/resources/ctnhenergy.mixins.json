@@ -16,6 +16,7 @@
     "ae2.emi.AbstractRecipeHandlerMixin$PartiallyCraftableMixin",
     "ae2.emi.CraftingHelperMixin",
     "ae2.emi.EmiEncodePatternHandlerMixin",
+    "ae2.emi.EmiItemStackConverterMixin",
     "ae2.emi.EmiUseCraftingRecipeHandlerMixin",
     "ae2.emi.FillCraftingGridFromRecipePacketMixin",
     "ae2.energy.EnergyServiceMixin",
