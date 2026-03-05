@@ -20,6 +20,7 @@ public class SettingsMixin {
 
     @Inject(method = "<clinit>", at = @At("TAIL"), remap = false)
     private static void init(CallbackInfo ci) {
-        CESettings.BLOCKING_TYPE = register("blocking_type", CESettings.BlockingType.ALL, CESettings.BlockingType.DEFAULT, CESettings.BlockingType.SMART);
+        CESettings.BLOCKING_TYPE = register("blocking_type", CESettings.BlockingType.ALL,
+                CESettings.BlockingType.DEFAULT, CESettings.BlockingType.SMART);
     }
 }

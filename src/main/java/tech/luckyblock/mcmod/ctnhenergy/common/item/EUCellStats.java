@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Prefix("eucell")
 public class EUCellStats extends ElectricStats {
+
     protected EUCellStats(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         super(maxCharge, tier, chargeable, dischargeable);
     }
@@ -34,7 +37,8 @@ public class EUCellStats extends ElectricStats {
     static Lang discharge_disable;
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return;
         addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
@@ -44,8 +48,7 @@ public class EUCellStats extends ElectricStats {
             tooltipComponents.add(discharge_mode.translate().append(
                     isInDischargeMode(stack) ?
                             discharge_enable.translate().withStyle(ChatFormatting.GREEN) :
-                            discharge_disable.translate().withStyle(ChatFormatting.DARK_RED)
-            ));
+                            discharge_disable.translate().withStyle(ChatFormatting.DARK_RED)));
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
         }
     }
@@ -55,7 +58,7 @@ public class EUCellStats extends ElectricStats {
         return tagCompound != null && tagCompound.getBoolean("DischargeMode");
     }
 
-    public static EUCellStats createCell(int tier){
-        return new EUCellStats((1L << 16) * (1L << 3 *(tier - GTValues.ULV)), tier, true, true);
+    public static EUCellStats createCell(int tier) {
+        return new EUCellStats((1L << 16) * (1L << 3 * (tier - GTValues.ULV)), tier, true, true);
     }
 }

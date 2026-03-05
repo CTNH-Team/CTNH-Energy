@@ -1,12 +1,12 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
 
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import appeng.api.networking.IManagedGridNode;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.me.energy.IEnergyOverlayGridConnection;
-import appeng.me.service.EnergyService;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,6 +22,7 @@ import java.util.List;
 
 @Mixin(value = PatternProviderLogic.class, remap = false, priority = 1100)
 public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor {
+
     @Shadow
     @Final
     private IManagedGridNode mainNode;
@@ -32,10 +33,10 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
 
     @Inject(
             method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
-            at = @At("TAIL")
-    )
+            at = @At("TAIL"))
     @SuppressWarnings("all")
-    private void AddEnergyDistributorService(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
+    private void AddEnergyDistributorService(IManagedGridNode mainNode, PatternProviderLogicHost host,
+                                             int patternInventorySize, CallbackInfo ci) {
         mainNode.addService(IEnergyDistributor.class, this)
                 .addService(IEnergyOverlayGridConnection.class, this::getOtherEnergyServices);
         CE$injectUpgradeCallback();
@@ -45,7 +46,6 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
     private EnergyDistributeService CE$service = null;
     @Unique
     private List<Direction> CE$sides = List.of();
-
 
     @Override
     public boolean isActive() {
@@ -99,4 +99,3 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
         }
     }
 }
-

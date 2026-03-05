@@ -1,14 +1,16 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.key;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
 public class EUKeyType extends AEKeyType {
+
     private EUKeyType() {
         super(CTNHEnergy.id("eu"), EUKey.class, EUKey.EU_NAME);
     }

@@ -1,22 +1,21 @@
 package tech.luckyblock.mcmod.ctnhenergy.utils;
 
-import appeng.api.crafting.IPatternDetails;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import appeng.api.crafting.IPatternDetails;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
 import java.util.List;
 
 public class FakePccCard implements IPatternProviderLogicMixin {
+
     public static final FakePccCard INSTANCE = new FakePccCard();
 
-
     @Override
-    public void pCCard$setPCNumber(IPatternDetails iPatternDetails) {
-
-    }
+    public void pCCard$setPCNumber(IPatternDetails iPatternDetails) {}
 
     @Override
     public boolean pCCard$hasPCCard() {
@@ -34,9 +33,7 @@ public class FakePccCard implements IPatternProviderLogicMixin {
     }
 
     @Override
-    public void pCCard$setSendDirection(Direction direction) {
-
-    }
+    public void pCCard$setSendDirection(Direction direction) {}
 
     @Override
     public BlockEntity pCCard$getBlockEntity() {

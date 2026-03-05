@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.features.IPlayerRegistry;
@@ -16,17 +20,12 @@ import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.CraftingSubmitResult;
-
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.service.CraftingService;
-
 import com.google.common.base.Preconditions;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
@@ -69,7 +68,8 @@ public class VirtualCraftingCPULogic {
     }
 
     public ICraftingSubmitResult trySubmitJob(
-            IGrid grid, ICraftingPlan plan, IActionSource src, @Nullable ICraftingRequester requester) {
+                                              IGrid grid, ICraftingPlan plan, IActionSource src,
+                                              @Nullable ICraftingRequester requester) {
         // Already have a job.
         if (this.job != null) return CraftingSubmitResult.CPU_BUSY;
         // Check that the node is active.
@@ -158,8 +158,9 @@ public class VirtualCraftingCPULogic {
      * @return How many patterns were successfully pushed.
      */
     public int executeCrafting(
-            int maxProviders, CraftingService craftingService, IEnergyService energyService, Level level) {
-        if(CEConfig.INSTANCE.cpu.maxProviders != 0)
+                               int maxProviders, CraftingService craftingService, IEnergyService energyService,
+                               Level level) {
+        if (CEConfig.INSTANCE.cpu.maxProviders != 0)
             maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
 
         var job = this.job;
@@ -169,7 +170,7 @@ public class VirtualCraftingCPULogic {
 
         var it = job.tasks.entrySet().iterator();
 
-        while (it.hasNext() && maxProviders>0) {
+        while (it.hasNext() && maxProviders > 0) {
             var task = it.next();
             long totalCount = task.getValue().value;
             if (totalCount <= 0) {
@@ -185,7 +186,7 @@ public class VirtualCraftingCPULogic {
                 if (!provider.isBusy()) {
 
                     var isBlock = !isProcessing || CE$isBlock(provider);
-                    if(isBlock)
+                    if (isBlock)
                         blocking++;
                     else
                         nonBlocking++;
@@ -194,29 +195,31 @@ public class VirtualCraftingCPULogic {
             }
 
             long multiplier = 1;
-            if(nonBlocking != 0) {
-                //神秘公式
-                multiplier = Math.max( (totalCount - blocking -1)/nonBlocking + 1,  1);
+            if (nonBlocking != 0) {
+                // 神秘公式
+                multiplier = Math.max((totalCount - blocking - 1) / nonBlocking + 1, 1);
                 multiplier = Math.min(multiplier, cpu.getMaxMultiplier());
             }
 
-
-            mulPattern = (multiplier == 1 ? pattern : new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier));
+            mulPattern = (multiplier == 1 ? pattern :
+                    new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier));
 
             // Try to push to each provider.
             for (var r : providerRecords) {
-                if(maxProviders <= 0) break;
+                if (maxProviders <= 0) break;
                 var workingPattern = r.block() ? pattern : mulPattern;
                 long workingMultiplier = r.block() ? 1 : multiplier;
-                //最后一个供应器可能会分配到大于倍数的样板
-                if(totalCount < workingMultiplier) {
-                    workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(totalCount);
+                // 最后一个供应器可能会分配到大于倍数的样板
+                if (totalCount < workingMultiplier) {
+                    workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern)
+                            .multiplyInPlace(totalCount);
                     workingMultiplier = totalCount;
                 }
 
                 KeyCounter expectedOutputs = new KeyCounter();
                 KeyCounter expectedContainerItems = new KeyCounter();
-                var craftingContainer = CraftingCpuHelper.extractPatternInputs(workingPattern, inventory, level, expectedOutputs, expectedContainerItems);
+                var craftingContainer = CraftingCpuHelper.extractPatternInputs(workingPattern, inventory, level,
+                        expectedOutputs, expectedContainerItems);
 
                 if (craftingContainer == null) {
                     break;
@@ -224,7 +227,8 @@ public class VirtualCraftingCPULogic {
 
                 var patternPower = CraftingCpuHelper.calculatePatternPower(craftingContainer);
 
-                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE,
+                        PowerMultiplier.CONFIG);
 
                 if (extracted + 0.01 >= patternPower && r.provider().pushPattern(workingPattern, craftingContainer)) {
                     energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
@@ -251,12 +255,10 @@ public class VirtualCraftingCPULogic {
                         task.getValue().value = 0;
                         it.remove();
                         break;
-                    }
-                    else {
+                    } else {
                         task.getValue().value = totalCount;
                     }
-                }
-                else {
+                } else {
                     CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
                 }
             }
@@ -266,13 +268,13 @@ public class VirtualCraftingCPULogic {
     }
 
     public static boolean CE$isBlock(ICraftingProvider provider) {
-        if(provider instanceof PatternProviderLogic){
-            var configManager = ((PatternProviderLogicAccessor)provider).getConfigManager();
-            if(configManager.getSetting(Settings.LOCK_CRAFTING_MODE) != LockCraftingMode.NONE)
+        if (provider instanceof PatternProviderLogic) {
+            var configManager = ((PatternProviderLogicAccessor) provider).getConfigManager();
+            if (configManager.getSetting(Settings.LOCK_CRAFTING_MODE) != LockCraftingMode.NONE)
                 return true;
             else {
-                return configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES
-                        && configManager.getSetting(CESettings.BLOCKING_TYPE) != CESettings.BlockingType.SMART;
+                return configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES &&
+                        configManager.getSetting(CESettings.BLOCKING_TYPE) != CESettings.BlockingType.SMART;
             }
         }
         return false;

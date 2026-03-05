@@ -1,8 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.key;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -11,6 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
 import java.util.List;
@@ -48,12 +50,11 @@ public class EUKey extends AEKey {
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf data) {
-    }
+    public void writeToPacket(FriendlyByteBuf data) {}
 
     @Override
     protected Component computeDisplayName() {
-        //TODO: change by network tier
+        // TODO: change by network tier
         return EU_NAME;
     }
 

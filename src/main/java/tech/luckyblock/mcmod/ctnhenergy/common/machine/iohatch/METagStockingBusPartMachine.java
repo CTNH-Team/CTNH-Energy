@@ -1,21 +1,17 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
-import appeng.api.networking.IGrid;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.util.prioritylist.IPartitionList;
-import com.glodblock.github.extendedae.common.me.taglist.TagPriorityList;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import appeng.api.stacks.GenericStack;
+import appeng.util.prioritylist.IPartitionList;
+import com.glodblock.github.extendedae.common.me.taglist.TagPriorityList;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.ITagFilter;
@@ -60,23 +56,23 @@ public class METagStockingBusPartMachine extends MEStockingBusPartMachine implem
     }
 
     public void setBlackList(String blackList) {
-        if(!blackList.equals(this.blackList)){
+        if (!blackList.equals(this.blackList)) {
             this.blackList = blackList;
             filter = null;
-            if(isAutoPull()) setAutoPull(true);
+            if (isAutoPull()) setAutoPull(true);
         }
     }
 
     public void setWhiteList(String whiteList) {
-        if(!whiteList.equals(this.whiteList)){
+        if (!whiteList.equals(this.whiteList)) {
             this.whiteList = whiteList;
             filter = null;
-            if(isAutoPull()) setAutoPull(true);
+            if (isAutoPull()) setAutoPull(true);
         }
     }
 
-    private IPartitionList getFilter(){
-        if(filter == null){
+    private IPartitionList getFilter() {
+        if (filter == null) {
             filter = new TagPriorityList(whiteList, blackList);
         }
         return filter;
@@ -84,7 +80,7 @@ public class METagStockingBusPartMachine extends MEStockingBusPartMachine implem
 
     @Override
     public boolean testConfiguredInOtherPart(@Nullable GenericStack config) {
-        if(config != null && isAutoPull() && !getFilter().isListed(config.what())){
+        if (config != null && isAutoPull() && !getFilter().isListed(config.what())) {
             return true;
         }
         return super.testConfiguredInOtherPart(config);

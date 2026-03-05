@@ -8,15 +8,19 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import lombok.Getter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 @Getter
 public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
@@ -29,10 +33,9 @@ public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
     private final boolean isDistinct = true;
 
     public ProxyRecipeHandler(
-            MetaMachine machine,
-            IO io,
-            RecipeCapability<T> capability
-    ) {
+                              MetaMachine machine,
+                              IO io,
+                              RecipeCapability<T> capability) {
         super(machine);
         this.handlerIO = io;
         this.capability = capability;
@@ -53,11 +56,8 @@ public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
 
     @Override
     public List<T> handleRecipeInner(
-            IO io, GTRecipe recipe, List<T> left, boolean simulate) {
-
-        return proxy == null
-                ? left
-                : proxy.handleRecipeInner(io, recipe, left, simulate);
+                                     IO io, GTRecipe recipe, List<T> left, boolean simulate) {
+        return proxy == null ? left : proxy.handleRecipeInner(io, recipe, left, simulate);
     }
 
     @Override
@@ -79,20 +79,20 @@ public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
         return proxy == null ? IFilteredHandler.LOW : proxy.getPriority();
     }
 
-    public static ProxyRecipeHandler<Ingredient> createItemHandler(MetaMachine machine, IO io){
+    public static ProxyRecipeHandler<Ingredient> createItemHandler(MetaMachine machine, IO io) {
         return new ProxyRecipeHandler<>(machine, io, ItemRecipeCapability.CAP);
     }
 
-    public static ProxyRecipeHandler<FluidIngredient> createFluidHandler(MetaMachine machine, IO io){
+    public static ProxyRecipeHandler<FluidIngredient> createFluidHandler(MetaMachine machine, IO io) {
         return new ProxyRecipeHandler<>(machine, io, FluidRecipeCapability.CAP);
     }
 
-    public static ProxyEnergyRecipeHandler createEnergyHandler(MetaMachine machine, IO io){
-        return new ProxyEnergyRecipeHandler(machine,  io);
+    public static ProxyEnergyRecipeHandler createEnergyHandler(MetaMachine machine, IO io) {
+        return new ProxyEnergyRecipeHandler(machine, io);
     }
 
     public static class ProxyEnergyRecipeHandler extends ProxyRecipeHandler<EnergyStack>
-            implements IEnergyContainer {
+                                                 implements IEnergyContainer {
 
         protected IEnergyContainer energyProxy;
 
@@ -107,7 +107,7 @@ public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
         @Override
         public void setProxy(@org.jetbrains.annotations.Nullable IRecipeHandlerTrait<EnergyStack> proxy) {
             super.setProxy(proxy);
-            if(proxy instanceof IEnergyContainer container)
+            if (proxy instanceof IEnergyContainer container)
                 energyProxy = container;
             else if (proxy == null)
                 energyProxy = null;
@@ -193,6 +193,4 @@ public class ProxyRecipeHandler<T> extends NotifiableRecipeHandlerTrait<T> {
             return delegate().getOutputPerSec();
         }
     }
-
 }
-

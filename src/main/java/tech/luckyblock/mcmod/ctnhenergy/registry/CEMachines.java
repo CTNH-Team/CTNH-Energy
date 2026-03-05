@@ -8,18 +8,16 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 
-
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.network.chat.Component;
+
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MESubstationHatch;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputHatchPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEStockingBusPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.METagStockingBusPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferProxyPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MESubstationHatch;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputHatchPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferProxyPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate.MEUltimatePatternBufferPartMachine;
@@ -102,7 +100,8 @@ public class CEMachines {
                 .register();
 
         ME_ADVANCED_PATTERN_BUFFER = REGISTRATE
-                .machine("advanced_me_pattern_buffer", holder -> new MEAdvancedPatternBufferPartMachine(holder, GTValues.ZPM))
+                .machine("advanced_me_pattern_buffer",
+                        holder -> new MEAdvancedPatternBufferPartMachine(holder, GTValues.ZPM))
                 .cnLangValue("§5ME高级样板总成§r")
                 .langValue("§5ME Advanced Pattern Buffer§r")
                 .tier(ZPM)
@@ -114,8 +113,7 @@ public class CEMachines {
                         slot_number.translate(MEAdvancedPatternBufferPartMachine.MAX_PATTERN_COUNT),
                         circuit_ability.translate(),
                         output_ability.translate(),
-                        Component.translatable("gtceu.part_sharing.enabled")
-                )
+                        Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
         ME_ADVANCED_PATTERN_BUFFER_PROXY = REGISTRATE
@@ -133,10 +131,10 @@ public class CEMachines {
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
     }
+
     @CN("§7§o仓室终结者§r")
     @EN("§7§oHatch Terminator§r")
     static Lang hatch_terminator;
-
 
     @CN("§6使用ME网络中存储的EU为机器供能§r，可设置电压和电流")
     @EN("")
@@ -158,8 +156,7 @@ public class CEMachines {
                         circuit_ability.translate(),
                         output_ability.translate(),
                         energy_ability.translate(),
-                        Component.translatable("gtceu.part_sharing.enabled")
-                )
+                        Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
         ME_ULTIMATE_PATTERN_BUFFER_PROXY = REGISTRATE
@@ -178,22 +175,20 @@ public class CEMachines {
                 .register();
     }
 
-
-
-   @CN({
-           "直接使用ME网络中存储的EU为机器供能",
-           "§a可以通过UI设置电压、电流§r",
-           "§4输入电压等级不能超过ME网络的电压等级,输入电流不能超过64A§r",
-           "§a输入电压：§r",
-           "§e输入电流：§r"
-   })
-   @EN({
-           "Directly uses the stored EU in ME network to supply energy for Multiblocks",
-           "§Input Voltage and Amperage can be set inside UI§r",
-           "§4Input Voltage Tier must not exceed ME Network Voltage Tier and the Input Amperage is capped at  64A§r",
-           "§aVoltage IN: §r",
-           "§eAmperage IN: §r"
-   })
+    @CN({
+            "直接使用ME网络中存储的EU为机器供能",
+            "§a可以通过UI设置电压、电流§r",
+            "§4输入电压等级不能超过ME网络的电压等级,输入电流不能超过64A§r",
+            "§a输入电压：§r",
+            "§e输入电流：§r"
+    })
+    @EN({
+            "Directly uses the stored EU in ME network to supply energy for Multiblocks",
+            "§Input Voltage and Amperage can be set inside UI§r",
+            "§4Input Voltage Tier must not exceed ME Network Voltage Tier and the Input Amperage is capped at  64A§r",
+            "§aVoltage IN: §r",
+            "§eAmperage IN: §r"
+    })
     static Lang[] me_energy_in;
 
     @CN({
@@ -222,7 +217,7 @@ public class CEMachines {
     })
     static Lang[] substation_hatch;
 
-    private static void initMEEnergyHatch(){
+    private static void initMEEnergyHatch() {
         ENERGY_INPUT_HATCH_ME = REGISTRATE
                 .machine("me_energy_input_hatch", holder -> new MEEnergyPartMachine(holder, IO.IN))
                 .cnLangValue("ME能源仓")
@@ -230,8 +225,7 @@ public class CEMachines {
                 .tooltips(
                         me_energy_in[0].translate(),
                         me_energy_in[1].translate(),
-                        me_energy_in[2].translate()
-                )
+                        me_energy_in[2].translate())
                 .tooltipBuilder((is, components) -> {
                     components.add(me_energy_in[3].translate().append(
                             configurable.translate().withStyle(TooltipHelper.RAINBOW_HSL_SLOW)));
@@ -252,8 +246,7 @@ public class CEMachines {
                 .tooltips(
                         me_energy_out[0].translate(),
                         me_energy_out[1].translate().append(Component.literal(VNF[MAX])),
-                        Component.translatable("gtceu.part_sharing.enabled")
-                )
+                        Component.translatable("gtceu.part_sharing.enabled"))
                 .tier(UV)
                 .abilities(PartAbility.OUTPUT_ENERGY)
                 .modelProperty(GTMachineModelProperties.IS_FORMED, false)
@@ -268,8 +261,7 @@ public class CEMachines {
                         substation_hatch[0].translate(),
                         substation_hatch[1].translate(),
                         substation_hatch[2].translate(),
-                        Component.translatable("gtceu.part_sharing.disabled")
-                )
+                        Component.translatable("gtceu.part_sharing.disabled"))
                 .tier(IV)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY)
@@ -337,6 +329,5 @@ public class CEMachines {
                         tag_filter.translate(),
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
-
     }
 }

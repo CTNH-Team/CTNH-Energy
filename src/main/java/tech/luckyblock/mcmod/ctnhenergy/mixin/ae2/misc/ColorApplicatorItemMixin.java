@@ -1,57 +1,44 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.Actionable;
-import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.block.paint.PaintSplotchesBlock;
-import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
-import com.gregtechceu.gtceu.common.item.ColorSprayBehaviour;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SnowballItem;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.utils.TempColorSprayBehaviour;
 
 import java.util.function.DoubleSupplier;
 
-import static com.gregtechceu.gtceu.common.data.GTItems.SPRAY_EMPTY;
-
 @Mixin(value = ColorApplicatorItem.class, remap = false)
 public abstract class ColorApplicatorItemMixin extends AEBasePoweredItem {
-
 
     public ColorApplicatorItemMixin(DoubleSupplier powerCapacity, Properties props) {
         super(powerCapacity, props);
     }
 
     @Shadow
-    public ItemStack getColor(ItemStack is) {return null;}
+    public ItemStack getColor(ItemStack is) {
+        return null;
+    }
 
     @Shadow
-    private AEColor getColorFromItem(ItemStack paintBall) {return null;}
+    private AEColor getColorFromItem(ItemStack paintBall) {
+        return null;
+    }
 
     @Shadow
     public boolean consumeItem(ItemStack applicator, AEItemKey paintItem, boolean simulate) {
@@ -90,12 +77,12 @@ public abstract class ColorApplicatorItemMixin extends AEBasePoweredItem {
                 final AEColor newColor = this.getColorFromItem(paintBall);
                 if (newColor != null && this.getAECurrentPower(is) > 100) {
                     int color = -1;
-                    if(newColor.dye != null){
+                    if (newColor.dye != null) {
                         color = newColor.dye.getId();
                     }
                     var behaviour = new TempColorSprayBehaviour(color);
                     behaviour.onItemUseFirst(ItemStack.EMPTY, context);
-                    if(behaviour.used) {
+                    if (behaviour.used) {
                         consumeItem(is, paintBallKey, false);
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }

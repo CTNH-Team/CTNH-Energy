@@ -9,9 +9,10 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
 
 @Mixin(value = ResonatingPatternProviderLogic.class, remap = false)
 public class ResonatingPatternProviderLogicMixin {
+
     @Inject(method = "onUpgradesChange", at = @At("HEAD"))
-    void updateSleep(CallbackInfo ci){
-        if(this instanceof IEnergyDistributor energyDistributor){
+    void updateSleep(CallbackInfo ci) {
+        if (this instanceof IEnergyDistributor energyDistributor) {
             energyDistributor.updateSleep();
         }
     }

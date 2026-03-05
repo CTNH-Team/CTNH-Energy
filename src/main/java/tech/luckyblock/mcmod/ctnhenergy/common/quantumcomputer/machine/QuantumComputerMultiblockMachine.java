@@ -1,6 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine;
 
-import appeng.core.definitions.AEItems;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
@@ -20,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -31,17 +31,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.networking.LDLNetworking;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
-import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
-import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
-import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.longs.LongSets;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -52,6 +42,18 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import appeng.core.definitions.AEItems;
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
+import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.LongSets;
+import lombok.Getter;
+import lombok.Setter;
 import tech.luckyblock.mcmod.ctnhenergy.common.block.QuantumComputerCasingBlock;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
 import tech.luckyblock.mcmod.ctnhenergy.network.packets.QCOpenCPUMenuPacket;
@@ -62,17 +64,19 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @Prefix("machine")
-public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver, IRotationMultiblock<RubiksCubeContraptionEntity> {
+public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine
+                                              implements IOpticalComputationReceiver,
+                                              IRotationMultiblock<RubiksCubeContraptionEntity> {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             QuantumComputerMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -115,18 +119,18 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        //List<IEnergyContainer> energyContainers = new ArrayList<>();
+        // List<IEnergyContainer> energyContainers = new ArrayList<>();
         for (IMultiPart part : getParts()) {
             part.self().holder.self()
                     .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER)
                     .ifPresent(provider -> this.computationContainer = provider);
 
-//            part.self().holder.self()
-//                    .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER)
-//                    .ifPresent(energyContainers::add);
+            // part.self().holder.self()
+            // .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER)
+            // .ifPresent(energyContainers::add);
 
         }
-        //this.energyContainer = new EnergyContainerList(energyContainers);
+        // this.energyContainer = new EnergyContainerList(energyContainers);
         if (computationContainer == null || !findMENetworkBlockEntity()) {
             onStructureInvalid();
         }
@@ -142,6 +146,7 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
         this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
     }
+
     @Override
     public Map<Integer, RubiksCubeContraptionEntity> assemble(BlockPos pivot) {
         var level = getLevel();
@@ -162,7 +167,8 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                 SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
                 contraption.assemble(level, self().getPos());
                 contraption.removeBlocksFromWorld(level, BlockPos.ZERO);
-                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(level, contraption, pivot.getCenter(), getFrontFacing(), pos, this);
+                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(level, contraption,
+                        pivot.getCenter(), getFrontFacing(), pos, this);
                 contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
                 level.addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);
@@ -179,19 +185,19 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         return hatchParallels * coprocessing;
     }
 
-    private boolean findMENetworkBlockEntity(){
-        int[][] offsets = new int[][]{
-                new int[]{6,6,0},
-                new int[]{0,6,6},
-                new int[]{-6,6,0},
-                new int[]{0,6,-6}
+    private boolean findMENetworkBlockEntity() {
+        int[][] offsets = new int[][] {
+                new int[] { 6, 6, 0 },
+                new int[] { 0, 6, 6 },
+                new int[] { -6, 6, 0 },
+                new int[] { 0, 6, -6 }
         };
         BlockPos controllerPos = getPos();
         for (int[] offset : offsets) {
             BlockEntity blockEntity = getLevel().getBlockEntity(new BlockPos(controllerPos.getX() + offset[0],
                     controllerPos.getY() + offset[1],
                     controllerPos.getZ() + offset[2]));
-            if(blockEntity instanceof QuantumComputerMENetworkPortBlockEntity){
+            if (blockEntity instanceof QuantumComputerMENetworkPortBlockEntity) {
                 this.meNetworkPortBlockEntity = (QuantumComputerMENetworkPortBlockEntity) blockEntity;
                 this.meNetworkPortBlockEntity.setMachine(this);
                 return true;
@@ -202,13 +208,11 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     @Override
     public void onStructureInvalid() {
-
         super.onStructureInvalid();
         this.storageKilobyte = 0;
         this.computationContainer = null;
 
-        if(meNetworkPortBlockEntity != null)
-        {
+        if (meNetworkPortBlockEntity != null) {
             this.meNetworkPortBlockEntity.multiBlockBreak();
             this.meNetworkPortBlockEntity = null;
         }
@@ -260,49 +264,52 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        if(isRemote()) return;
+        if (isRemote()) return;
         if (isFormed()) {
-            //工作状态：
-            if(this.workStatus!=null){
-                if(!isWorkingEnabled()){
+            // 工作状态：
+            if (this.workStatus != null) {
+                if (!isWorkingEnabled()) {
                     textList.add(jiuzhang_tooltip[0].translate()
                             .append(WorkStatus.SUSPEND.localize));
-                }else{
+                } else {
                     textList.add(jiuzhang_tooltip[0].translate()
                             .append(this.workStatus.localize));
                 }
             }
-            //功率：
+            // 功率：
             long calculateEnergyUsage = calculateEnergyUsage();
             int energyTier = GTUtil.getFloorTierByVoltage(energyContainer.getInputVoltage());
             long maxVoltage = GTValues.V[energyTier];
             textList.add(jiuzhang_tooltip[1].translate()
-                            .append(Component.literal( FormattingUtil.formatNumbers(calculateEnergyUsage) + "/" + FormattingUtil.formatNumbers(maxVoltage) + " EU/t (" + GTValues.VNF[energyTier] + ")")
-                                    .withStyle(calculateEnergyUsage <= maxVoltage ? ChatFormatting.GREEN : ChatFormatting.DARK_RED)
-                            ));
-            //总内存：${StorageKilobyte} KB
+                    .append(Component.literal(FormattingUtil.formatNumbers(calculateEnergyUsage) + "/" +
+                            FormattingUtil.formatNumbers(maxVoltage) + " EU/t (" + GTValues.VNF[energyTier] + ")")
+                            .withStyle(calculateEnergyUsage <= maxVoltage ? ChatFormatting.GREEN :
+                                    ChatFormatting.DARK_RED)));
+            // 总内存：${StorageKilobyte} KB
             textList.add(jiuzhang_tooltip[2].translate()
                     .append(storageKilobyte + " KB"));
-            //剩余内存：
+            // 剩余内存：
             textList.add(jiuzhang_tooltip[3].translate()
-                    .append((this.meNetworkPortBlockEntity==null? this.storageKilobyte: this.meNetworkPortBlockEntity.getRemainingStorage()) + " KB"));
-            //总算力：
+                    .append((this.meNetworkPortBlockEntity == null ? this.storageKilobyte :
+                            this.meNetworkPortBlockEntity.getRemainingStorage()) + " KB"));
+            // 总算力：
             textList.add(jiuzhang_tooltip[4].translate()
                     .append(getMaxCWUt() + " CWU/t"));
-            //当前并行：
+            // 当前并行：
             textList.add(jiuzhang_tooltip[5].translate()
                     .append(String.valueOf(getCoprocessing())));
-            //当前算力消耗：[-] [+]
+            // 当前算力消耗：[-] [+]
             textList.add(jiuzhang_tooltip[6].translate().withStyle(
-                    style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, jiuzhang_tooltip[7].translate()))
-                    )
+                    style -> style.withHoverEvent(
+                            new HoverEvent(HoverEvent.Action.SHOW_TEXT, jiuzhang_tooltip[7].translate())))
                     .append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"))
                     .append(" ")
                     .append(Component.literal(coprocessing + "")
-                            .withStyle(coprocessing > computationContainer.getMaxCWUt() ? ChatFormatting.DARK_RED : ChatFormatting.WHITE))
+                            .withStyle(coprocessing > computationContainer.getMaxCWUt() ? ChatFormatting.DARK_RED :
+                                    ChatFormatting.WHITE))
                     .append(" ")
                     .append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add")));
-        }else{
+        } else {
             super.addDisplayText(textList);
         }
     }
@@ -324,12 +331,11 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                 .setTooltipsSupplier(pressed -> List.of(
                         Component.translatable(
                                 pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
-
     }
 
-    private void openCPU(ClickData clickData){
-        if(isRemote()){
-            if(meNetworkPortBlockEntity != null || findMENetworkBlockEntity()){
+    private void openCPU(ClickData clickData) {
+        if (isRemote()) {
+            if (meNetworkPortBlockEntity != null || findMENetworkBlockEntity()) {
                 LDLNetworking.NETWORK.sendToServer(new QCOpenCPUMenuPacket(meNetworkPortBlockEntity.getBlockPos()));
             }
         }
@@ -341,36 +347,37 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     public int getMaxCWUt() {
-        return computationContainer!= null? computationContainer.getMaxCWUt() : 0;
+        return computationContainer != null ? computationContainer.getMaxCWUt() : 0;
     }
 
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             if (clickData.isShiftClick)
-                this.coprocessing = Mth.clamp((int)(this.coprocessing * (componentData.equals("add") ? 2 : 0.5)), 0, computationContainer.getMaxCWUt());
+                this.coprocessing = Mth.clamp((int) (this.coprocessing * (componentData.equals("add") ? 2 : 0.5)), 0,
+                        computationContainer.getMaxCWUt());
             else
-                this.coprocessing = Mth.clamp(this.coprocessing + (componentData.equals("add") ? 1 : -1), 0, computationContainer.getMaxCWUt());
+                this.coprocessing = Mth.clamp(this.coprocessing + (componentData.equals("add") ? 1 : -1), 0,
+                        computationContainer.getMaxCWUt());
         }
     }
 
     public void setWorkStatus(WorkStatus newStatus) {
-        if(workStatus != newStatus)
-        {
+        if (workStatus != newStatus) {
             workStatus = newStatus;
-            if(workStatus == WorkStatus.SUSPEND)
+            if (workStatus == WorkStatus.SUSPEND)
                 updateCasings(QuantumComputerCasingBlock.State.GREY);
-            if(workStatus == WorkStatus.WORKING)
+            if (workStatus == WorkStatus.WORKING)
                 updateCasings(QuantumComputerCasingBlock.State.BLUE);
-            if(workStatus == WorkStatus.NOT_ENOUGH_COMPUTATION)
+            if (workStatus == WorkStatus.NOT_ENOUGH_COMPUTATION)
                 updateCasings(QuantumComputerCasingBlock.State.PURPLE);
-            if(workStatus == WorkStatus.NOT_ENOUGH_ENERGY)
+            if (workStatus == WorkStatus.NOT_ENOUGH_ENERGY)
                 updateCasings(QuantumComputerCasingBlock.State.RED);
         }
     }
 
-    public void updateCasings(QuantumComputerCasingBlock.State state){
-        if(qcCasings != null){
-            for(long pos : qcCasings){
+    public void updateCasings(QuantumComputerCasingBlock.State state) {
+        if (qcCasings != null) {
+            for (long pos : qcCasings) {
                 var blockPos = BlockPos.of(pos);
                 var blockState = getLevel().getBlockState(blockPos);
                 if (blockState.hasProperty(QuantumComputerCasingBlock.STATE)) {
@@ -425,10 +432,10 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
     @Override
     public QCRecipeLogic getRecipeLogic() {
-        return (QCRecipeLogic)recipeLogic;
+        return (QCRecipeLogic) recipeLogic;
     }
 
-    public class QCRecipeLogic extends RecipeLogic{
+    public class QCRecipeLogic extends RecipeLogic {
 
         public QCRecipeLogic(IRecipeLogicMachine machine) {
             super(machine);
@@ -436,39 +443,37 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
         @Override
         public void serverTick() {
-            if(getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
-            {
-                if (isIdle()){
+            if (getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER) {
+                if (isIdle()) {
                     setWorkStatus(WorkStatus.SUSPEND);
-                    if(meNetworkPortBlockEntity!=null) {
+                    if (meNetworkPortBlockEntity != null) {
                         meNetworkPortBlockEntity.suspend();
                     }
                     return;
                 }
                 if (!consumeEnergy()) {
                     setWorkStatus(WorkStatus.NOT_ENOUGH_ENERGY);
-                    if(meNetworkPortBlockEntity!=null){
+                    if (meNetworkPortBlockEntity != null) {
                         meNetworkPortBlockEntity.suspend();
                     }
                     return;
                 }
                 if (!consumeComputation()) {
                     setWorkStatus(WorkStatus.NOT_ENOUGH_COMPUTATION);
-                    if(meNetworkPortBlockEntity!=null) {
+                    if (meNetworkPortBlockEntity != null) {
                         meNetworkPortBlockEntity.suspend();
                     }
                     return;
                 }
                 setWorkStatus(WorkStatus.WORKING);
                 meNetworkPortBlockEntity.active();
-            }
-            else
+            } else
                 super.serverTick();
         }
 
         @Override
         public void setWorkingEnabled(boolean workingEnabled) {
-            if(getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
+            if (getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
                 setStatus(workingEnabled ? Status.WORKING : Status.IDLE);
             else
                 super.setWorkingEnabled(workingEnabled);
@@ -476,7 +481,7 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
 
         @Override
         public boolean isWorkingEnabled() {
-            if(getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
+            if (getRecipeType() == CERecipeTypes.QUANTUM_COMPUTER)
                 return isWorking();
             return super.isWorkingEnabled();
         }
@@ -496,8 +501,8 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     })
     static Lang[] work_status;
 
+    public enum WorkStatus {
 
-    public enum WorkStatus{
         WORKING(work_status[0].translate()),
         NOT_ENOUGH_ENERGY(work_status[1].translate()),
         NOT_ENOUGH_COMPUTATION(work_status[2].translate()),

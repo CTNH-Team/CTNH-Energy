@@ -1,11 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -22,14 +16,13 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,15 +32,26 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.client.gui.IRCFancyUIProvider;
 import tech.vixhentx.mcmod.ctnhlib.client.gui.RCUIWidget;
 import tech.vixhentx.mcmod.ctnhlib.client.gui.RightConfiguratorPanel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -83,6 +87,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     private RefreshState refreshState = RefreshState.CLEAN;
 
     private static final class CachedStock {
+
         final AEKey key;
         long amount;
 
@@ -173,8 +178,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             CachedStock c = cachedStocks[i];
 
             long available = storage.extract(
-                    c.key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource
-            );
+                    c.key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
 
             if (available >= minStackSize) {
                 c.amount = available;
@@ -261,8 +265,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         var available = grid.getStorageService().getCachedInventory();
 
         PriorityQueue<CachedStock> pq = new PriorityQueue<>(
-                Comparator.comparingLong(c -> c.amount)
-        );
+                Comparator.comparingLong(c -> c.amount));
 
         for (Object2LongMap.Entry<AEKey> entry : available) {
             if (!(entry.getKey() instanceof AEItemKey itemKey)) continue;
@@ -271,8 +274,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             if (reported < minStackSize) continue;
 
             long extractable = storage.extract(
-                    itemKey, reported, Actionable.SIMULATE, actionSource
-            );
+                    itemKey, reported, Actionable.SIMULATE, actionSource);
             if (extractable < minStackSize) continue;
 
             if (autoPullTest != null &&

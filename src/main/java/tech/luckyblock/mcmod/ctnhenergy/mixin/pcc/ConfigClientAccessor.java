@@ -1,6 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.pcc;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import yuuki1293.pccard.ConfigClient;
@@ -13,4 +14,3 @@ public interface ConfigClientAccessor {
         throw new AssertionError();
     }
 }
-

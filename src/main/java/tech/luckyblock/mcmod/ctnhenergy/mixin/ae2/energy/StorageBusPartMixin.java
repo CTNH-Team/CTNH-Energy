@@ -20,14 +20,15 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Mixin(value = StorageBusPart.class, remap = false)
-public abstract class StorageBusPartMixin extends AEBasePart{
+public abstract class StorageBusPartMixin extends AEBasePart {
+
     public StorageBusPartMixin(IPartItem<?> partItem) {
         super(partItem);
     }
 
-    @Inject(method = "<init>",  at = @At("TAIL"))
+    @Inject(method = "<init>", at = @At("TAIL"))
     @SuppressWarnings("all")
-    private void EnergyOverlayGridConnection(IPartItem<?> partItem, CallbackInfo ci){
+    private void EnergyOverlayGridConnection(IPartItem<?> partItem, CallbackInfo ci) {
         getMainNode().addService(IEnergyOverlayGridConnection.class, this::CE$getOtherEnergyServices);
     }
 
@@ -44,14 +45,12 @@ public abstract class StorageBusPartMixin extends AEBasePart{
         return Stream.of(getSide())
                 .filter(Objects::nonNull)
                 .map(side -> (EnergyService) Optional.ofNullable(
-                                GridHelper.getNodeHost(level, pos.relative(side)))
+                        GridHelper.getNodeHost(level, pos.relative(side)))
                         .map(host -> host.getGridNode(side.getOpposite()))
                         .map(IGridNode::getGrid)
                         .map(node -> node.getService(IEnergyService.class))
-                        .orElse(null)
-                )
+                        .orElse(null))
                 .filter(Objects::nonNull)
                 .toList();
     }
-
 }

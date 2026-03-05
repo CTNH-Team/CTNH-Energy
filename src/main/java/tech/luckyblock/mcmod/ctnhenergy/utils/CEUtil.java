@@ -1,7 +1,18 @@
 package tech.luckyblock.mcmod.ctnhenergy.utils;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.utils.GTUtil;
+
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartHost;
@@ -13,19 +24,8 @@ import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.parts.AEBasePart;
-import appeng.util.inv.AppEngInternalInventory;
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 
@@ -34,23 +34,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CEUtil {
-    public static IUpgradeableObject getUpgradeable(BlockEntity be, Direction side){
-        if(be instanceof InterfaceBlockEntity || be instanceof PatternProviderBlockEntity)
+
+    public static IUpgradeableObject getUpgradeable(BlockEntity be, Direction side) {
+        if (be instanceof InterfaceBlockEntity || be instanceof PatternProviderBlockEntity)
 
             return be instanceof IUpgradeableObject upgradeable ? upgradeable : null;
 
-        if(be instanceof IPartHost host
-                && (host.getPart(side) instanceof InterfaceLogicHost || host.getPart(side) instanceof PatternProviderLogicHost)){
+        if (be instanceof IPartHost host && (host.getPart(side) instanceof InterfaceLogicHost ||
+                host.getPart(side) instanceof PatternProviderLogicHost)) {
             return host.getPart(side) instanceof IUpgradeableObject upgradeable ? upgradeable : null;
         }
 
         return null;
     }
 
-    public static boolean isInSameGrid(IEnergyContainer a, IEnergyContainer b){
-        return a instanceof MEMachineEUHandler handlerA
-                && b instanceof MEMachineEUHandler handlerB
-                && handlerA.getNode().getGrid() == handlerB.getNode().getGrid();
+    public static boolean isInSameGrid(IEnergyContainer a, IEnergyContainer b) {
+        return a instanceof MEMachineEUHandler handlerA && b instanceof MEMachineEUHandler handlerB &&
+                handlerA.getNode().getGrid() == handlerB.getNode().getGrid();
     }
 
     public static List<Direction> getSides(Object host) {
@@ -66,10 +66,10 @@ public abstract class CEUtil {
         }
     }
 
-    public static int getGridTier(IGridNode node){
+    public static int getGridTier(IGridNode node) {
         var storage = node.getGrid().getStorageService().getInventory();
-        for(int i = GTValues.MAX; i >= GTValues.ULV; i--){
-            if(storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, IActionSource.ofMachine(() -> node)) > 0)
+        for (int i = GTValues.MAX; i >= GTValues.ULV; i--) {
+            if (storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, IActionSource.ofMachine(() -> node)) > 0)
                 return i;
         }
         return -1;
@@ -112,11 +112,11 @@ public abstract class CEUtil {
         return Ingredient.of(itemStacks.stream());
     }
 
-    public static boolean isCrafting(EmiRecipe recipe){
+    public static boolean isCrafting(EmiRecipe recipe) {
         return recipe.getCategory().equals(VanillaEmiRecipeCategories.CRAFTING);
     }
 
-    public static boolean isCrafting(Recipe<?> recipe){
+    public static boolean isCrafting(Recipe<?> recipe) {
         return recipe instanceof CraftingRecipe && recipe.getType() == RecipeType.CRAFTING;
     }
 }

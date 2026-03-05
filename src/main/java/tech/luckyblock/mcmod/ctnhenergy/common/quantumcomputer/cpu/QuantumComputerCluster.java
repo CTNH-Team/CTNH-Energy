@@ -1,5 +1,11 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGrid;
@@ -20,17 +26,13 @@ import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
 
 import java.util.*;
 
-public class QuantumComputerCluster implements IAECluster{
+public class QuantumComputerCluster implements IAECluster {
+
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
 
@@ -39,7 +41,7 @@ public class QuantumComputerCluster implements IAECluster{
     @Setter
     private QuantumComputerMENetworkPortBlockEntity meNetworkPortBlockEntity;
 
-//    private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
+    // private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
 
     private final ConfigManager configManager = new ConfigManager(this::markDirty);
 
@@ -72,9 +74,9 @@ public class QuantumComputerCluster implements IAECluster{
 
     @Override
     public void updateStatus(boolean b) {
-//        for (QuantumComputerMENetworkPortBlockEntity r : this.blockEntities) {
-//            r.updateSubType(true);
-//        }
+        // for (QuantumComputerMENetworkPortBlockEntity r : this.blockEntities) {
+        // r.updateSubType(true);
+        // }
         meNetworkPortBlockEntity.updateSubType(true);
     }
 
@@ -99,16 +101,16 @@ public class QuantumComputerCluster implements IAECluster{
     }
 
     private void updateGridForChangedCpu(QuantumComputerCluster cluster) {
-//        var posted = false;
-//        for (QuantumComputerMENetworkPortBlockEntity r : this.blockEntities) {
-//            final IGridNode n = r.getActionableNode();
-//            if (n != null && !posted) {
-//                n.getGrid().postEvent(new GridCraftingCpuChange(n));
-//                posted = true;
-//            }
-//
-//            r.updateStatus(cluster);
-//        }
+        // var posted = false;
+        // for (QuantumComputerMENetworkPortBlockEntity r : this.blockEntities) {
+        // final IGridNode n = r.getActionableNode();
+        // if (n != null && !posted) {
+        // n.getGrid().postEvent(new GridCraftingCpuChange(n));
+        // posted = true;
+        // }
+        //
+        // r.updateStatus(cluster);
+        // }
         final IGridNode gridNode = this.meNetworkPortBlockEntity.getActionableNode();
         if (gridNode != null) {
             gridNode.getGrid().postEvent(new GridCraftingCpuChange(gridNode));
@@ -132,7 +134,7 @@ public class QuantumComputerCluster implements IAECluster{
         return list;
     }
 
-    public long getRemainingStorage(){
+    public long getRemainingStorage() {
         long usedStorage = 0;
         for (var plan : activeCpus.keySet()) {
             usedStorage += plan.bytes();
@@ -145,17 +147,17 @@ public class QuantumComputerCluster implements IAECluster{
         this.getCore().saveChanges();
     }
 
-//    public void updateOutput(GenericStack finalOutput) {
-//        var send = finalOutput;
-//
-//        if (finalOutput != null && finalOutput.amount() <= 0) {
-//            send = null;
-//        }
-//
-//        for (var t : this.status) {
-//            t.setJob(send);
-//        }
-//    }
+    // public void updateOutput(GenericStack finalOutput) {
+    // var send = finalOutput;
+    //
+    // if (finalOutput != null && finalOutput.amount() <= 0) {
+    // send = null;
+    // }
+    //
+    // for (var t : this.status) {
+    // t.setJob(send);
+    // }
+    // }
 
     public IActionSource getSrc() {
         return Objects.requireNonNull(this.machineSrc);
@@ -188,7 +190,8 @@ public class QuantumComputerCluster implements IAECluster{
     }
 
     public ICraftingSubmitResult submitJob(
-            IGrid grid, ICraftingPlan plan, IActionSource src, ICraftingRequester requestingMachine) {
+                                           IGrid grid, ICraftingPlan plan, IActionSource src,
+                                           ICraftingRequester requestingMachine) {
         // Check that the node is active.
         if (!isActive()) return CraftingSubmitResult.CPU_OFFLINE;
         // Check bytes.
@@ -241,8 +244,8 @@ public class QuantumComputerCluster implements IAECluster{
     }
 
     public VirtualCraftingCPU getRemainingCapacityCPU() {
-        if (this.remainingStorageCpu == null
-                || this.remainingStorageCpu.getAvailableStorage() != getRemainingStorage()) {
+        if (this.remainingStorageCpu == null ||
+                this.remainingStorageCpu.getAvailableStorage() != getRemainingStorage()) {
             this.remainingStorageCpu = new VirtualCraftingCPU(this, getRemainingStorage());
         }
         return this.remainingStorageCpu;
@@ -265,7 +268,7 @@ public class QuantumComputerCluster implements IAECluster{
         return this.meNetworkPortBlockEntity.getCoprocessing();
     }
 
-    public int getMaxMultiplier(){
+    public int getMaxMultiplier() {
         return meNetworkPortBlockEntity.getMaxMultiplier();
     }
 
@@ -388,10 +391,9 @@ public class QuantumComputerCluster implements IAECluster{
         };
     }
 
-
-//    public void breakCluster() {
-//        if (meNetworkPortBlockEntity != null) {
-//            meNetworkPortBlockEntity.breakCluster();
-//        }
-//    }
+    // public void breakCluster() {
+    // if (meNetworkPortBlockEntity != null) {
+    // meNetworkPortBlockEntity.breakCluster();
+    // }
+    // }
 }

@@ -1,5 +1,12 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
@@ -14,18 +21,13 @@ import appeng.core.definitions.AEParts;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class QuantumCpuSelectionList implements ICompositeWidget {
+
     private static final int ROWS = 6;
 
     private final Blitter background;
@@ -93,12 +95,11 @@ public class QuantumCpuSelectionList implements ICompositeWidget {
                     .withStyle(ChatFormatting.GRAY));
 
             // Show if the CPU is player or automation only
-            var modeText =
-                    switch (cpu.mode()) {
-                        case PLAYER_ONLY -> ButtonToolTips.CpuSelectionModePlayersOnly.text();
-                        case MACHINE_ONLY -> ButtonToolTips.CpuSelectionModeAutomationOnly.text();
-                        default -> null;
-                    };
+            var modeText = switch (cpu.mode()) {
+                case PLAYER_ONLY -> ButtonToolTips.CpuSelectionModePlayersOnly.text();
+                case MACHINE_ONLY -> ButtonToolTips.CpuSelectionModeAutomationOnly.text();
+                default -> null;
+            };
             if (modeText != null) {
                 tooltipLines.add(modeText);
             }
@@ -258,13 +259,12 @@ public class QuantumCpuSelectionList implements ICompositeWidget {
             unit++;
         }
 
-        return storage
-                + switch (unit) {
-                    case 0 -> "k";
-                    case 1 -> "M";
-                    case 2 -> "G";
-                    default -> "T";
-                };
+        return storage + switch (unit) {
+            case 0 -> "k";
+            case 1 -> "M";
+            case 2 -> "G";
+            default -> "T";
+        };
     }
 
     private Component getCpuName(QuantumComputerMenu.CraftingCpuListEntry cpu) {

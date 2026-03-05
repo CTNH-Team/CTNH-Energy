@@ -2,15 +2,17 @@ package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import net.minecraft.network.chat.Component;
+
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
@@ -52,6 +54,7 @@ public class MEDualOutputConfigurator implements IFancyUIProvider {
     @EN("ME Output")
     @CN("ME输出")
     static Lang dualOutput;
+
     @Override
     public Component getTitle() {
         return dualOutput.translate();
@@ -64,7 +67,6 @@ public class MEDualOutputConfigurator implements IFancyUIProvider {
     @Override
     public List<Component> getTabTooltips() {
         return List.of(
-                dualOutputTooltip.translate()
-        );
+                dualOutputTooltip.translate());
     }
 }

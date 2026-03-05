@@ -1,12 +1,13 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
+import com.gregtechceu.gtceu.common.data.GTItems;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,11 +29,11 @@ public class PatternProviderTargetCacheMixin {
     @Inject(
             method = "wrapMeStorage",
             at = @At("HEAD"),
-            cancellable = true
-    )
+            cancellable = true)
     private void wrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
         cir.setReturnValue(
                 new CEPatternProviderTarget() {
+
                     @Override
                     public long insert(AEKey what, long amount, Actionable type) {
                         return storage.insert(what, amount, type, src);
@@ -50,12 +51,9 @@ public class PatternProviderTargetCacheMixin {
 
                     @Override
                     public boolean onlyHasPatternInput(Set<AEKey> patternInputs, boolean fuzzy) {
-
-                        Set<AEKey> matchSet = fuzzy
-                                ? patternInputs.stream()
+                        Set<AEKey> matchSet = fuzzy ? patternInputs.stream()
                                 .map(AEKey::dropSecondary)
-                                .collect(Collectors.toSet())
-                                : patternInputs;
+                                .collect(Collectors.toSet()) : patternInputs;
 
                         boolean allCircuit = true;
                         boolean allMatch = true;
@@ -63,13 +61,15 @@ public class PatternProviderTargetCacheMixin {
                         for (var stack : storage.getAvailableStacks()) {
                             AEKey key = stack.getKey();
 
-                            boolean isCircuit = key instanceof AEItemKey itemKey && itemKey.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem();
+                            boolean isCircuit = key instanceof AEItemKey itemKey &&
+                                    itemKey.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem();
 
                             if (!isCircuit) {
                                 allCircuit = false;
                             }
 
-                            boolean matches = fuzzy&!isCircuit ? matchSet.contains(key.dropSecondary()) : matchSet.contains(key);
+                            boolean matches = fuzzy & !isCircuit ? matchSet.contains(key.dropSecondary()) :
+                                    matchSet.contains(key);
 
                             if (!matches) {
                                 allMatch = false;
@@ -84,11 +84,9 @@ public class PatternProviderTargetCacheMixin {
                         return allCircuit || allMatch;
                     }
 
-
                     public MEStorage getStorage() {
                         return storage;
                     }
-                }
-        );
+                });
     }
 }

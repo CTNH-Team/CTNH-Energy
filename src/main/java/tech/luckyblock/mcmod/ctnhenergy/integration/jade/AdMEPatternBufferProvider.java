@@ -2,10 +2,10 @@ package tech.luckyblock.mcmod.ctnhenergy.integration.jade;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -24,8 +25,8 @@ import snownee.jade.api.ui.IElementHelper;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferPartMachine;
 
-
 public class AdMEPatternBufferProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
@@ -89,7 +90,7 @@ public class AdMEPatternBufferProvider implements IBlockComponentProvider, IServ
         for (Tag t : itemsTag) {
             if (!(t instanceof CompoundTag ct)) continue;
             var stack = ItemStack.of(ct);
-            if(stack.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem()) continue;
+            if (stack.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem()) continue;
             var count = ct.getLong("real");
             if (!stack.isEmpty() && count > 0) {
                 iTooltip.add(helper.smallItem(stack));

@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
@@ -11,15 +15,13 @@ import appeng.api.stacks.GenericStack;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.service.CraftingService;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ExecutingCraftingJob {
+
     private static final String NBT_LINK = "link";
     private static final String NBT_PLAYER_ID = "playerId";
     private static final String NBT_FINAL_OUTPUT = "finalOutput";
@@ -41,14 +43,15 @@ public class ExecutingCraftingJob {
 
     @FunctionalInterface
     interface CraftingDifferenceListener {
+
         void onCraftingDifference(AEKey what);
     }
 
     ExecutingCraftingJob(
-            ICraftingPlan plan,
-            CraftingDifferenceListener postCraftingDifference,
-            CraftingLink link,
-            @Nullable Integer playerId) {
+                         ICraftingPlan plan,
+                         CraftingDifferenceListener postCraftingDifference,
+                         CraftingLink link,
+                         @Nullable Integer playerId) {
         this.finalOutput = plan.finalOutput();
         this.remainingAmount = this.finalOutput.amount();
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
@@ -70,7 +73,8 @@ public class ExecutingCraftingJob {
         this.playerId = playerId;
     }
 
-    ExecutingCraftingJob(CompoundTag data, CraftingDifferenceListener postCraftingDifference, VirtualCraftingCPULogic cpu) {
+    ExecutingCraftingJob(CompoundTag data, CraftingDifferenceListener postCraftingDifference,
+                         VirtualCraftingCPULogic cpu) {
         this.link = new CraftingLink(data.getCompound(NBT_LINK), cpu.cpu);
         IGrid grid = cpu.cpu.getGrid();
         if (grid != null) {
@@ -130,6 +134,7 @@ public class ExecutingCraftingJob {
     }
 
     static class TaskProgress {
+
         long value = 0;
     }
 }

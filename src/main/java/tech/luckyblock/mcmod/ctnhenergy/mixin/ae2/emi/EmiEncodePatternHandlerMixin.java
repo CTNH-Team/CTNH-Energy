@@ -10,8 +10,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = EmiEncodePatternHandler.class, remap = false)
 public class EmiEncodePatternHandlerMixin {
+
     @Inject(method = "canCraft", at = @At("HEAD"), cancellable = true)
-    void canCraft(EmiRecipe recipe, EmiCraftContext<?> context, CallbackInfoReturnable<Boolean> cir){
+    void canCraft(EmiRecipe recipe, EmiCraftContext<?> context, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
     }
 }

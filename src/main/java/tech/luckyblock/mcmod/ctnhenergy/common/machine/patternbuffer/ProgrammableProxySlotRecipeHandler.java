@@ -5,12 +5,11 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
-import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ProgrammableSlotRecipeHandler.SlotRHL;
-
 import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
+import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ProgrammableSlotRecipeHandler.SlotRHL;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.MEPatternBufferProxyPartMachine;
 
@@ -36,7 +35,7 @@ public final class ProgrammableProxySlotRecipeHandler {
 
     public void updateProxy(MEPatternBufferPartMachine patternBuffer) {
         var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
-        for (int i = 0; i <slots; ++i) {
+        for (int i = 0; i < slots; ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
             ProgrammableSlotRecipeHandler.SlotRHL slotRHL = (SlotRHL) slotHandlers.get(i);
             proxyRHL.setBuffer(patternBuffer, slotRHL);
@@ -57,7 +56,6 @@ public final class ProgrammableProxySlotRecipeHandler {
         private final ProxyRecipeHandler<FluidIngredient> sharedFluid;
         private final ProxyRecipeHandler<FluidIngredient> slotFluid;
 
-
         public ProxyRHL(MEPatternBufferProxyPartMachine machine) {
             super(IO.IN);
             circuit = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
@@ -65,7 +63,6 @@ public final class ProgrammableProxySlotRecipeHandler {
             slotItem = ProxyRecipeHandler.createItemHandler(machine, IO.IN);
             sharedFluid = ProxyRecipeHandler.createFluidHandler(machine, IO.IN);
             slotFluid = ProxyRecipeHandler.createFluidHandler(machine, IO.IN);
-
 
             addHandlers(circuit, sharedItem, slotItem, sharedFluid, slotFluid);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
@@ -77,7 +74,6 @@ public final class ProgrammableProxySlotRecipeHandler {
             sharedFluid.setProxy(buffer.getShareTank());
             slotItem.setProxy(slotRHL.getItemRecipeHandler());
             slotFluid.setProxy(slotRHL.getFluidRecipeHandler());
-
         }
 
         public void clearBuffer() {

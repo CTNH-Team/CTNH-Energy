@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(value = AEBaseMenu.class, remap = false)
 public interface AEBaseMenuAccessor {
+
     @Accessor("part")
     IPart getPart();
 
     @Accessor("itemMenuHost")
     ItemMenuHost getItemMenuHost();
-
 }

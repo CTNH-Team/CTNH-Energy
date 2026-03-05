@@ -9,22 +9,22 @@
  *
  * Applied Energistics 2 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ * along with Applied Energistics 2. If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
 package tech.luckyblock.mcmod.ctnhenergy.utils.button;
 
-import java.util.Collections;
-import java.util.List;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ITooltip;
 import lombok.Setter;
-import net.minecraft.network.chat.Component;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ToggleBlitterButton extends BlitterButton implements ITooltip {
 
@@ -77,6 +77,7 @@ public class ToggleBlitterButton extends BlitterButton implements ITooltip {
 
     @FunctionalInterface
     public interface Listener {
+
         void onChange(boolean state);
     }
 }

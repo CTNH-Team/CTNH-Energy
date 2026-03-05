@@ -1,12 +1,13 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.pattern;
 
+import net.minecraft.world.level.Level;
+
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.pattern.AEProcessingPattern;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import yuuki1293.pccard.wrapper.IAEPattern;
 
@@ -33,7 +34,7 @@ public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
             inputs[i] = new Input(pattern.getInputs()[i]);
         }
         this.condensedOutputs = pattern.getOutputs().clone();
-        if(pattern instanceof IAEPattern iaePattern)
+        if (pattern instanceof IAEPattern iaePattern)
             pCCard$setNumber(iaePattern.pCCard$getNumber());
     }
 
@@ -106,7 +107,7 @@ public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
      */
     public DynamicProcessingPattern multiplyInPlace(long factor) {
         if (factor <= 0) {
-            //throw new IllegalArgumentException("factor must be > 0");
+            // throw new IllegalArgumentException("factor must be > 0");
             LOGGER.debug("样板倍数小于0！");
             factor = 1;
         }
@@ -147,6 +148,7 @@ public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
     // ===========================================================
 
     private static class Input implements IInput {
+
         private GenericStack[] template;
         private long multiplier;
 

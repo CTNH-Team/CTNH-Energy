@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
@@ -31,9 +29,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import lombok.Setter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,6 +40,7 @@ import com.google.common.annotations.VisibleForTesting;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
@@ -53,13 +50,12 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 @Prefix("power_station")
 public class PowerSubstationMachine extends WorkableMultiblockMachine
-        implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
+                                    implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -111,7 +107,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
 
-
         List<IBatteryData> batteries = new ArrayList<>();
         for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
             if (battery.getKey().startsWith(PMC_BATTERY_HEADER) &&
@@ -151,10 +146,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         .map(IEnergyContainer.class::cast)
                         .toList();
 
-                if(!containers.isEmpty()
-                        && part instanceof TieredPartMachine machine
-                        && machine.getTier() > energyBank.getTier())
-                {
+                if (!containers.isEmpty() && part instanceof TieredPartMachine machine &&
+                        machine.getTier() > energyBank.getTier()) {
                     onStructureInvalid();
                     return;
                 }
@@ -211,17 +204,17 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 // Bank from Energy Input Hatches
                 long energyBanked = energyBank.fill(inputHatches.getEnergyStored());
                 inputHatches.changeEnergy(-energyBanked);
-                //netInLastSec += energyBanked;
+                // netInLastSec += energyBanked;
 
                 // Passive drain
                 long energyPassiveDrained = energyBank.drain(getPassiveDrain());
-                //netOutLastSec += energyPassiveDrained;
+                // netOutLastSec += energyPassiveDrained;
 
                 // Debank to Dynamo Hatches
                 long energyDebanked = energyBank
                         .drain(outputHatches.getEnergyCapacity() - outputHatches.getEnergyStored());
                 outputHatches.changeEnergy(energyDebanked);
-                //netOutLastSec += energyDebanked;
+                // netOutLastSec += energyDebanked;
             }
         }
     }
@@ -238,7 +231,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
 
             } else if (isActive()) {
-               textList.add(Component.translatable("gtceu.multiblock.large_miner.working"));
+                textList.add(Component.translatable("gtceu.multiblock.large_miner.working"));
             } else {
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
@@ -257,7 +250,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
                 var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
 
-                var voltageComponent = voltage_tier.translate().append(Component.literal(GTValues.VNF[energyBank.getTier()]));
+                var voltageComponent = voltage_tier.translate()
+                        .append(Component.literal(GTValues.VNF[energyBank.getTier()]));
                 textList.add(voltageComponent);
 
                 var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored));
@@ -350,7 +344,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         return passiveDrain;
     }
 
-
     @Override
     public EnergyInfo getEnergyInfo() {
         return new EnergyInfo(energyBank.getCapacity(), energyBank.getStored());
@@ -396,15 +389,16 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         }
     }
 
-
     public static class PowerStationEnergyBank extends MachineTrait {
 
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-                new ManagedFieldHolder(PowerStationEnergyBank.class);
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+                PowerStationEnergyBank.class);
 
-        /* ----------------------------
+        /*
+         * ----------------------------
          * 持久化字段
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         @Persisted
         private final List<Long> storage = new ArrayList<>();
@@ -421,9 +415,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         @Persisted
         @Getter
         int tier;
-        /* ----------------------------
+        /*
+         * ----------------------------
          * 构造 / 创建
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         private PowerStationEnergyBank(PowerSubstationMachine machine) {
             super(machine);
@@ -435,12 +431,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
         @Override
         public PowerSubstationMachine getMachine() {
-            return (PowerSubstationMachine)super.getMachine();
+            return (PowerSubstationMachine) super.getMachine();
         }
 
-        /* ----------------------------
+        /*
+         * ----------------------------
          * rebuild：原对象重建
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         public void rebuild(@NotNull List<IBatteryData> batteries) {
             if (batteries.isEmpty()) {
@@ -502,9 +500,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             return filled;
         }
 
-        /* ----------------------------
+        /*
+         * ----------------------------
          * Fill / Drain
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         public long fill(long amount) {
             if (amount <= 0 || storage.isEmpty()) return 0;
@@ -561,9 +561,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             return drained;
         }
 
-        /* ----------------------------
+        /*
+         * ----------------------------
          * 查询
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         public BigInteger getStored() {
             return summarize(storage);
@@ -583,9 +585,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             return false;
         }
 
-        /* ----------------------------
+        /*
+         * ----------------------------
          * 安全辅助
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         private void ensureIndexValid() {
             if (storage.isEmpty()) {
@@ -608,9 +612,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             }
         }
 
-        /* ----------------------------
+        /*
+         * ----------------------------
          * 工具
-         * ---------------------------- */
+         * ----------------------------
+         */
 
         private static BigInteger summarize(List<Long> values) {
             BigInteger total = BigInteger.ZERO;
@@ -652,8 +658,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             return MANAGED_FIELD_HOLDER;
         }
     }
-
-
 
     @Getter
     public static class BatteryMatchWrapper {

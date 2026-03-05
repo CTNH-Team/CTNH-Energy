@@ -1,25 +1,10 @@
 package tech.luckyblock.mcmod.ctnhenergy.common;
 
-import appeng.api.behaviors.ContainerItemStrategy;
-import appeng.api.behaviors.GenericSlotCapacities;
-import appeng.api.networking.GridServices;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEKeyTypes;
-import appeng.api.storage.StorageCells;
-import appeng.api.upgrades.Upgrades;
-import appeng.capabilities.Capabilities;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.localization.GuiText;
-import com.glodblock.github.extendedae.common.EPPItemAndBlock;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSParts;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +21,21 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
+
+import appeng.api.behaviors.ContainerItemStrategy;
+import appeng.api.behaviors.GenericSlotCapacities;
+import appeng.api.networking.GridServices;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.stacks.AEKeyTypes;
+import appeng.api.storage.StorageCells;
+import appeng.api.upgrades.Upgrades;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.core.localization.GuiText;
+import com.glodblock.github.extendedae.common.EPPItemAndBlock;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
@@ -55,8 +55,9 @@ import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 import yuuki1293.pccard.PCCard;
 
-@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonProxy {
+
     @SuppressWarnings("removal")
     public CommonProxy() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -65,7 +66,7 @@ public class CommonProxy {
         CommonProxy.init();
     }
 
-    @SuppressWarnings({"UnstableApiUsage", "removal"})
+    @SuppressWarnings({ "UnstableApiUsage", "removal" })
     public static void init() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         CTNHEnergy.REGISTRATE.registerRegistrate();
@@ -86,62 +87,81 @@ public class CommonProxy {
 
         });
 
-        GenericSlotCapacities.register(EUKeyType.INSTANCE, (long)Integer.MAX_VALUE);
+        GenericSlotCapacities.register(EUKeyType.INSTANCE, (long) Integer.MAX_VALUE);
         StorageCells.addCellHandler(EuCellHandler.HANDLER);
 
-        eventBus.addListener((FMLCommonSetupEvent event) ->{
+        eventBus.addListener((FMLCommonSetupEvent event) -> {
             event.enqueueWork(() -> {
                 GridServices.register(EnergyDistributeService.class, EnergyDistributeService.class);
                 ContainerItemStrategy.register(EUKeyType.INSTANCE, EUKey.class, new EUContainerItemStrategy());
                 registerCellUpgrades(CEItems.EU_CELL);
 
-                Upgrades.add(AEItems.FUZZY_CARD, AEBlocks.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(AEItems.FUZZY_CARD, AEParts.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, AEBlocks.PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, AEParts.PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
 
                 Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.INTERFACE, 1, GuiText.Interface.getTranslationKey());
                 Upgrades.add(CEItems.DYNAMO_CARD, AEParts.INTERFACE, 1, GuiText.Interface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE, 1, GuiText.Interface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE_PART, 1, GuiText.Interface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE, 1,
+                        GuiText.Interface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE_PART, 1,
+                        GuiText.Interface.getTranslationKey());
 
-                Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, AEParts.PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1, GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1, GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, AEParts.PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
 
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1, "block.ae2cs.simple_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.simple_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
+                        "block.ae2cs.simple_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
+                        "block.ae2cs.simple_pattern_provider");
 
-                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1, "block.ae2cs.simple_pattern_provider");
-                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.simple_pattern_provider");
+                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
+                        "block.ae2cs.simple_pattern_provider");
+                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
+                        "block.ae2cs.simple_pattern_provider");
 
                 Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
                 Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, "block.ae2cs.ender_interface");
                 Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, 1, "block.ae2cs.ender_interface");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, 1,
+                        "block.ae2cs.ender_interface");
 
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.RESONATING_PATTERN_PROVIDER_PART, 1, "block.ae2cs.resonating_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.resonating_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART, 1, "block.ae2cs.resonating_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, 1, "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.RESONATING_PATTERN_PROVIDER_PART, 1,
+                        "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1,
+                        "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART, 1,
+                        "block.ae2cs.resonating_pattern_provider");
+                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, 1,
+                        "block.ae2cs.resonating_pattern_provider");
 
             });
         });
 
-
         MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, (AttachCapabilitiesEvent<BlockEntity> event) -> {
             var blockEntity = event.getObject();
             event.addCapability(CTNHEnergy.id("generic_eu_wrapper"), new ICapabilityProvider() {
-                @Override
-                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {
 
-                    if(capability == GTCapability.CAPABILITY_ENERGY_CONTAINER ){
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
+                                                                  @Nullable Direction direction) {
+                    if (capability == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
                         var upgradeable = CEUtil.getUpgradeable(blockEntity, direction);
-                        if(upgradeable instanceof IActionHost host
-                                && host.getActionableNode() != null
-                                && host.getActionableNode().getGrid() != null){
-                            return LazyOptional.of(() -> new MEMachineEUHandler(host.getActionableNode(), upgradeable)).cast();
+                        if (upgradeable instanceof IActionHost host && host.getActionableNode() != null &&
+                                host.getActionableNode().getGrid() != null) {
+                            return LazyOptional.of(() -> new MEMachineEUHandler(host.getActionableNode(), upgradeable))
+                                    .cast();
                         }
                     }
                     return LazyOptional.empty();
@@ -149,14 +169,17 @@ public class CommonProxy {
             });
         });
 
-        JadePriorityManager.registerBlockData(new AdMEPatternBufferProvider(), BlockEntity.class, 2901, "ad_me_pattern_buffer_data");
-        JadePriorityManager.registerBlockData(new AdMEPatternBufferProxyProvider(), BlockEntity.class, 3001, "ad_me_pattern_buffer_proxy_data");
-        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProvider(), Block.class, 2901, "ad_me_pattern_buffer_component");
-        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProxyProvider(), Block.class, 3001, "ad_me_pattern_buffer_proxy_component");
-
+        JadePriorityManager.registerBlockData(new AdMEPatternBufferProvider(), BlockEntity.class, 2901,
+                "ad_me_pattern_buffer_data");
+        JadePriorityManager.registerBlockData(new AdMEPatternBufferProxyProvider(), BlockEntity.class, 3001,
+                "ad_me_pattern_buffer_proxy_data");
+        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProvider(), Block.class, 2901,
+                "ad_me_pattern_buffer_component");
+        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProxyProvider(), Block.class, 3001,
+                "ad_me_pattern_buffer_proxy_component");
     }
 
-    public static void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event){
+    public static void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         CEMachines.init();
         CEMultiblock.init();
     }

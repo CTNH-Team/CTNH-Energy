@@ -1,14 +1,16 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 
 public class ElapsedTimeTracker {
+
     private static final String NBT_ELAPSED_TIME = "elapsedTime";
     private static final String NBT_STARTED_WORK = "startedWork";
     private static final String NBT_COMPLETED_WORK = "completedWork";
@@ -16,10 +18,10 @@ public class ElapsedTimeTracker {
     private long lastTime = System.nanoTime();
     private long elapsedTime = 0;
 
-    private final Reference2LongMap<AEKeyType> startedWorkByType =
-            new Reference2LongOpenHashMap<>(Iterables.size(AEKeyTypes.getAll()));
-    private final Reference2LongMap<AEKeyType> completedWorkByType =
-            new Reference2LongOpenHashMap<>(Iterables.size(AEKeyTypes.getAll()));
+    private final Reference2LongMap<AEKeyType> startedWorkByType = new Reference2LongOpenHashMap<>(
+            Iterables.size(AEKeyTypes.getAll()));
+    private final Reference2LongMap<AEKeyType> completedWorkByType = new Reference2LongOpenHashMap<>(
+            Iterables.size(AEKeyTypes.getAll()));
 
     public ElapsedTimeTracker() {}
 
@@ -87,7 +89,7 @@ public class ElapsedTimeTracker {
             return this.elapsedTime;
         }
     }
-    
+
     public float getProgress() {
         double startedUnits = 0;
         double completedUnits = 0;
@@ -101,12 +103,12 @@ public class ElapsedTimeTracker {
         return Mth.clamp((float) (completedUnits / startedUnits), 0, 1);
     }
 
-    //@Deprecated(forRemoval = true)
+    // @Deprecated(forRemoval = true)
     public long getRemainingItemCount() {
         return (int) (Integer.MAX_VALUE - (double) getProgress() * Integer.MAX_VALUE);
     }
 
-    //@Deprecated(forRemoval = true)
+    // @Deprecated(forRemoval = true)
     public long getStartItemCount() {
         return Integer.MAX_VALUE;
     }

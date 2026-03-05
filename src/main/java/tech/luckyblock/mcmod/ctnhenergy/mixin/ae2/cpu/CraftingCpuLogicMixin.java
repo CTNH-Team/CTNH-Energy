@@ -1,8 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.cpu;
 
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -11,31 +12,26 @@ import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ExecutingCraftingJob;
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.crafting.pattern.AEProcessingPattern;
-import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.service.CraftingService;
-import net.minecraft.world.level.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.api.IAutoMultiplyCPU;
-import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.common.pattern.DynamicProcessingPattern;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider.PatternProviderLogicAccessor;
 import tech.luckyblock.mcmod.ctnhenergy.utils.ProviderRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu.VirtualCraftingCPULogic.CE$isBlock;
-
 
 @Mixin(value = CraftingCpuLogic.class, remap = false)
 public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
@@ -70,7 +66,6 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
     @Unique
     private static final Logger LOG = LoggerFactory.getLogger("CTNHEnergy-CraftingCPU");
 
-
     /**
      * 自动翻倍样板
      */
@@ -80,8 +75,8 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                                    IEnergyService energyService,
                                    Level level,
                                    CallbackInfoReturnable<Integer> cir) {
-        if(!isEnableMultiply()) return;
-        if(CEConfig.INSTANCE.cpu.maxProviders != 0)
+        if (!isEnableMultiply()) return;
+        if (CEConfig.INSTANCE.cpu.maxProviders != 0)
             maxProviders = Math.min(maxProviders, CEConfig.INSTANCE.cpu.maxProviders);
 
         var jobLocal = this.job;
@@ -95,11 +90,11 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
         var timeTracker = jobAccessor.getTimeTracker();
 
         int pushedPatterns = 0;
-        
+
         var it = jobAccessor.getTasks().entrySet().iterator();
-        while (it.hasNext() && maxProviders >0) {
+        while (it.hasNext() && maxProviders > 0) {
             var task = it.next();
-            TaskProgressAccessor progressAccessor = (TaskProgressAccessor)(task.getValue());
+            TaskProgressAccessor progressAccessor = (TaskProgressAccessor) (task.getValue());
             long totalCount = progressAccessor.getValue();
 
             if (totalCount <= 0) {
@@ -116,7 +111,7 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                 if (!provider.isBusy()) {
 
                     var isBlock = !isProcessing || CE$isBlock(provider);
-                    if(isBlock)
+                    if (isBlock)
                         blocking++;
                     else
                         nonBlocking++;
@@ -125,27 +120,29 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
             }
 
             long multiplier = 1;
-            if(nonBlocking != 0) {
-                //神秘公式
-                multiplier = Math.max( (totalCount - blocking -1)/nonBlocking + 1,  1);
+            if (nonBlocking != 0) {
+                // 神秘公式
+                multiplier = Math.max((totalCount - blocking - 1) / nonBlocking + 1, 1);
                 multiplier = Math.min(multiplier, CEConfig.INSTANCE.cpu.maxMultipleOMNI);
             }
 
-
-            mulPattern = (multiplier == 1 ? pattern : new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier));
+            mulPattern = (multiplier == 1 ? pattern :
+                    new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(multiplier));
 
             for (var r : providerRecords) {
-                if(maxProviders <= 0) break;
+                if (maxProviders <= 0) break;
                 var workingPattern = r.block() ? pattern : mulPattern;
                 long workingMultiplier = r.block() ? 1 : multiplier;
-                //最后一个供应器可能会分配到大于倍数的样板
-                if(totalCount < workingMultiplier) {
-                    workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern).multiplyInPlace(totalCount);
+                // 最后一个供应器可能会分配到大于倍数的样板
+                if (totalCount < workingMultiplier) {
+                    workingPattern = new DynamicProcessingPattern((AEProcessingPattern) pattern)
+                            .multiplyInPlace(totalCount);
                     workingMultiplier = totalCount;
                 }
                 KeyCounter expectedOutputs = new KeyCounter();
                 KeyCounter expectedContainerItems = new KeyCounter();
-                var craftingContainer = CraftingCpuHelper.extractPatternInputs(workingPattern, inventory, level, expectedOutputs, expectedContainerItems);
+                var craftingContainer = CraftingCpuHelper.extractPatternInputs(workingPattern, inventory, level,
+                        expectedOutputs, expectedContainerItems);
 
                 if (craftingContainer == null) {
                     break;
@@ -153,7 +150,8 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
 
                 double patternPower = CraftingCpuHelper.calculatePatternPower(craftingContainer);
 
-                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+                double extracted = energyService.extractAEPower(patternPower, Actionable.SIMULATE,
+                        PowerMultiplier.CONFIG);
 
                 if (extracted + 0.01 >= patternPower && r.provider().pushPattern(workingPattern, craftingContainer)) {
                     energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
@@ -163,7 +161,8 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                     }
                     for (var expected : expectedContainerItems) {
                         waitingFor.insert(expected.getKey(), expected.getLongValue(), Actionable.MODULATE);
-                        ((ElapsedTimeTrackerInvoker) timeTracker).invokeAddMaxItems(expected.getLongValue(), expected.getKey().getType());
+                        ((ElapsedTimeTrackerInvoker) timeTracker).invokeAddMaxItems(expected.getLongValue(),
+                                expected.getKey().getType());
                     }
 
                     cluster.markDirty();
@@ -171,17 +170,14 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                     maxProviders--;
                     totalCount -= workingMultiplier;
 
-                    if(totalCount <= 0 )
-                    {
+                    if (totalCount <= 0) {
                         progressAccessor.setValue(0);
                         it.remove();
                         break;
-                    }
-                    else{
+                    } else {
                         progressAccessor.setValue(totalCount);
                     }
-                }
-                else {
+                } else {
                     CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
                 }
 

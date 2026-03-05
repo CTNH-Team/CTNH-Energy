@@ -1,18 +1,20 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.client.gui.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
+import appeng.api.client.AEKeyRendering;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.client.gui.Icon;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class InfoBar {
+
     private final List<Widget> widgets = new ArrayList<>();
 
     public void render(GuiGraphics guiGraphics, int x, int y) {
@@ -25,6 +27,7 @@ public class InfoBar {
     }
 
     interface Widget {
+
         int getWidth();
 
         int getHeight();
@@ -57,6 +60,7 @@ public class InfoBar {
     }
 
     private record StackWidget(AEKey what, float scale) implements Widget {
+
         @Override
         public int getWidth() {
             return Math.round(16 * scale);
@@ -79,6 +83,7 @@ public class InfoBar {
     }
 
     private record IconWidget(Icon icon, float scale) implements Widget {
+
         @Override
         public int getWidth() {
             return Math.round(16 * scale);
@@ -101,6 +106,7 @@ public class InfoBar {
     }
 
     private static final class TextWidget implements Widget {
+
         private final Component text;
         private final int color;
         private final float scale;
@@ -139,6 +145,7 @@ public class InfoBar {
     }
 
     private static final class SpaceWidget implements Widget {
+
         private final int width;
 
         public SpaceWidget(int width) {

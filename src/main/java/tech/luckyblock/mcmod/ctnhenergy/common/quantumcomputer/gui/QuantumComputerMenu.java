@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.stacks.GenericStack;
@@ -7,9 +11,6 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import lombok.Getter;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu.VirtualCraftingCPU;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port.QuantumComputerMENetworkPortBlockEntity;
@@ -22,7 +23,7 @@ public class QuantumComputerMenu extends CraftingCPUMenu {
     private static final CraftingCpuList EMPTY_CPU_LIST = new CraftingCpuList(Collections.emptyList());
 
     private static final Comparator<CraftingCpuListEntry> CPU_COMPARATOR = Comparator.comparing(
-                    (CraftingCpuListEntry e) -> e.name() == null)
+            (CraftingCpuListEntry e) -> e.name() == null)
             .thenComparing(e -> e.name() != null ? e.name().getString() : "")
             .thenComparingInt(CraftingCpuListEntry::serial);
 
@@ -81,7 +82,7 @@ public class QuantumComputerMenu extends CraftingCPUMenu {
             List<VirtualCraftingCPU> newCpuSet = this.host.getCluster().getActiveCPUs();
             newCpuSet.add(this.host.getCluster().getRemainingCapacityCPU());
             if (!lastCpuSet.equals(newCpuSet)
-                    // Always try to update once every second to show job progress
+            // Always try to update once every second to show job progress
                     || ++lastUpdate >= 20) {
                 lastCpuSet = newCpuSet;
                 cpuList = createCpuList();
@@ -180,6 +181,7 @@ public class QuantumComputerMenu extends CraftingCPUMenu {
     }
 
     public record CraftingCpuList(List<CraftingCpuListEntry> cpus) implements PacketWritable {
+
         public CraftingCpuList(FriendlyByteBuf data) {
             this(readFromPacket(data));
         }
@@ -203,14 +205,15 @@ public class QuantumComputerMenu extends CraftingCPUMenu {
     }
 
     public record CraftingCpuListEntry(
-            int serial,
-            long storage,
-            int coProcessors,
-            Component name,
-            CpuSelectionMode mode,
-            GenericStack currentJob,
-            float progress,
-            long elapsedTimeNanos) {
+                                       int serial,
+                                       long storage,
+                                       int coProcessors,
+                                       Component name,
+                                       CpuSelectionMode mode,
+                                       GenericStack currentJob,
+                                       float progress,
+                                       long elapsedTimeNanos) {
+
         public static CraftingCpuListEntry readFromPacket(FriendlyByteBuf data) {
             return new CraftingCpuListEntry(
                     data.readInt(),

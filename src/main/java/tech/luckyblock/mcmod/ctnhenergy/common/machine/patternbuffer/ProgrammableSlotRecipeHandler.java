@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,8 +34,8 @@ public final class ProgrammableSlotRecipeHandler {
         }
     }
 
-    public void setCircuit(int index, int circuit){
-        ((SlotRHL)slotHandlers.get(index)).circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(circuit));
+    public void setCircuit(int index, int circuit) {
+        ((SlotRHL) slotHandlers.get(index)).circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(circuit));
     }
 
     @Getter

@@ -1,28 +1,23 @@
 package tech.luckyblock.mcmod.ctnhenergy.registry;
 
-import appeng.core.definitions.AEBlocks;
-import com.glodblock.github.extendedae.common.EPPItemAndBlock;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
+
+import appeng.core.definitions.AEBlocks;
+import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.api.CEPredicates;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
@@ -66,9 +61,8 @@ public class CEMultiblock {
             "§d§o策定乾坤算因果§r§r"
     })
     @EN({
-            "","","","","","","",
+            "", "", "", "", "", "", "",
             "§d§oScheming the cosmos, Computing karma.§r§r"
-
 
     })
     static Lang[] jiuzhang_tooltip;
@@ -83,39 +77,105 @@ public class CEMultiblock {
     })
     static Lang[] powerstation_voltage;
 
-
     public static void init() {
         JIUZHANG_QUANTUM_COMPUTER = REGISTRATE.multiblock(
-                        "jiuzhang_quantum_computer",
-                        QuantumComputerMultiblockMachine::new
-                )
+                "jiuzhang_quantum_computer",
+                QuantumComputerMultiblockMachine::new)
                 .cnLangValue("§6九章§r | §d量子超算§r")
                 .langValue("§6JIUZHANG§r | §dQuantum Supercomputing§r")
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(CERecipeTypes.QUANTUM_COMPUTER)
                 .appearanceBlock(CEBlocks.STEADY_STATE_COMPUTING_MATRIX_SHELL)
                 .pattern(definition -> FactoryStaticBlockPattern.start()
-                        .aisle("AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "#################", "#################", "#################", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO")
-                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL", "ACCCCCC###MMMMMML", "#################", "#################", "#################", "IJJJJJJ###PPPPPPO", "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO", "IIIIIII###OOOOOOO")
-                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBBD###NBBBBBL", "ACDDDDDEEENNNNNML", "######EFFFE######", "######EFGFE######", "######EFFFE######", "IJKKKKKEEEQQQQQPO", "IBBBBBK###QBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO", "IIIIIII###OOOOOOO")
-                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBBC###MBBBBBL", "ABBBBCCEFEMMBBBBL", "ABBBCCEEFEEMMBBBL", "ACDCCEEHHHEEMMNML", "####EEHHHHHEE####", "####FFHHHHHFF####", "####EEHHHHHEE####", "IJKJJEEHHHEEPPQPO", "IBBBJJEEFEEPPBBBO", "IBBBBJJEFEPPBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO", "IIIIIII###OOOOOOO")
-                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBCCEFEMMBBBBL", "ABBBCEEHHHEEMBBBL", "ABBCEEHHHHHEEMBBL", "ACDCEHHHHHHHEMNML", "###EHHHHHHHHHE###", "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "IJKJEHHHHHHHEPQPO", "IBBJEEHHHHHEEPBBO", "IBBBJEEHHHEEPBBBO", "IBBBBJJEFEPPBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO", "IIIIIII###OOOOOOO")
-                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBCCEEFEEMMBBBL", "ABBCEEHHHHHEEMBBL", "ABBCEHHHHHHHEMBBL", "ACDEHHHHHHHHHENML", "###EHHHHHHHHHE###", "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "IJKEHHHHHHHHHEQPO", "IBBJEHHHHHHHEPBBO", "IBBJEEHHHHHEEPBBO", "IBBBJJEEFEEPPBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO", "IIIIIII###OOOOOOO")
-                        .aisle("AAAAAAA###LLLLLLL", "ACCCCCC###MMMMMML", "ACDDDDDEEENNNNNML", "ACDCCEEHHHEEMMNML", "ACDCEHHHHHHHEMNML", "ACDEHHHHHHHHHENML", "ACDEHHHHHHHHHENML", "##EHHHHHHHHHHHE##", "##EHHHHHHHHHHHE##", "##EHHHHHHHHHHHE##", "IJKEHHHHHHHHHEQPO", "IJKEHHHHHHHHHEQPO", "IJKJEHHHHHHHEPQPO", "IJKJJEEHHHEEPPQPO", "IJKKKKKEEEQQQQQPO", "IJJJJJJ###PPPPPPO", "IIIIIII###OOOOOOO")
-                        .aisle("#################", "#################", "######EFFFE######", "####EEHHHHHEE####", "###EHHHHHHHHHE###", "###EHHHHHHHHHE###", "##EHHHHHHHHHHHE##", "##FHHHHHHHHHHHF##", "##FHHHHHHHHHHHF##", "##FHHHHHHHHHHHF##", "##EHHHHHHHHHHHE##", "###EHHHHHHHHHE###", "###EHHHHHHHHHE###", "####EEHHHHHEE####", "######EFFFE######", "#################", "#################")
-                        .aisle("#################", "#################", "######EFGFE######", "####FFHHHHHFF####", "###FHHHHHHHHHF###", "###FHHHHHHHHHF###", "##EHHHHHHHHHHHE##", "##FHHHHHHHHHHHF##", "##GHHHHHHHHHHHG##", "##FHHHHHHHHHHHF##", "##EHHHHHHHHHHHE##", "###FHHHHHHHHHF###", "###FHHHHHHHHHF###", "####FFHHHHHFF####", "######EF4FE######", "#################", "#################")
-                        .aisle("#################", "#################", "######EFFFE######", "####EEHHHHHEE####", "###EHHHHHHHHHE###", "###EHHHHHHHHHE###", "##EHHHHHHHHHHHE##", "##FHHHHHHHHHHHF##", "##FHHHHHHHHHHHF##", "##FHHHHHHHHHHHF##", "##EHHHHHHHHHHHE##", "###EHHHHHHHHHE###", "###EHHHHHHHHHE###", "####EEHHHHHEE####", "######EFFFE######", "#################", "#################")
-                        .aisle("RRRRRRR###XXXXXXX", "RSSSSSS###YYYYYYX", "RSTTTTTEEEZZZZZYX", "RSTSSEEHHHEEYYZYX", "RSTSEHHHHHHHEYZYX", "RSTEHHHHHHHHHEZYX", "RSTEHHHHHHHHHEZYX", "##EHHHHHHHHHHHE##", "##EHHHHHHHHHHHE##", "##EHHHHHHHHHHHE##", "UVWEHHHHHHHHHE321", "UVWEHHHHHHHHHE321", "UVWVEHHHHHHHE2321", "UVWVVEEHHHEE22321", "UVWWWWWEEE3333321", "UVVVVVV###2222221", "UUUUUUU###1111111")
-                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBSSEEFEEYYBBBX", "RBBSEEHHHHHEEYBBX", "RBBSEHHHHHHHEYBBX", "RSTEHHHHHHHHHEZYX", "###EHHHHHHHHHE###", "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "UVWEHHHHHHHHHE321", "UBBVEHHHHHHHE2BB1", "UBBVEEHHHHHEE2BB1", "UBBBVVEEFEE22BBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1", "UUUUUUU###1111111")
-                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBSSEFEYYBBBBX", "RBBBSEEHHHEEYBBBX", "RBBSEEHHHHHEEYBBX", "RSTSEHHHHHHHEYZYX", "###EHHHHHHHHHE###", "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "UVWVEHHHHHHHE2321", "UBBVEEHHHHHEE2BB1", "UBBBVEEHHHEE2BBB1", "UBBBBVVEFE22BBBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1", "UUUUUUU###1111111")
-                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBBS###YBBBBBX", "RBBBBSSEFEYYBBBBX", "RBBBSSEEFEEYYBBBX", "RSTSSEEHHHEEYYZYX", "####EEHHHHHEE####", "####FFHHHHHFF####", "####EEHHHHHEE####", "UVWVVEEHHHEE22321", "UBBBVVEEFEE22BBB1", "UBBBBVVEFE22BBBB1", "UBBBBBV###2BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1", "UUUUUUU###1111111")
-                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBBT###ZBBBBBX", "RSTTTTTEEEZZZZZYX", "######EFFFE######", "######EF@FE######", "######EFFFE######", "UVWWWWWEEE3333321", "UBBBBBW###3BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1", "UUUUUUU###1111111")
-                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX", "RSSSSSS###YYYYYYX", "#################", "#################", "#################", "UVVVVVV###2222221", "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1", "UUUUUUU###1111111")
-                        .aisle("RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "#################", "#################", "#################", "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111")
+                        .aisle("AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL",
+                                "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "AAAAAAA###LLLLLLL", "#################",
+                                "#################", "#################", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO",
+                                "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO", "IIIIIII###OOOOOOO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL",
+                                "ABBBBBC###MBBBBBL", "ABBBBBC###MBBBBBL", "ACCCCCC###MMMMMML", "#################",
+                                "#################", "#################", "IJJJJJJ###PPPPPPO", "IBBBBBJ###PBBBBBO",
+                                "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBJ###PBBBBBO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBBD###NBBBBBL",
+                                "ABBBBBD###NBBBBBL", "ABBBBBD###NBBBBBL", "ACDDDDDEEENNNNNML", "######EFFFE######",
+                                "######EFGFE######", "######EFFFE######", "IJKKKKKEEEQQQQQPO", "IBBBBBK###QBBBBBO",
+                                "IBBBBBK###QBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBBC###MBBBBBL",
+                                "ABBBBCCEFEMMBBBBL", "ABBBCCEEFEEMMBBBL", "ACDCCEEHHHEEMMNML", "####EEHHHHHEE####",
+                                "####FFHHHHHFF####", "####EEHHHHHEE####", "IJKJJEEHHHEEPPQPO", "IBBBJJEEFEEPPBBBO",
+                                "IBBBBJJEFEPPBBBBO", "IBBBBBJ###PBBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBBCCEFEMMBBBBL",
+                                "ABBBCEEHHHEEMBBBL", "ABBCEEHHHHHEEMBBL", "ACDCEHHHHHHHEMNML", "###EHHHHHHHHHE###",
+                                "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "IJKJEHHHHHHHEPQPO", "IBBJEEHHHHHEEPBBO",
+                                "IBBBJEEHHHEEPBBBO", "IBBBBJJEFEPPBBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("AAAAAAA###LLLLLLL", "ABBBBBC###MBBBBBL", "ABBBBBD###NBBBBBL", "ABBBCCEEFEEMMBBBL",
+                                "ABBCEEHHHHHEEMBBL", "ABBCEHHHHHHHEMBBL", "ACDEHHHHHHHHHENML", "###EHHHHHHHHHE###",
+                                "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "IJKEHHHHHHHHHEQPO", "IBBJEHHHHHHHEPBBO",
+                                "IBBJEEHHHHHEEPBBO", "IBBBJJEEFEEPPBBBO", "IBBBBBK###QBBBBBO", "IBBBBBJ###PBBBBBO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("AAAAAAA###LLLLLLL", "ACCCCCC###MMMMMML", "ACDDDDDEEENNNNNML", "ACDCCEEHHHEEMMNML",
+                                "ACDCEHHHHHHHEMNML", "ACDEHHHHHHHHHENML", "ACDEHHHHHHHHHENML", "##EHHHHHHHHHHHE##",
+                                "##EHHHHHHHHHHHE##", "##EHHHHHHHHHHHE##", "IJKEHHHHHHHHHEQPO", "IJKEHHHHHHHHHEQPO",
+                                "IJKJEHHHHHHHEPQPO", "IJKJJEEHHHEEPPQPO", "IJKKKKKEEEQQQQQPO", "IJJJJJJ###PPPPPPO",
+                                "IIIIIII###OOOOOOO")
+                        .aisle("#################", "#################", "######EFFFE######", "####EEHHHHHEE####",
+                                "###EHHHHHHHHHE###", "###EHHHHHHHHHE###", "##EHHHHHHHHHHHE##", "##FHHHHHHHHHHHF##",
+                                "##FHHHHHHHHHHHF##", "##FHHHHHHHHHHHF##", "##EHHHHHHHHHHHE##", "###EHHHHHHHHHE###",
+                                "###EHHHHHHHHHE###", "####EEHHHHHEE####", "######EFFFE######", "#################",
+                                "#################")
+                        .aisle("#################", "#################", "######EFGFE######", "####FFHHHHHFF####",
+                                "###FHHHHHHHHHF###", "###FHHHHHHHHHF###", "##EHHHHHHHHHHHE##", "##FHHHHHHHHHHHF##",
+                                "##GHHHHHHHHHHHG##", "##FHHHHHHHHHHHF##", "##EHHHHHHHHHHHE##", "###FHHHHHHHHHF###",
+                                "###FHHHHHHHHHF###", "####FFHHHHHFF####", "######EF4FE######", "#################",
+                                "#################")
+                        .aisle("#################", "#################", "######EFFFE######", "####EEHHHHHEE####",
+                                "###EHHHHHHHHHE###", "###EHHHHHHHHHE###", "##EHHHHHHHHHHHE##", "##FHHHHHHHHHHHF##",
+                                "##FHHHHHHHHHHHF##", "##FHHHHHHHHHHHF##", "##EHHHHHHHHHHHE##", "###EHHHHHHHHHE###",
+                                "###EHHHHHHHHHE###", "####EEHHHHHEE####", "######EFFFE######", "#################",
+                                "#################")
+                        .aisle("RRRRRRR###XXXXXXX", "RSSSSSS###YYYYYYX", "RSTTTTTEEEZZZZZYX", "RSTSSEEHHHEEYYZYX",
+                                "RSTSEHHHHHHHEYZYX", "RSTEHHHHHHHHHEZYX", "RSTEHHHHHHHHHEZYX", "##EHHHHHHHHHHHE##",
+                                "##EHHHHHHHHHHHE##", "##EHHHHHHHHHHHE##", "UVWEHHHHHHHHHE321", "UVWEHHHHHHHHHE321",
+                                "UVWVEHHHHHHHE2321", "UVWVVEEHHHEE22321", "UVWWWWWEEE3333321", "UVVVVVV###2222221",
+                                "UUUUUUU###1111111")
+                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBSSEEFEEYYBBBX",
+                                "RBBSEEHHHHHEEYBBX", "RBBSEHHHHHHHEYBBX", "RSTEHHHHHHHHHEZYX", "###EHHHHHHHHHE###",
+                                "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "UVWEHHHHHHHHHE321", "UBBVEHHHHHHHE2BB1",
+                                "UBBVEEHHHHHEE2BB1", "UBBBVVEEFEE22BBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1",
+                                "UUUUUUU###1111111")
+                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBSSEFEYYBBBBX",
+                                "RBBBSEEHHHEEYBBBX", "RBBSEEHHHHHEEYBBX", "RSTSEHHHHHHHEYZYX", "###EHHHHHHHHHE###",
+                                "###FHHHHHHHHHF###", "###EHHHHHHHHHE###", "UVWVEHHHHHHHE2321", "UBBVEEHHHHHEE2BB1",
+                                "UBBBVEEHHHEE2BBB1", "UBBBBVVEFE22BBBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1",
+                                "UUUUUUU###1111111")
+                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBBS###YBBBBBX",
+                                "RBBBBSSEFEYYBBBBX", "RBBBSSEEFEEYYBBBX", "RSTSSEEHHHEEYYZYX", "####EEHHHHHEE####",
+                                "####FFHHHHHFF####", "####EEHHHHHEE####", "UVWVVEEHHHEE22321", "UBBBVVEEFEE22BBB1",
+                                "UBBBBVVEFE22BBBB1", "UBBBBBV###2BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1",
+                                "UUUUUUU###1111111")
+                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBT###ZBBBBBX", "RBBBBBT###ZBBBBBX",
+                                "RBBBBBT###ZBBBBBX", "RBBBBBT###ZBBBBBX", "RSTTTTTEEEZZZZZYX", "######EFFFE######",
+                                "######EF@FE######", "######EFFFE######", "UVWWWWWEEE3333321", "UBBBBBW###3BBBBB1",
+                                "UBBBBBW###3BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBW###3BBBBB1", "UBBBBBV###2BBBBB1",
+                                "UUUUUUU###1111111")
+                        .aisle("RRRRRRR###XXXXXXX", "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX",
+                                "RBBBBBS###YBBBBBX", "RBBBBBS###YBBBBBX", "RSSSSSS###YYYYYYX", "#################",
+                                "#################", "#################", "UVVVVVV###2222221", "UBBBBBV###2BBBBB1",
+                                "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1", "UBBBBBV###2BBBBB1",
+                                "UUUUUUU###1111111")
+                        .aisle("RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX",
+                                "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "RRRRRRR###XXXXXXX", "#################",
+                                "#################", "#################", "UUUUUUU###1111111", "UUUUUUU###1111111",
+                                "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111", "UUUUUUU###1111111",
+                                "UUUUUUU###1111111")
                         .where("4", Predicates.blocks(CEBlocks.QUANTUM_COMPUTER_ME_NETWORK_PORT.get()))
                         .where("G", Predicates.blocks(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block())
-                                .or(Predicates.abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setExactLimit(1).setPreviewCount(1))
-                        )
+                                .or(Predicates.abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setExactLimit(1)
+                                        .setPreviewCount(1)))
                         .where("#", Predicates.any())
                         .where("E", Predicates.blocks(CEBlocks.QUANTUM_POINTING_BLOCK.get()))
                         .where("H", CEPredicates.craftingUnitBlock())
@@ -147,8 +207,7 @@ public class CEMultiblock {
                         .where("3", Predicates.blocks(CEBlocks.ASSEMBLER_MATRIX_FRAME.get()), false, 7)
                         .where("F", Predicates.blocks(CEBlocks.STEADY_STATE_COMPUTING_MATRIX_SHELL.get())
                                 .or(Predicates.autoAbilities(CERecipeTypes.QUANTUM_COMPUTER))
-                                .or(Predicates.autoAbilities(false, false, true))
-                        )
+                                .or(Predicates.autoAbilities(false, false, true)))
                         .build())
                 .workableCasingModel(CTNHEnergy.id("block/casings/steady_state_computing_matrix_shell"),
                         CTNHEnergy.id("block/machine/quantum_computer"))
@@ -162,17 +221,19 @@ public class CEMultiblock {
                 .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                 .tooltips(Component.translatable("gtceu.machine.power_substation.tooltip.0"),
                         Component.translatable("gtceu.machine.power_substation.tooltip.1"),
-                        Component.translatable("gtceu.machine.power_substation.tooltip.2", PowerSubstationMachine.MAX_BATTERY_LAYERS),
+                        Component.translatable("gtceu.machine.power_substation.tooltip.2",
+                                PowerSubstationMachine.MAX_BATTERY_LAYERS),
                         Component.translatable("gtceu.machine.power_substation.tooltip.3"),
-                        Component.translatable("gtceu.machine.power_substation.tooltip.4", PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
+                        Component.translatable("gtceu.machine.power_substation.tooltip.4",
+                                PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
                         powerstation_voltage[0].translate(),
-                        powerstation_voltage[1].translate()
-                )
+                        powerstation_voltage[1].translate())
                 .tooltipBuilder(
                         (stack,
-                         components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
-                                .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
-                                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
+                         components) -> components
+                                 .add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
+                                         .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
+                                                 .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
                 .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
                 .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")

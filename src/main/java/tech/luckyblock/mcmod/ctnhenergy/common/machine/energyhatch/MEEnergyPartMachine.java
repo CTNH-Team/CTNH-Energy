@@ -1,13 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.MEStorage;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -26,6 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
+
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -34,14 +27,23 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.MEStorage;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -81,7 +83,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         this.nodeHolder = new GridNodeHolder(this);
         this.energyContainer = new MEEnergyContainer(this, io);
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
-
     }
 
     @Override
@@ -95,16 +96,16 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         updateEnergySubscription();
     }
 
-    protected void updateEnergySubscription(){
-        if(isWorkingEnabled() && isOnline()){
+    protected void updateEnergySubscription() {
+        if (isWorkingEnabled() && isOnline()) {
             energySubs = subscribeServerTick(energySubs, this::updateEnergy);
-        } else if (energySubs != null){
+        } else if (energySubs != null) {
             energySubs.unsubscribe();
             energySubs = null;
         }
     }
 
-    protected void updateEnergy(){
+    protected void updateEnergy() {
         if (shouldSyncME() && updateMEStatus()) {
             energyContainer.updateEnergyCapacity();
             updateEnergySubscription();
@@ -120,7 +121,8 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
     public Widget createUIWidget() {
         WidgetGroup configGroup = new WidgetGroup(0, 0, 100, 80);
         configGroup.addWidgets(
-                new LabelWidget(0, 2, () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"),
+                new LabelWidget(0, 2,
+                        () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"),
                 new LabelWidget(35, 16, "gtceu.creative.energy.voltage"),
                 new SelectorWidget(25, 28, 50, 20, Arrays.stream(GTValues.VNF).limit(15).toList(), -1)
                         .setOnChanged(tier -> {
@@ -132,9 +134,9 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                         .setValue(GTValues.VNF[energyContainer.getTier()])
                         .setIsUp(true),
                 new LabelWidget(35, 52, "gtceu.creative.energy.amperage"),
-                new LongInputWidget(0, 64, 100, 20, energyContainer::getInputAmperage, energyContainer::setInputAmperage)
-                        .setMax(64L)
-        );
+                new LongInputWidget(0, 64, 100, 20, energyContainer::getInputAmperage,
+                        energyContainer::setInputAmperage)
+                        .setMax(64L));
         return configGroup;
     }
 
@@ -143,7 +145,8 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         return io == IO.IN;
     }
 
-    public static class MEEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
+    public static class MEEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack>
+                                          implements IEnergyContainer {
 
         public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
                 MEEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
@@ -172,21 +175,20 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         }
 
         public void setTier(int tier) {
-            if(this.tier != tier)
-            {
+            if (this.tier != tier) {
                 this.tier = tier;
                 updateEnergyCapacity();
-                if(getMachine() instanceof IMultiPart part){
+                if (getMachine() instanceof IMultiPart part) {
                     part.getControllers().forEach(IMultiController::onStructureFormed);
                 }
             }
         }
 
         public void setInputAmperage(long inputAmperage) {
-            if(this.inputAmperage != inputAmperage){
+            if (this.inputAmperage != inputAmperage) {
                 this.inputAmperage = inputAmperage;
                 updateEnergyCapacity();
-                if(getMachine() instanceof IMultiPart part){
+                if (getMachine() instanceof IMultiPart part) {
                     part.getControllers().forEach(IMultiController::onStructureFormed);
                 }
             }
@@ -201,9 +203,9 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                     continue;
                 }
                 var storage = getStorage();
-                if(storage != null){
+                if (storage != null) {
                     long totalEU = stack.getTotalEU();
-                    totalEU -= Math.abs(changeEnergy(io == IO.IN ? -totalEU:totalEU, simulate));
+                    totalEU -= Math.abs(changeEnergy(io == IO.IN ? -totalEU : totalEU, simulate));
                     if (totalEU <= 0) {
                         it.remove();
                     } else {
@@ -253,13 +255,13 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
 
         public long changeEnergy(long differenceAmount, boolean simulate) {
             var storage = getStorage();
-            if(storage != null){
-                if(differenceAmount > 0){
-                        return storage.insert(EUKey.EU, differenceAmount, Actionable.ofSimulate(simulate), actionSource);
-                }
-                else {
-                    if(checkGridTier())
-                        return -storage.extract(EUKey.EU, -differenceAmount, Actionable.ofSimulate(simulate), actionSource);
+            if (storage != null) {
+                if (differenceAmount > 0) {
+                    return storage.insert(EUKey.EU, differenceAmount, Actionable.ofSimulate(simulate), actionSource);
+                } else {
+                    if (checkGridTier())
+                        return -storage.extract(EUKey.EU, -differenceAmount, Actionable.ofSimulate(simulate),
+                                actionSource);
                     return 0;
                 }
             }
@@ -271,22 +273,19 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
             return handlerIO == IO.IN ? getEnergyCapacity() : 0;
         }
 
-
         public void updateEnergyCapacity() {
-            if(getStorage() == null){
+            if (getStorage() == null) {
                 energyCapacity = 0;
                 return;
             }
-            if(handlerIO == IO.IN){
-                if(checkGridTier())
+            if (handlerIO == IO.IN) {
+                if (checkGridTier())
                     energyCapacity = getStorage().extract(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
                 else
                     energyCapacity = 0;
-            }
-            else{
+            } else {
                 energyCapacity = getStorage().insert(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
             }
-
         }
 
         @Override
@@ -294,10 +293,10 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
             return handlerIO == IO.IN ? V[tier] : 0;
         }
 
-        boolean checkGridTier(){
-           var storage = getStorage();
-           if(storage == null) return false;
-           else return storage.extract(VoltageKey.of(tier), 1, Actionable.SIMULATE, actionSource) > 0;
+        boolean checkGridTier() {
+            var storage = getStorage();
+            if (storage == null) return false;
+            else return storage.extract(VoltageKey.of(tier), 1, Actionable.SIMULATE, actionSource) > 0;
         }
 
         MEStorage getStorage() {
@@ -319,7 +318,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
 
         @Override
         public long getOutputAmperage() {
-            return handlerIO == IO.IN ? 0 :1024;
+            return handlerIO == IO.IN ? 0 : 1024;
         }
     }
 }

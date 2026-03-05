@@ -1,7 +1,10 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
+import net.minecraft.core.Direction;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.networking.IGrid;
@@ -15,13 +18,10 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.patternprovider.PatternProviderLogic;
-import appeng.api.crafting.IPatternDetails;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,12 +29,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
-import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
-import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc.MachineUpgradeInventoryAccessor;
-import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
-import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import yuuki1293.pccard.impl.PatternProviderLogicImpl;
 import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
@@ -51,7 +46,9 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Shadow
     private AppEngInternalInventory patternInventory;
 
-    @Shadow @Final private IActionSource actionSource;
+    @Shadow
+    @Final
+    private IActionSource actionSource;
 
     @Final
     @Shadow
@@ -65,49 +62,59 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Final
     private ConfigManager configManager;
 
-    @Shadow private int roundRobinIndex;
+    @Shadow
+    private int roundRobinIndex;
 
-    @Shadow @Final private List<GenericStack> sendList;
+    @Shadow
+    @Final
+    private List<GenericStack> sendList;
 
-    @Shadow private Direction sendDirection;
+    @Shadow
+    private Direction sendDirection;
 
-    @Shadow public abstract LockCraftingMode getCraftingLockedReason();
+    @Shadow
+    public abstract LockCraftingMode getCraftingLockedReason();
 
-    @Shadow protected abstract Set<Direction> getActiveSides();
+    @Shadow
+    protected abstract Set<Direction> getActiveSides();
 
-    @Shadow protected abstract void onPushPatternSuccess(IPatternDetails pattern);
+    @Shadow
+    protected abstract void onPushPatternSuccess(IPatternDetails pattern);
 
-    @Shadow protected abstract <T> void rearrangeRoundRobin(List<T> list);
+    @Shadow
+    protected abstract <T> void rearrangeRoundRobin(List<T> list);
 
-    @Shadow public abstract boolean isBlocking();
+    @Shadow
+    public abstract boolean isBlocking();
 
-    @Shadow protected abstract boolean sendStacksOut();
+    @Shadow
+    protected abstract boolean sendStacksOut();
 
-    @Shadow protected abstract void addToSendList(AEKey what, long amount);
+    @Shadow
+    protected abstract void addToSendList(AEKey what, long amount);
 
     @Shadow
     protected abstract boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder);
 
     @Shadow
     protected abstract PatternProviderTarget findAdapter(Direction side);
-    @Shadow public abstract @Nullable IGrid getGrid();
 
-    //use a map rather than the original list to allow pattern to be dynamically modified
+    @Shadow
+    public abstract @Nullable IGrid getGrid();
+
+    // use a map rather than the original list to allow pattern to be dynamically modified
     @Unique
     private final Map<AEItemKey, IPatternDetails> CE$patternsMap = new HashMap<>();
 
     @Unique
     private final Map<AEItemKey, Set<AEKey>> CE$patternInputsMap = new HashMap<>();
 
-
-
     @Inject(
             method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
-            at = @At("TAIL")
-    )
-    private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
+            at = @At("TAIL"))
+    private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host,
+                                      int patternInventorySize, CallbackInfo ci) {
         configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.DEFAULT);
-
     }
 
     @Unique
@@ -118,14 +125,14 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Inject(
             method = "updatePatterns",
             at = @At("HEAD"),
-            cancellable = true
-    )
+            cancellable = true)
     public void updatePatternsMap(CallbackInfo ci) {
         CE$patternsMap.clear();
         patternInputs.clear();
         CE$patternInputsMap.clear();
         for (var stack : this.patternInventory) {
-            var details = PatternDetailsHelper.decodePattern(PatternProviderLogicImpl.updatePatterns(this, stack), this.host.getBlockEntity().getLevel());
+            var details = PatternDetailsHelper.decodePattern(PatternProviderLogicImpl.updatePatterns(this, stack),
+                    this.host.getBlockEntity().getLevel());
 
             if (details != null) {
                 var key = details.getDefinition();
@@ -152,14 +159,13 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
         return CE$patternsMap.values().stream().toList();
     }
 
-
     @Inject(
             method = "pushPattern",
             at = @At("HEAD"),
-            cancellable = true
-    )
-    public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
-        if (!sendList.isEmpty() || !this.mainNode.isActive() ) {
+            cancellable = true)
+    public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder,
+                            CallbackInfoReturnable<Boolean> cir) {
+        if (!sendList.isEmpty() || !this.mainNode.isActive()) {
             cir.setReturnValue(false);
             return;
         }
@@ -230,17 +236,18 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             if (isBlocking) {
                 canPush = switch (CE$getBlockingMode()) {
                     case ALL -> adapter.getStorage().getAvailableStacks().isEmpty();
-                    case SMART -> adapter.getStorage().getAvailableStacks().isEmpty()
-                            || adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()), isUpgradedWith(AEItems.FUZZY_CARD));
+                    case SMART -> adapter.getStorage().getAvailableStacks().isEmpty() ||
+                            adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()),
+                                    isUpgradedWith(AEItems.FUZZY_CARD));
                     case DEFAULT -> !adapter.containsPatternInput(this.patternInputs);
                 };
             }
 
             if (canPush) {
                 pCCard$setSendDirection(direction);
-                //重写cpulogic后pcc监听不到，故在此处帮其set
+                // 重写cpulogic后pcc监听不到，故在此处帮其set
                 pCCard$setPCNumber(patternDetails);
-                //先设置电路板，最大程度保证不串配方
+                // 先设置电路板，最大程度保证不串配方
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                     long inserted = adapter.insert(what, amount, Actionable.MODULATE);
                     if (inserted < amount) {
@@ -258,7 +265,4 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
         }
         cir.setReturnValue(false);
     }
-
-
-
 }

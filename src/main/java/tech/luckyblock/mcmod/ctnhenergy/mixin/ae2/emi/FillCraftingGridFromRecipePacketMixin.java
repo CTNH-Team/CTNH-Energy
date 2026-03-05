@@ -1,31 +1,29 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.emi;
 
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.StorageHelper;
-import appeng.core.AELog;
-import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
-import appeng.helpers.IMenuCraftingPacket;
-import appeng.integration.modules.emi.EmiStackHelper;
-import appeng.items.storage.ViewCellItem;
-import appeng.util.prioritylist.IPartitionList;
-import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import it.unimi.dsi.fastutil.ints.IntList;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
+
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.StorageHelper;
+import appeng.core.AELog;
+import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
+import appeng.helpers.IMenuCraftingPacket;
+import appeng.items.storage.ViewCellItem;
+import appeng.util.prioritylist.IPartitionList;
+import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -39,14 +37,17 @@ import java.util.Optional;
 
 @Mixin(value = FillCraftingGridFromRecipePacket.class, remap = false)
 public abstract class FillCraftingGridFromRecipePacketMixin {
+
     @Shadow
     private ResourceLocation recipeId;
 
     @Shadow
-    protected abstract List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter, KeyCounter storage);
+    protected abstract List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter,
+                                                                 KeyCounter storage);
 
     @Shadow
-    protected abstract ItemStack takeIngredientFromPlayer(IMenuCraftingPacket cct, ServerPlayer player, Ingredient ingredient);
+    protected abstract ItemStack takeIngredientFromPlayer(IMenuCraftingPacket cct, ServerPlayer player,
+                                                          Ingredient ingredient);
 
     @Shadow
     private boolean craftMissing;
@@ -62,7 +63,7 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
         if (recipeId == null) return;
 
         Recipe<?> recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
-        if(CEUtil.isCrafting(recipe)) return;
+        if (CEUtil.isCrafting(recipe)) return;
 
         var menu = player.containerMenu;
         if (!(menu instanceof IMenuCraftingPacket cct)) return;
@@ -89,7 +90,7 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
 
         List<Ingredient> ingredients;
 
-        if(recipe instanceof GTRecipe gtRecipe){
+        if (recipe instanceof GTRecipe gtRecipe) {
             ingredients = gtRecipe.getInputContents(ItemRecipeCapability.CAP).stream()
                     .map(c -> c.content)
                     .filter(Ingredient.class::isInstance)
@@ -104,10 +105,8 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
             if (ingredient.isEmpty()) continue;
 
             // === ① 计算所需数量 ===
-            int required = ingredient.getItems().length > 0
-                    ? ingredient.getItems()[0].getCount()
-                    : 1;
-            if(ingredient instanceof SizedIngredient sizedIngredient){
+            int required = ingredient.getItems().length > 0 ? ingredient.getItems()[0].getCount() : 1;
+            if (ingredient instanceof SizedIngredient sizedIngredient) {
                 required = sizedIngredient.getAmount();
             }
             if (required <= 0) required = 1;
@@ -125,8 +124,7 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
                         storage,
                         what,
                         remaining,
-                        cct.getActionSource()
-                );
+                        cct.getActionSource());
 
                 if (extracted > 0) {
                     touchedGridStorage = true;
@@ -156,9 +154,7 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
                     toAutoCraft.merge(
                             key,
                             FakeSizedIntList.ofSize(missing),
-                            (oldList, newList) ->
-                                    FakeSizedIntList.ofSize(oldList.size() + newList.size())
-                    );
+                            (oldList, newList) -> FakeSizedIntList.ofSize(oldList.size() + newList.size()));
                 });
             }
         }
@@ -178,6 +174,4 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
 
         ci.cancel();
     }
-
-
 }

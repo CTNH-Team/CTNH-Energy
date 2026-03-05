@@ -1,9 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.key;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import com.gregtechceu.gtceu.api.GTValues;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,25 +9,30 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import lombok.Getter;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
 import java.util.List;
 
 public class VoltageKey extends AEKey {
+
     @Getter
     private final int tier;
 
     private static final VoltageKey[] V = new VoltageKey[15];
 
     public static final VoltageKey ULV = register(0);
-    public static final VoltageKey LV  = register(1);
-    public static final VoltageKey MV  = register(2);
-    public static final VoltageKey HV  = register(3);
-    public static final VoltageKey EV  = register(4);
-    public static final VoltageKey IV  = register(5);
+    public static final VoltageKey LV = register(1);
+    public static final VoltageKey MV = register(2);
+    public static final VoltageKey HV = register(3);
+    public static final VoltageKey EV = register(4);
+    public static final VoltageKey IV = register(5);
     public static final VoltageKey LuV = register(6);
     public static final VoltageKey ZPM = register(7);
-    public static final VoltageKey UV  = register(8);
+    public static final VoltageKey UV = register(8);
     public static final VoltageKey UHV = register(9);
     public static final VoltageKey UEV = register(10);
     public static final VoltageKey UIV = register(11);
@@ -43,8 +46,7 @@ public class VoltageKey extends AEKey {
         return key;
     }
 
-
-    private VoltageKey(int t){
+    private VoltageKey(int t) {
         tier = t;
     }
 
@@ -93,6 +95,5 @@ public class VoltageKey extends AEKey {
     }
 
     @Override
-    public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
-    }
+    public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {}
 }

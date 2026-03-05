@@ -1,9 +1,10 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.strategy.context;
 
-
 import com.gregtechceu.gtceu.api.GTValues;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
 import tech.luckyblock.mcmod.ctnhenergy.api.EUItemContext;
 
 public record PlayerInvContextEU(Player player, int slot) implements EUItemContext {

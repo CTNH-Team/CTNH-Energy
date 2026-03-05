@@ -3,7 +3,8 @@ package tech.luckyblock.mcmod.ctnhenergy.data.lang;
 import tech.vixhentx.mcmod.ctnhlib.registrate.lang.RegistrateCNLangProvider;
 
 public class ChineseLangHandler {
-    public static void init(RegistrateCNLangProvider provider){
+
+    public static void init(RegistrateCNLangProvider provider) {
         provider.add("gui.ctnhenergy.blocking_type.title", "阻挡类型");
         provider.add("gui.ctnhenergy.blocking_type.all", "全部");
         provider.add("gui.ctnhenergy.blocking_type.all.details", "容器内存在任何材料时暂停发送。");

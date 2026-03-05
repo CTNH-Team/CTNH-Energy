@@ -10,8 +10,9 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
 
 @Mixin(value = AEUniversalCellInventory.class, remap = false)
 public class AEUniversalCellInventoryMixin {
+
     @Inject(method = "matchesPartitionAndUpgrades", at = @At("HEAD"), cancellable = true)
-    void rejectEU(AEKey what, CallbackInfoReturnable<Boolean> cir){
-        if(what.getType() == EUKeyType.INSTANCE) cir.setReturnValue(false);
+    void rejectEU(AEKey what, CallbackInfoReturnable<Boolean> cir) {
+        if (what.getType() == EUKeyType.INSTANCE) cir.setReturnValue(false);
     }
 }

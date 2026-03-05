@@ -9,24 +9,13 @@
  *
  * Applied Energistics 2 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ * along with Applied Energistics 2. If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
 package tech.luckyblock.mcmod.ctnhenergy.utils.button;
-
-import java.util.Collections;
-import java.util.List;
-
-import appeng.client.gui.widgets.ITooltip;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -38,6 +27,14 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.widgets.ITooltip;
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 @Setter
 @Getter
@@ -67,7 +64,6 @@ public abstract class BlitterButton extends Button implements ITooltip {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-
         if (this.visible) {
 
             Blitter blitter = getBlitter();
@@ -123,7 +119,6 @@ public abstract class BlitterButton extends Button implements ITooltip {
 
     protected abstract Blitter getBlitter();
 
-
     @Nullable
     protected Item getItemOverlay() {
         return null;
@@ -147,5 +142,4 @@ public abstract class BlitterButton extends Button implements ITooltip {
     public boolean isTooltipAreaVisible() {
         return this.visible;
     }
-
 }

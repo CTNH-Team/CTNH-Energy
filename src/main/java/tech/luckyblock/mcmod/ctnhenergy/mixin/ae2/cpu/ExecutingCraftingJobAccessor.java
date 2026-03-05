@@ -2,8 +2,8 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.cpu;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.GenericStack;
-import appeng.crafting.execution.ExecutingCraftingJob;
 import appeng.crafting.execution.ElapsedTimeTracker;
+import appeng.crafting.execution.ExecutingCraftingJob;
 import appeng.crafting.inv.ListCraftingInventory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -28,5 +28,4 @@ public interface ExecutingCraftingJobAccessor {
 
     @Accessor("finalOutput")
     GenericStack getFinalOutput();
-
 }

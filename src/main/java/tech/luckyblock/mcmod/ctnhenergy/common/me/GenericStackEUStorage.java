@@ -1,10 +1,11 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me;
 
-import appeng.api.behaviors.GenericInternalInventory;
-
-import appeng.api.config.Actionable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+
 import net.minecraft.core.Direction;
+
+import appeng.api.behaviors.GenericInternalInventory;
+import appeng.api.config.Actionable;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -14,7 +15,7 @@ public class GenericStackEUStorage implements IEnergyContainer {
 
     private final GenericInternalInventory inv;
 
-    public GenericStackEUStorage(GenericInternalInventory inv){
+    public GenericStackEUStorage(GenericInternalInventory inv) {
         this.inv = inv;
     }
 
@@ -97,9 +98,9 @@ public class GenericStackEUStorage implements IEnergyContainer {
     @Override
     public long getEnergyStored() {
         long cnt = 0;
-        for (int slot = 0; slot < this.inv.size(); slot ++) {
+        for (int slot = 0; slot < this.inv.size(); slot++) {
             var stack = this.inv.getStack(slot);
-            if(stack != null && EUKey.EU == stack.what()){
+            if (stack != null && EUKey.EU == stack.what()) {
                 cnt += stack.amount();
             }
         }
@@ -109,14 +110,14 @@ public class GenericStackEUStorage implements IEnergyContainer {
     @Override
     public long getEnergyCapacity() {
         long cnt = 0;
-        for (int slot = 0; slot < this.inv.size(); slot ++) {
+        for (int slot = 0; slot < this.inv.size(); slot++) {
             var stack = this.inv.getStack(slot);
             if (stack != null) {
                 if (EUKey.EU == stack.what()) {
-                    cnt ++;
+                    cnt++;
                 }
             } else {
-                cnt ++;
+                cnt++;
             }
         }
         return cnt * inv.getMaxAmount(EUKey.EU);

@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = IOBusPart.class, remap = false)
 public class IOBusPartMixin implements IUpgradeableObject {
+
     @Inject(method = "getOperationsPerTick", at = @At("RETURN"), cancellable = true)
     protected void getOperationsPerTick(CallbackInfoReturnable<Integer> cir) {
         cir.setReturnValue(
@@ -19,7 +20,6 @@ public class IOBusPartMixin implements IUpgradeableObject {
                     case 3 -> 1919810;
                     case 4 -> Integer.MAX_VALUE;
                     default -> 64;
-                }
-        );
+                });
     }
 }

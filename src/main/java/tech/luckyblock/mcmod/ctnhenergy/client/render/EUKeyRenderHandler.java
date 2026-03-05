@@ -1,8 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.client.render;
 
-import appeng.api.client.AEKeyRenderHandler;
-import appeng.client.gui.style.Blitter;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -10,10 +7,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+
+import appeng.api.client.AEKeyRenderHandler;
+import appeng.client.gui.style.Blitter;
+import com.mojang.blaze3d.vertex.PoseStack;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 
@@ -23,15 +22,16 @@ public class EUKeyRenderHandler implements AEKeyRenderHandler<EUKey> {
 
     @Override
     public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, EUKey stack) {
-        Blitter.sprite(Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(CTNHEnergy.id("block/eu")))
+        Blitter.sprite(
+                Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(CTNHEnergy.id("block/eu")))
                 .blending(false)
                 .dest(x, y, 16, 16)
                 .blit(guiGraphics);
     }
 
     @Override
-    public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, EUKey what, float scale, int combinedLight, Level level) {
-
+    public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, EUKey what, float scale,
+                                int combinedLight, Level level) {
         var texture = CTNHEnergy.id("block/eu");
         var color = 0xFFFFFFFF;
         var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)

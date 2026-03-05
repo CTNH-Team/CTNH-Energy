@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingJobStatus;
@@ -8,10 +12,6 @@ import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.GenericStack;
 import appeng.crafting.inv.ListCraftingInventory;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class VirtualCraftingCPU implements ICraftingCPU {
@@ -43,8 +43,8 @@ public class VirtualCraftingCPU implements ICraftingCPU {
         var finalOutput = craftingLogic.getFinalJobOutput();
         if (finalOutput != null) {
             var elapsedTimeTracker = craftingLogic.getElapsedTimeTracker();
-            var progress =
-                    Math.max(0, elapsedTimeTracker.getStartItemCount() - elapsedTimeTracker.getRemainingItemCount());
+            var progress = Math.max(0,
+                    elapsedTimeTracker.getStartItemCount() - elapsedTimeTracker.getRemainingItemCount());
             return new CraftingJobStatus(
                     finalOutput, elapsedTimeTracker.getStartItemCount(), progress, elapsedTimeTracker.getElapsedTime());
         } else {
@@ -72,7 +72,7 @@ public class VirtualCraftingCPU implements ICraftingCPU {
         return cluster.getCoProcessors();
     }
 
-    public int getMaxMultiplier(){
+    public int getMaxMultiplier() {
         return cluster.getMaxMultiplier();
     }
 

@@ -3,10 +3,12 @@ package tech.luckyblock.mcmod.ctnhenergy.registry;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.tterrag.registrate.util.entry.ItemEntry;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
+
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ModelFile;
+
+import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellStats;
@@ -15,6 +17,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
 
 public class CEItems {
+
     static {
         REGISTRATE.creativeModeTab(() -> CECreativeModeTabs.ITEM);
     }
@@ -23,9 +26,7 @@ public class CEItems {
     public static ItemEntry<DynamoCardItem> DYNAMO_CARD;
     public static ItemEntry<Item> EU_CELL_HOUSING;
 
-
-
-    public static void init(){
+    public static void init() {
         registerEUCell();
         DYNAMO_CARD = REGISTRATE.item("dynamo_card", DynamoCardItem::new)
                 .cnlang("动力卡")
@@ -48,28 +49,26 @@ public class CEItems {
                         baseModel.override()
                                 .predicate(prov.modLoc("voltage"), v)
                                 .model(new ModelFile.UncheckedModelFile(
-                                        prov.modLoc("item/dynamo_card_" + VN[v].toLowerCase())
-                                ))
+                                        prov.modLoc("item/dynamo_card_" + VN[v].toLowerCase())))
                                 .end();
                     }
                 })
                 .register();
 
-        EU_CELL_HOUSING = REGISTRATE.item("eu_cell_housing",Item::new)
+        EU_CELL_HOUSING = REGISTRATE.item("eu_cell_housing", Item::new)
                 .cnlang("EU存储元件外壳")
-                .model((ctx, prov) ->
-                        prov.generated(ctx::getEntry, prov.modLoc("item/cells/empty")))
+                .model((ctx, prov) -> prov.generated(ctx::getEntry, prov.modLoc("item/cells/empty")))
                 .register();
     }
 
-    public static void registerEUCell(){
-        for(int tier : GTValues.tiersBetween(ULV, MAX)){
+    public static void registerEUCell() {
+        for (int tier : GTValues.tiersBetween(ULV, MAX)) {
             EU_CELL[tier] = REGISTRATE
                     .item(VN[tier].toLowerCase() + "_eu_cell", EUCellItem::new)
                     .cnlang(VNF[tier] + "§r ME EU存储元件")
                     .lang(VNF[tier] + "§r ME EU Storage Cell")
-                    .model((ctx, prov) ->
-                            prov.generated(ctx::getEntry, prov.modLoc("item/cells/"+VN[tier].toLowerCase())))
+                    .model((ctx, prov) -> prov.generated(ctx::getEntry,
+                            prov.modLoc("item/cells/" + VN[tier].toLowerCase())))
                     .onRegister(attach(EUCellStats.createCell(tier)))
                     .register();
         }
@@ -78,5 +77,4 @@ public class CEItems {
     public static <T extends IComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
         return item -> item.attachComponents(components);
     }
-
 }

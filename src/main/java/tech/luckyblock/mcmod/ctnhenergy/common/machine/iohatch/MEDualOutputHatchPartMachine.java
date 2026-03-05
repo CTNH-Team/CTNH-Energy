@@ -1,7 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEKey;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -16,8 +14,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
-
 import com.gregtechceu.gtceu.utils.GTMath;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -28,11 +26,13 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import lombok.NoArgsConstructor;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.utils.AEGenericDisplayWidget;
@@ -67,7 +67,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     public MEDualOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.OUT, args);
         tank = new InaccessibleInfiniteTank(this, getChangeListeners(), internalBuffer);
-        internalBuffer.setOnContentsChanged(()-> changeListeners.forEach(Runnable::run));
+        internalBuffer.setOnContentsChanged(() -> changeListeners.forEach(Runnable::run));
     }
 
     /////////////////////////////////
@@ -80,8 +80,8 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
         return new InaccessibleInfiniteHandler(this, getChangeListeners(), internalBuffer);
     }
 
-    List<Runnable> getChangeListeners(){
-        if(changeListeners == null)
+    List<Runnable> getChangeListeners() {
+        if (changeListeners == null)
             changeListeners = new ArrayList<>();
         return changeListeners;
     }
@@ -222,7 +222,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
 
         public InaccessibleInfiniteHandler(MetaMachine holder, List<Runnable> changeListeners, KeyStorage buffer) {
             super(holder, 1, IO.OUT, IO.NONE, i -> new ItemStackHandlerDelegate(i, buffer));
-            //internalBuffer.setOnContentsChanged(this::onContentsChanged);
+            // internalBuffer.setOnContentsChanged(this::onContentsChanged);
             changeListeners.add(this::onContentsChanged);
         }
 
@@ -246,6 +246,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     public static class ItemStackHandlerDelegate extends CustomItemStackHandler {
 
         KeyStorage buffer;
+
         // Necessary for InaccessibleInfiniteHandler
         public ItemStackHandlerDelegate(Integer integer, KeyStorage buffer) {
             super();
@@ -301,7 +302,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
 
         public InaccessibleInfiniteTank(MetaMachine holder, List<Runnable> changeListeners, KeyStorage buffer) {
             super(holder, List.of(new FluidStorageDelegate(buffer)), IO.OUT, IO.NONE);
-            //internalBuffer.setOnContentsChanged(this::onContentsChanged);
+            // internalBuffer.setOnContentsChanged(this::onContentsChanged);
             changeListeners.add(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];
             allowSameFluids = true;
@@ -375,6 +376,7 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
     public static class FluidStorageDelegate extends CustomFluidTank {
 
         KeyStorage buffer;
+
         public FluidStorageDelegate(KeyStorage buffer) {
             super(0);
             this.buffer = buffer;

@@ -1,19 +1,21 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate;
 
-import appeng.api.networking.IGridNodeListener;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import appeng.api.networking.IGridNodeListener;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyInputConfigurator;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferPartMachine;
 
 import java.util.List;
 
@@ -54,16 +56,16 @@ public class MEUltimatePatternBufferPartMachine extends MEAdvancedPatternBufferP
         updateEnergySubscription();
     }
 
-    protected void updateEnergySubscription(){
-        if(isWorkingEnabled() && isOnline()){
+    protected void updateEnergySubscription() {
+        if (isWorkingEnabled() && isOnline()) {
             energySubs = subscribeServerTick(energySubs, this::updateEnergy);
-        } else if (energySubs != null){
+        } else if (energySubs != null) {
             energySubs.unsubscribe();
             energySubs = null;
         }
     }
 
-    protected void updateEnergy(){
+    protected void updateEnergy() {
         if (shouldSyncME() && updateMEStatus()) {
             energyContainer.updateEnergyCapacity();
             updateEnergySubscription();

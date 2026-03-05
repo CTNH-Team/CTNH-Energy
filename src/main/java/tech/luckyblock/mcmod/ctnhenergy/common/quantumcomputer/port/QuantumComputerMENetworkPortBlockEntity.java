@@ -1,5 +1,16 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port;
 
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
+
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
@@ -15,16 +26,6 @@ import appeng.util.NullConfigManager;
 import appeng.util.Platform;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu.QuantumComputerCluster;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine.QuantumComputerMultiblockMachine;
@@ -40,9 +41,10 @@ import java.util.Set;
  * @date 2025/8/11 22:58
  **/
 public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntity
-        implements IAEMultiBlock<QuantumComputerCluster>, IPowerChannelState, IConfigurableObject{
+                                                     implements IAEMultiBlock<QuantumComputerCluster>,
+                                                     IPowerChannelState, IConfigurableObject {
 
-//    private QuantumComputerCalculator calculator;
+    // private QuantumComputerCalculator calculator;
     @Setter
     @Getter
     private CompoundTag previousState = null;
@@ -54,22 +56,23 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
 
     private QuantumComputerMultiblockMachine.WorkStatus workStatus;
 
-    public QuantumComputerMENetworkPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public QuantumComputerMENetworkPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos,
+                                                   BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridMultiblock.class, () -> Collections.singleton(this.getGridNode()).iterator())
                 .setVisualRepresentation(this.getItemFromBlockEntity());
-//        calculator = new QuantumComputerCalculator(this, (s, min, max) -> false);
+        // calculator = new QuantumComputerCalculator(this, (s, min, max) -> false);
     }
 
-    public void active(){
-        if(this.workStatus== QuantumComputerMultiblockMachine.WorkStatus.WORKING){
+    public void active() {
+        if (this.workStatus == QuantumComputerMultiblockMachine.WorkStatus.WORKING) {
             return;
         }
-        
+
         this.workStatus = QuantumComputerMultiblockMachine.WorkStatus.WORKING;
-        if(cluster==null){
+        if (cluster == null) {
             cluster = new QuantumComputerCluster(getBlockPos(), getBlockPos());
             cluster.setMeNetworkPortBlockEntity(this);
             cluster.setMachineSrc(new MachineSource(this));
@@ -79,14 +82,14 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
             previousState = null;
         }
         updateStatus(this.cluster);
-//        this.updateSubType(true);
+        // this.updateSubType(true);
     }
 
-    public void suspend(){
-        if(this.workStatus== QuantumComputerMultiblockMachine.WorkStatus.SUSPEND){
+    public void suspend() {
+        if (this.workStatus == QuantumComputerMultiblockMachine.WorkStatus.SUSPEND) {
             return;
         }
-        
+
         this.workStatus = QuantumComputerMultiblockMachine.WorkStatus.SUSPEND;
         if (cluster != null) {
             // 保存当前任务到 previousState
@@ -99,36 +102,35 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
         }
     }
 
-    public void multiBlockBreak(){
-        
+    public void multiBlockBreak() {
         this.workStatus = null;
         this.breakCluster();
         this.machine = null;
     }
 
-    public long getTotalStorage(){
-        if (machine==null){
+    public long getTotalStorage() {
+        if (machine == null) {
             return 0;
         }
         return 1024L * machine.getStorageKilobyte();
     }
 
-    public long getRemainingStorage(){
-        if(cluster==null){
+    public long getRemainingStorage() {
+        if (cluster == null) {
             return machine.getStorageKilobyte();
         }
         return cluster.getRemainingStorage() / 1024L;
     }
 
-    public int getCoprocessing(){
-        if (machine==null){
+    public int getCoprocessing() {
+        if (machine == null) {
             return 0;
         }
         return machine.getCoprocessing();
     }
 
-    public int getMaxMultiplier(){
-        if (machine==null){
+    public int getMaxMultiplier() {
+        if (machine == null) {
             return 1;
         }
         return machine.getMaxMultiplier();
@@ -136,9 +138,9 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
 
     @Override
     protected Item getItemFromBlockEntity() {
-//        if (this.level == null) {
-//            return Items.AIR;
-//        }
+        // if (this.level == null) {
+        // return Items.AIR;
+        // }
         return CEBlocks.QUANTUM_COMPUTER_ME_NETWORK_PORT.asItem();
     }
 
@@ -149,7 +151,6 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
             this.cluster.updateName();
         }
     }
-
 
     public void updateStatus(QuantumComputerCluster newCluster) {
         if (this.cluster != null && this.cluster != newCluster) {
@@ -166,7 +167,8 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
 
         final BlockState currentState = this.level.getBlockState(this.worldPosition);
 
-        final BlockState newState = currentState.setValue(QuantumComputerMENetworkPortBlock.POWERED, this.getMainNode().isOnline())
+        final BlockState newState = currentState
+                .setValue(QuantumComputerMENetworkPortBlock.POWERED, this.getMainNode().isOnline())
                 .setValue(QuantumComputerMENetworkPortBlock.FORMED, this.isFormed());
 
         if (currentState != newState) {
@@ -185,8 +187,8 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
 
     public boolean isFormed() {
         if (isClientSide()) {
-//            return getBlockState().getValue(QuantumComputerMENetworkPortBlock.FORMED);
-            return this.workStatus== QuantumComputerMultiblockMachine.WorkStatus.WORKING;
+            // return getBlockState().getValue(QuantumComputerMENetworkPortBlock.FORMED);
+            return this.workStatus == QuantumComputerMultiblockMachine.WorkStatus.WORKING;
         }
         return this.cluster != null;
     }
@@ -257,10 +259,10 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
         return CraftingCubeModelData.create(EnumSet.noneOf(Direction.class));
     }
 
-//    private boolean isConnected(BlockGetter level, BlockPos pos, Direction side) {
-//        BlockPos adjacentPos = pos.relative(side);
-//        return level.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
-//    }
+    // private boolean isConnected(BlockGetter level, BlockPos pos, Direction side) {
+    // BlockPos adjacentPos = pos.relative(side);
+    // return level.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
+    // }
 
     /**
      * When the block state changes (i.e. becoming formed or unformed), we need to update the model data since it
@@ -271,7 +273,6 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
         super.setBlockState(state);
         requestModelDataUpdate();
     }
-
 
     @Override
     public IConfigManager getConfigManager() {
@@ -293,24 +294,25 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
             var places = new ArrayList<BlockPos>();
             places.add(worldPosition);
 
-//            for (var blockEntity : (Iterable<QuantumComputerMENetworkPortBlockEntity>) this.cluster::getBlockEntities) {
-//                if (this == blockEntity) {
-//                    places.add(worldPosition);
-//                } else {
-//                    for (var d : Direction.values()) {
-//                        var p = blockEntity.worldPosition.relative(d);
-//
-//                        if (this.level.isEmptyBlock(p)) {
-//                            places.add(p);
-//                        }
-//                    }
-//                }
-//            }
+            // for (var blockEntity : (Iterable<QuantumComputerMENetworkPortBlockEntity>)
+            // this.cluster::getBlockEntities) {
+            // if (this == blockEntity) {
+            // places.add(worldPosition);
+            // } else {
+            // for (var d : Direction.values()) {
+            // var p = blockEntity.worldPosition.relative(d);
+            //
+            // if (this.level.isEmptyBlock(p)) {
+            // places.add(p);
+            // }
+            // }
+            // }
+            // }
 
-//            if (places.isEmpty()) {
-//                throw new IllegalStateException(
-//                        this.cluster + " does not contain any kind of blocks, which were destroyed.");
-//            }
+            // if (places.isEmpty()) {
+            // throw new IllegalStateException(
+            // this.cluster + " does not contain any kind of blocks, which were destroyed.");
+            // }
 
             for (var inv : inventories) {
                 for (var entry : inv.list) {
@@ -326,5 +328,4 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
             this.cluster.destroy();
         }
     }
-
 }

@@ -1,11 +1,14 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch;
 
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
+
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.ITagFilter;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
@@ -21,7 +24,7 @@ public class TagFilterConfigurator implements IFancyConfigurator {
     @CN("设置标签过滤器")
     static Lang tag_filter;
 
-    public TagFilterConfigurator(ITagFilter machine){
+    public TagFilterConfigurator(ITagFilter machine) {
         this.machine = machine;
     }
 

@@ -1,17 +1,16 @@
 package tech.luckyblock.mcmod.ctnhenergy.api;
 
-import appeng.block.crafting.CraftingUnitBlock;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.wintercogs.ae2omnicells.common.init.OCBlocks;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
@@ -19,15 +18,12 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import static appeng.core.definitions.AEBlocks.*;
 import static com.wintercogs.ae2omnicells.common.init.OCBlocks.*;
-
 import static tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine.PMC_BATTERY_HEADER;
-
 
 /**
  * @author aaaAlant
@@ -35,12 +31,13 @@ import static tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMac
  **/
 @Prefix("predicates")
 public class CEPredicates {
+
     public static Map<Block, Integer> CRAFTING_UNIT_STORAGE_KB;
 
-    public static void init(){
+    public static void init() {
         CRAFTING_UNIT_STORAGE_KB = Map.of(
-                CRAFTING_STORAGE_1K.block(),   1,
-                CRAFTING_STORAGE_4K.block(),   4,
+                CRAFTING_STORAGE_1K.block(), 1,
+                CRAFTING_STORAGE_4K.block(), 4,
                 CRAFTING_STORAGE_16K.block(), 16,
                 CRAFTING_STORAGE_64K.block(), 64,
                 CRAFTING_STORAGE_256K.block(), 256,
@@ -48,8 +45,7 @@ public class CEPredicates {
                 OMNI_CRAFTING_STORAGE_4M_BLOCK.get(), 4096,
                 OMNI_CRAFTING_STORAGE_16M_BLOCK.get(), 16384,
                 OMNI_CRAFTING_STORAGE_64M_BLOCK.get(), 65536,
-                OMNI_CRAFTING_STORAGE_256M_BLOCK.get(), 262144
-        );
+                OMNI_CRAFTING_STORAGE_256M_BLOCK.get(), 262144);
     }
 
     @CN("可以使用不同种合成存储器")
@@ -57,7 +53,7 @@ public class CEPredicates {
     static Lang crafting_storage;
 
     public static TraceabilityPredicate craftingUnitBlock() {
-        if(CRAFTING_UNIT_STORAGE_KB == null)
+        if (CRAFTING_UNIT_STORAGE_KB == null)
             init();
         return new TraceabilityPredicate(
                 blockWorldState -> {
@@ -111,6 +107,6 @@ public class CEPredicates {
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
                 .toArray(BlockInfo[]::new))
-        .addTooltips(batteries.translate().withStyle(ChatFormatting.GREEN));
+                .addTooltips(batteries.translate().withStyle(ChatFormatting.GREEN));
     }
 }

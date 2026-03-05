@@ -1,10 +1,11 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternencodingpanel;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.client.gui.me.items.ProcessingEncodingPanel;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,17 +28,14 @@ public abstract class ProcessingEncodingPanelMixin {
         CE$circuitButton = new ToggleBlitterButton(
                 Blitters.CIRCUIT_ON,
                 Blitters.CIRCUIT_OFF,
-                ConfigClientAccessor.getJeiIntegrationValue()::set
-        );
+                ConfigClientAccessor.getJeiIntegrationValue()::set);
         CE$circuitButton.setHalfSize(true);
         CE$circuitButton.setTooltipOn(List.of(
                 Component.translatable("gui.ctnhenergy.enable_circuit"),
-                Component.translatable("gui.ctnhenergy.enable_circuit.tooltip").withStyle(ChatFormatting.GRAY)
-        ));
+                Component.translatable("gui.ctnhenergy.enable_circuit.tooltip").withStyle(ChatFormatting.GRAY)));
         CE$circuitButton.setTooltipOff(List.of(
                 Component.translatable("gui.ctnhenergy.disable_circuit"),
-                Component.translatable("gui.ctnhenergy.disable_circuit.tooltip").withStyle(ChatFormatting.GRAY)
-        ));
+                Component.translatable("gui.ctnhenergy.disable_circuit.tooltip").withStyle(ChatFormatting.GRAY)));
         widgets.add("enableCircuit", CE$circuitButton);
     }
 

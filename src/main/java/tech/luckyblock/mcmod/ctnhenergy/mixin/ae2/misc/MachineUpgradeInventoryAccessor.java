@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(targets = "appeng.api.upgrades.MachineUpgradeInventory", remap = false)
 public interface MachineUpgradeInventoryAccessor {
+
     @Accessor("changeCallback")
     MachineUpgradesChanged getChangeCallback();
 

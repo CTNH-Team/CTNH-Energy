@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.cpu;
 
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.stacks.AEKey;
@@ -12,9 +16,6 @@ import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatus;
 import appeng.menu.me.crafting.CraftingStatusEntry;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -55,8 +56,8 @@ public class CraftingCPUMenuMixin extends AEBaseMenu {
     protected void setCPU(ICraftingCPU c) {}
 
     @Inject(
-            method = "<init>(Lnet/minecraft/world/inventory/MenuType;ILnet/minecraft/world/entity/player/Inventory;"
-                    + "Ljava/lang/Object;)V",
+            method = "<init>(Lnet/minecraft/world/inventory/MenuType;ILnet/minecraft/world/entity/player/Inventory;" +
+                    "Ljava/lang/Object;)V",
             at = @At("TAIL"))
     private void onInit(MenuType<?> menuType, int id, Inventory ip, Object te, CallbackInfo ci) {
         if (te instanceof QuantumComputerMENetworkPortBlockEntity advEntity) {
@@ -128,8 +129,7 @@ public class CraftingCPUMenuMixin extends AEBaseMenu {
             this.cantStoreItems = this.CE$vcpu.craftingLogic.isCantStoreItems();
 
             if (this.incrementalUpdateHelper.hasChanges()) {
-                CraftingStatus status =
-                        CE$create(this.incrementalUpdateHelper, this.CE$vcpu.craftingLogic);
+                CraftingStatus status = CE$create(this.incrementalUpdateHelper, this.CE$vcpu.craftingLogic);
                 this.incrementalUpdateHelper.commitChanges();
 
                 sendPacketToClient(new CraftingStatusPacket(status));

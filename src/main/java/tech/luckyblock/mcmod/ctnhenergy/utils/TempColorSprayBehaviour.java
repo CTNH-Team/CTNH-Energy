@@ -1,17 +1,18 @@
 package tech.luckyblock.mcmod.ctnhenergy.utils;
 
 import com.gregtechceu.gtceu.common.item.ColorSprayBehaviour;
-import lombok.Getter;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Supplier;
+import lombok.Getter;
 
 import static com.gregtechceu.gtceu.common.data.GTItems.SPRAY_EMPTY;
 
 @Getter
 public class TempColorSprayBehaviour extends ColorSprayBehaviour {
+
     public boolean used = false;
 
     public TempColorSprayBehaviour(int color) {
@@ -23,5 +24,4 @@ public class TempColorSprayBehaviour extends ColorSprayBehaviour {
         used = true;
         return true;
     }
-
 }

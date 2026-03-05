@@ -1,20 +1,14 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
-import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.networking.GridHelper;
-import appeng.api.stacks.AEItemKey;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.ChatFormatting;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -22,11 +16,14 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.api.implementations.blockentities.PatternContainerGroup;
+import appeng.api.networking.GridHelper;
+import appeng.api.stacks.AEItemKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,22 +32,20 @@ import static yuuki1293.pccard.impl.PatternProviderLogicImpl.getSendPosSubnet;
 
 @Mixin(value = PatternContainerGroup.class, remap = false)
 public class PatternContainerGroupMixin {
+
     @Inject(
             method = "fromMachine",
             at = @At(value = "HEAD"),
-            cancellable = true
-    )
-    private static void getMachineName(Level level, BlockPos pos, Direction side, CallbackInfoReturnable<PatternContainerGroup> cir){
+            cancellable = true)
+    private static void getMachineName(Level level, BlockPos pos, Direction side,
+                                       CallbackInfoReturnable<PatternContainerGroup> cir) {
         var target = level.getBlockEntity(pos);
-        if(!(target instanceof MetaMachineBlockEntity)){
+        if (!(target instanceof MetaMachineBlockEntity)) {
             var sourceNode = GridHelper.getNodeHost(level, pos.relative(side));
             var targetNode = GridHelper.getNodeHost(level, pos);
-            if(sourceNode == null
-                    || targetNode == null
-                    || sourceNode.getGridNode(side.getOpposite()) == null
-                    || targetNode.getGridNode(side) == null
-                    || sourceNode.getGridNode(side.getOpposite()).getGrid() != targetNode.getGridNode(side).getGrid())
-            {
+            if (sourceNode == null || targetNode == null || sourceNode.getGridNode(side.getOpposite()) == null ||
+                    targetNode.getGridNode(side) == null ||
+                    sourceNode.getGridNode(side.getOpposite()).getGrid() != targetNode.getGridNode(side).getGrid()) {
                 target = getSendPosSubnet(level, pos, side).stream()
                         .map(Tuple::getA)
                         .map(level::getBlockEntity)
@@ -60,36 +55,36 @@ public class PatternContainerGroupMixin {
             }
         }
 
-        if(target instanceof MetaMachineBlockEntity blockEntity){
+        if (target instanceof MetaMachineBlockEntity blockEntity) {
             AEItemKey icon;
             Component groupName;
             List<Component> tooltip = new ArrayList<>();
             MachineDefinition machineDefinition;
             MetaMachine machine = blockEntity.getMetaMachine();
             MutableComponent name;
-            if(machine instanceof MultiblockPartMachine multiblockPartMachine && multiblockPartMachine.isFormed())
-            {
+            if (machine instanceof MultiblockPartMachine multiblockPartMachine && multiblockPartMachine.isFormed()) {
                 IMultiController controller = multiblockPartMachine.getControllers().first();
                 machineDefinition = controller.self().getDefinition();
                 tooltip.add(Component.translatable(machine.getDefinition().getDescriptionId()));
                 name = Component.translatable(machineDefinition.getDescriptionId());
-                if(controller instanceof WorkableMultiblockMachine workableMultiblockMachine){
-                    name.append(" - ").append(Component.translatable(workableMultiblockMachine.getRecipeType().registryName.toLanguageKey()));
+                if (controller instanceof WorkableMultiblockMachine workableMultiblockMachine) {
+                    name.append(" - ").append(Component
+                            .translatable(workableMultiblockMachine.getRecipeType().registryName.toLanguageKey()));
                 }
 
-            }
-            else{
+            } else {
                 machineDefinition = machine.getDefinition();
                 name = Component.translatable(machineDefinition.getDescriptionId());
             }
 
-
             int circuitConfiguration = -1;
-            if(machine instanceof IHasCircuitSlot circuitSlot
-                    && circuitSlot.getCircuitInventory().storage.getSlots() > 0){
-                ItemStack circuitStack = circuitSlot.isCircuitSlotEnabled() ? circuitSlot.getCircuitInventory().storage.getStackInSlot(0) :
+            if (machine instanceof IHasCircuitSlot circuitSlot &&
+                    circuitSlot.getCircuitInventory().storage.getSlots() > 0) {
+                ItemStack circuitStack = circuitSlot.isCircuitSlotEnabled() ?
+                        circuitSlot.getCircuitInventory().storage.getStackInSlot(0) :
                         ItemStack.EMPTY;
-                circuitConfiguration = circuitStack.isEmpty() ? -1 : IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
+                circuitConfiguration = circuitStack.isEmpty() ? -1 :
+                        IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
             }
             icon = AEItemKey.of(machineDefinition.asStack());
 
@@ -97,9 +92,7 @@ public class PatternContainerGroupMixin {
                     name.append(" - " + circuitConfiguration) : name;
 
             cir.setReturnValue(
-                    new PatternContainerGroup(icon, groupName, tooltip)
-            );
+                    new PatternContainerGroup(icon, groupName, tooltip));
         }
     }
-
 }

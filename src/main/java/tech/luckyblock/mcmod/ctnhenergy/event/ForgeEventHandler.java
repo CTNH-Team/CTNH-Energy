@@ -1,27 +1,25 @@
 package tech.luckyblock.mcmod.ctnhenergy.event;
 
-
-import appeng.block.crafting.PatternProviderBlock;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
-import com.glodblock.github.extendedae.common.blocks.BlockExPatternProvider;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEventHandler {
+
     @SubscribeEvent
     public static void onPatternProviderBlockPlaced(BlockEvent.EntityPlaceEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
@@ -54,8 +52,8 @@ public class ForgeEventHandler {
     private static void tryConfigureNeighborMachine(Level level, BlockPos pos) {
         for (Direction dir : Direction.values()) {
             BlockEntity be = level.getBlockEntity(pos.relative(dir));
-            if (be instanceof MetaMachineBlockEntity metaBE
-                    && metaBE.getMetaMachine() instanceof SimpleTieredMachine machine) {
+            if (be instanceof MetaMachineBlockEntity metaBE &&
+                    metaBE.getMetaMachine() instanceof SimpleTieredMachine machine) {
 
                 configureMachine(machine, dir.getOpposite());
             }
@@ -63,10 +61,9 @@ public class ForgeEventHandler {
     }
 
     private static void tryConfigureMachineFromNeighbors(
-            Level level,
-            BlockPos pos,
-            SimpleTieredMachine machine
-    ) {
+                                                         Level level,
+                                                         BlockPos pos,
+                                                         SimpleTieredMachine machine) {
         for (Direction dir : Direction.values()) {
             BlockEntity be = level.getBlockEntity(pos.relative(dir));
             if (CEUtil.getUpgradeable(be, dir.getOpposite()) instanceof PatternProviderLogicHost) {
@@ -84,7 +81,4 @@ public class ForgeEventHandler {
         machine.setAllowInputFromOutputSideItems(true);
         machine.setAllowInputFromOutputSideFluids(true);
     }
-
-
-
 }

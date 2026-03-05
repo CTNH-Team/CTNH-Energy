@@ -1,10 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.client;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.init.client.InitScreens;
-import com.wintercogs.ae2omnicells.common.blocks.OmniCraftingUnitBlock;
-import com.wintercogs.ae2omnicells.common.items.OmniCraftingBlockItem;
-import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
@@ -16,13 +11,19 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import appeng.api.client.AEKeyRendering;
+import appeng.init.client.InitScreens;
+import com.wintercogs.ae2omnicells.common.blocks.OmniCraftingUnitBlock;
+import com.wintercogs.ae2omnicells.common.items.OmniCraftingBlockItem;
+import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.client.render.EUKeyRenderHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
-import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui.QuantumComputerScreen;
+import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
@@ -32,8 +33,9 @@ import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CE
 import static tech.luckyblock.mcmod.ctnhenergy.registry.CEItems.DYNAMO_CARD;
 
 @Prefix("tooltip")
-@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE,value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
+
     @SuppressWarnings("removal")
     public ClientProxy() {
         super();
@@ -46,7 +48,8 @@ public class ClientProxy extends CommonProxy {
         event.enqueueWork(() -> {
             try {
                 InitScreens.register(
-                        AEMenus.QUANTUM_COMPUTER.get(), QuantumComputerScreen::new, "/screens/quantum_computer" + ".json");
+                        AEMenus.QUANTUM_COMPUTER.get(), QuantumComputerScreen::new,
+                        "/screens/quantum_computer" + ".json");
                 AEKeyRendering.register(EUKeyType.INSTANCE, EUKey.class, EUKeyRenderHandler.INSTANCE);
             } catch (Throwable e) {
 
@@ -77,8 +80,7 @@ public class ClientProxy extends CommonProxy {
                             }
                         }
                         return 0.0F; // 默认值
-                    }
-            );
+                    });
 
             ItemProperties.register(
                     DYNAMO_CARD.get(),
@@ -86,15 +88,13 @@ public class ClientProxy extends CommonProxy {
                     (stack, level, entity, seed) -> {
                         var tag = stack.getTag();
                         return tag != null ? tag.getInt("voltage") : 0;
-                    }
-            );
+                    });
         });
     }
 
     @CN("并行数：")
     @EN("Number of Parallels: ")
     static Lang omni_thread_num;
-
 
     @CN("可自动翻倍发配处理样板")
     @EN("Automatically doubles processing pattern execution.")
@@ -103,11 +103,11 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if(stack.getItem() instanceof OmniCraftingBlockItem blockItem
-                && blockItem.getBlock() instanceof OmniCraftingUnitBlock craftingUnitBlock){
+        if (stack.getItem() instanceof OmniCraftingBlockItem blockItem &&
+                blockItem.getBlock() instanceof OmniCraftingUnitBlock craftingUnitBlock) {
             var threads = craftingUnitBlock.type.getAcceleratorThreads();
             event.getToolTip().add(omni_thread_num.translate().append(Component.literal(String.valueOf(threads))));
-            if(craftingUnitBlock.omniCraftingType.family == OmniCraftingFamily.COMPLEX){
+            if (craftingUnitBlock.omniCraftingType.family == OmniCraftingFamily.COMPLEX) {
                 event.getToolTip().add(auto_multiply.translate().withStyle(ChatFormatting.AQUA));
             }
         }

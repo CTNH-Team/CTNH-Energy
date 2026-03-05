@@ -1,5 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.cpu;
 
+import net.minecraft.nbt.CompoundTag;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -11,10 +13,8 @@ import appeng.crafting.CraftingLink;
 import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.service.CraftingService;
-
 import com.google.common.collect.ImmutableSet;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
@@ -40,7 +40,7 @@ public class CraftingServiceMixin {
 
     @Unique
     private static final Comparator<QuantumComputerCluster> FAST_FIRST_COMPARATOR = Comparator.comparingInt(
-                    QuantumComputerCluster::getCoProcessors)
+            QuantumComputerCluster::getCoProcessors)
             .reversed()
             .thenComparingLong(QuantumComputerCluster::getAvailableStorage);
 
@@ -74,13 +74,11 @@ public class CraftingServiceMixin {
 
     @Inject(
             method = "onServerEndTick",
-            at =
-            @At(
-                    value = "FIELD",
-                    target = "Lappeng/me/service/CraftingService;lastProcessedCraftingLogicChangeTick:J",
-                    opcode = Opcodes.GETFIELD,
-                    ordinal = 0)
-    )
+            at = @At(
+                     value = "FIELD",
+                     target = "Lappeng/me/service/CraftingService;lastProcessedCraftingLogicChangeTick:J",
+                     opcode = Opcodes.GETFIELD,
+                     ordinal = 0))
     private void tickAdvClusters1(CallbackInfo ci, @Local long latestChange) {
         long latestChangeLocal = 0;
         for (var cluster : this.CE$QuantumComputerClusters) {
@@ -100,13 +98,11 @@ public class CraftingServiceMixin {
 
     @Inject(
             method = "onServerEndTick",
-            at =
-            @At(
-                    value = "FIELD",
-                    target =
-                            "Lappeng/me/service/CraftingService;interests:Lcom/google/common/collect/Multimap;",
-                    opcode = Opcodes.GETFIELD,
-                    ordinal = 0))
+            at = @At(
+                     value = "FIELD",
+                     target = "Lappeng/me/service/CraftingService;interests:Lcom/google/common/collect/Multimap;",
+                     opcode = Opcodes.GETFIELD,
+                     ordinal = 0))
     private void tickAdvClusters2(CallbackInfo ci) {
         for (var cluster : this.CE$QuantumComputerClusters) {
             if (cluster != null) {
@@ -173,24 +169,22 @@ public class CraftingServiceMixin {
 
     @Inject(
             method = "submitJob",
-            at =
-            @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "appeng/me/service/CraftingService.findSuitableCraftingCPU "
-                            + "(Lappeng/api/networking/crafting/ICraftingPlan;ZLappeng/api/networking/security/IActionSource;"
-                            + "Lorg/apache/commons/lang3/mutable/MutableObject;)"
-                            + "Lappeng/me/cluster/implementations/CraftingCPUCluster;"),
-            cancellable = true
-    )
+            at = @At(
+                     value = "INVOKE_ASSIGN",
+                     target = "appeng/me/service/CraftingService.findSuitableCraftingCPU " +
+                             "(Lappeng/api/networking/crafting/ICraftingPlan;ZLappeng/api/networking/security/IActionSource;" +
+                             "Lorg/apache/commons/lang3/mutable/MutableObject;)" +
+                             "Lappeng/me/cluster/implementations/CraftingCPUCluster;"),
+            cancellable = true)
     private void onSubmitJob(
-            ICraftingPlan job,
-            ICraftingRequester requestingMachine,
-            ICraftingCPU target,
-            boolean prioritizePower,
-            IActionSource src,
-            CallbackInfoReturnable<ICraftingSubmitResult> cir,
-            @Local CraftingCPUCluster cpuCluster,
-            @Local MutableObject<UnsuitableCpus> unsuitableCpusResult) {
+                             ICraftingPlan job,
+                             ICraftingRequester requestingMachine,
+                             ICraftingCPU target,
+                             boolean prioritizePower,
+                             IActionSource src,
+                             CallbackInfoReturnable<ICraftingSubmitResult> cir,
+                             @Local CraftingCPUCluster cpuCluster,
+                             @Local MutableObject<UnsuitableCpus> unsuitableCpusResult) {
         if (target instanceof QuantumComputerCluster advCpuCluster) {
             cir.setReturnValue(advCpuCluster.submitJob(this.grid, job, src, requestingMachine));
         } else {
@@ -212,7 +206,8 @@ public class CraftingServiceMixin {
 
     @Unique
     private QuantumComputerCluster CE$findSuitableVirtualCraftingCPU(
-            ICraftingPlan job, IActionSource src, MutableObject<UnsuitableCpus> unsuitableCpusResult) {
+                                                                     ICraftingPlan job, IActionSource src,
+                                                                     MutableObject<UnsuitableCpus> unsuitableCpusResult) {
         var validCpusClusters = new ArrayList<QuantumComputerCluster>(this.CE$QuantumComputerClusters.size());
         int offline = 0;
         int tooSmall = 0;
@@ -258,7 +253,8 @@ public class CraftingServiceMixin {
 
     @Inject(method = "getCpus", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onGetCpus(
-            CallbackInfoReturnable<ImmutableSet<ICraftingCPU>> cir, ImmutableSet.Builder<ICraftingCPU> cpus) {
+                           CallbackInfoReturnable<ImmutableSet<ICraftingCPU>> cir,
+                           ImmutableSet.Builder<ICraftingCPU> cpus) {
         for (var cluster : this.CE$QuantumComputerClusters) {
             for (var cpu : cluster.getActiveCPUs()) {
                 cpus.add(cpu);
@@ -271,8 +267,7 @@ public class CraftingServiceMixin {
     @Inject(
             method = "getRequestedAmount",
             at = @At("RETURN"),
-            cancellable = true
-    )
+            cancellable = true)
     private void onGetRequestedAmount(AEKey what, CallbackInfoReturnable<Long> cir, @Local long requested) {
         for (var cluster : this.CE$QuantumComputerClusters) {
             for (var cpu : cluster.getActiveCPUs()) {

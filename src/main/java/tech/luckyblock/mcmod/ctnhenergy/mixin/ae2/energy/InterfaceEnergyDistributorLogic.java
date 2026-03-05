@@ -1,12 +1,13 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
 
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import appeng.api.networking.IManagedGridNode;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.me.energy.IEnergyOverlayGridConnection;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Mixin(value = InterfaceLogic.class, remap = false)
 public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
+
     @Shadow
     @Final
     protected IManagedGridNode mainNode;
@@ -30,9 +32,10 @@ public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
     protected InterfaceLogicHost host;
 
     @Inject(method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/InterfaceLogicHost;Lnet/minecraft/world/item/Item;I)V",
-    at = @At("TAIL"))
+            at = @At("TAIL"))
     @SuppressWarnings("all")
-    private void addEnergyService(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots, CallbackInfo ci){
+    private void addEnergyService(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots,
+                                  CallbackInfo ci) {
         gridNode.addService(IEnergyDistributor.class, this)
                 .addService(IEnergyOverlayGridConnection.class, this::getOtherEnergyServices);
     }
