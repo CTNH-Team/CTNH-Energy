@@ -106,9 +106,6 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     @Unique
     private final Map<AEItemKey, IPatternDetails> CE$patternsMap = new HashMap<>();
 
-    @Unique
-    private final Map<AEItemKey, Set<AEKey>> CE$patternInputsMap = new HashMap<>();
-
     @Inject(
             method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
             at = @At("TAIL"))
@@ -129,7 +126,6 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     public void updatePatternsMap(CallbackInfo ci) {
         CE$patternsMap.clear();
         patternInputs.clear();
-        CE$patternInputsMap.clear();
         for (var stack : this.patternInventory) {
             var details = PatternDetailsHelper.decodePattern(PatternProviderLogicImpl.updatePatterns(this, stack),
                     this.host.getBlockEntity().getLevel());
@@ -137,11 +133,10 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             if (details != null) {
                 var key = details.getDefinition();
                 CE$patternsMap.put(key, details);
-                CE$patternInputsMap.put(key, new HashSet<>());
+
                 for (var iinput : details.getInputs()) {
                     for (var inputCandidate : iinput.getPossibleInputs()) {
                         patternInputs.add(inputCandidate.what().dropSecondary());
-                        CE$patternInputsMap.get(key).add(inputCandidate.what().dropSecondary());
                     }
                 }
             }
@@ -237,7 +232,7 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
                 canPush = switch (CE$getBlockingMode()) {
                     case ALL -> adapter.getStorage().getAvailableStacks().isEmpty();
                     case SMART -> adapter.getStorage().getAvailableStacks().isEmpty() ||
-                            adapter.onlyHasPatternInput(CE$patternInputsMap.get(patternDetails.getDefinition()),
+                            adapter.onlyHasPatternInput(patternDetails,
                                     isUpgradedWith(AEItems.FUZZY_CARD));
                     case DEFAULT -> !adapter.containsPatternInput(this.patternInputs);
                 };

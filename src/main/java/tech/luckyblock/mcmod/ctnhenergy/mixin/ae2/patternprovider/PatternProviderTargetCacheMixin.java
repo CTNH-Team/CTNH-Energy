@@ -1,5 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import appeng.api.config.Actionable;
@@ -8,6 +10,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,8 +18,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
+import yuuki1293.pccard.wrapper.IAEPattern;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", remap = false)
@@ -50,10 +57,13 @@ public class PatternProviderTargetCacheMixin {
                     }
 
                     @Override
-                    public boolean onlyHasPatternInput(Set<AEKey> patternInputs, boolean fuzzy) {
-                        Set<AEKey> matchSet = fuzzy ? patternInputs.stream()
-                                .map(AEKey::dropSecondary)
-                                .collect(Collectors.toSet()) : patternInputs;
+                    public boolean onlyHasPatternInput(IPatternDetails patternDetails, boolean fuzzy) {
+                        Set<AEKey> matchSet = Arrays.stream(patternDetails.getInputs())
+                                .map(i -> i.getPossibleInputs()[0])
+                                .map(GenericStack::what)
+                                .collect(Collectors.toSet());
+
+                        int circuitNumber = patternDetails instanceof IAEPattern pattern ? pattern.pCCard$getNumber() : -1;
 
                         boolean allCircuit = true;
                         boolean allMatch = true;
@@ -64,14 +74,17 @@ public class PatternProviderTargetCacheMixin {
                             boolean isCircuit = key instanceof AEItemKey itemKey &&
                                     itemKey.getItem() == GTItems.PROGRAMMED_CIRCUIT.asItem();
 
-                            if (!isCircuit) {
+                            boolean isMatch;
+
+                            if (isCircuit) {
+                                isMatch = IntCircuitBehaviour.getCircuitConfiguration(((AEItemKey)key).getReadOnlyStack()) == circuitNumber;
+                            } else {
                                 allCircuit = false;
+                                isMatch = fuzzy ? matchSet.contains(key.dropSecondary()) :
+                                        matchSet.contains(key);
                             }
 
-                            boolean matches = fuzzy & !isCircuit ? matchSet.contains(key.dropSecondary()) :
-                                    matchSet.contains(key);
-
-                            if (!matches) {
+                            if (!isMatch) {
                                 allMatch = false;
 
                                 // 非电路且不匹配，直接失败

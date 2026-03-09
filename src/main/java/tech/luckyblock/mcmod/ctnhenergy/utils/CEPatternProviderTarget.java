@@ -1,5 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy.utils;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
@@ -40,7 +41,7 @@ public interface CEPatternProviderTarget extends PatternProviderTarget {
     // };
     // }
 
-    boolean onlyHasPatternInput(Set<AEKey> var1, boolean fuzzy);
+    boolean onlyHasPatternInput(IPatternDetails patternDetails, boolean fuzzy);
 
     MEStorage getStorage();
 }
