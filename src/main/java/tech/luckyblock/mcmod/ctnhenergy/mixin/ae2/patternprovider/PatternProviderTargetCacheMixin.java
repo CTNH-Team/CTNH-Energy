@@ -1,16 +1,16 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
-import appeng.api.crafting.IPatternDetails;
-import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 
 import appeng.api.config.Actionable;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,9 +21,7 @@ import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
 import yuuki1293.pccard.wrapper.IAEPattern;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", remap = false)
@@ -63,7 +61,8 @@ public class PatternProviderTargetCacheMixin {
                                 .map(GenericStack::what)
                                 .collect(Collectors.toSet());
 
-                        int circuitNumber = patternDetails instanceof IAEPattern pattern ? pattern.pCCard$getNumber() : -1;
+                        int circuitNumber = patternDetails instanceof IAEPattern pattern ? pattern.pCCard$getNumber() :
+                                -1;
 
                         boolean allCircuit = true;
                         boolean allMatch = true;
@@ -77,7 +76,8 @@ public class PatternProviderTargetCacheMixin {
                             boolean isMatch;
 
                             if (isCircuit) {
-                                isMatch = IntCircuitBehaviour.getCircuitConfiguration(((AEItemKey)key).getReadOnlyStack()) == circuitNumber;
+                                isMatch = IntCircuitBehaviour
+                                        .getCircuitConfiguration(((AEItemKey) key).getReadOnlyStack()) == circuitNumber;
                             } else {
                                 allCircuit = false;
                                 isMatch = fuzzy ? matchSet.contains(key.dropSecondary()) :

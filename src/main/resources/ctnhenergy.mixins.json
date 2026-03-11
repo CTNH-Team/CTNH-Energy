@@ -43,6 +43,7 @@
     "ae2ct.CraftingTreeWidgetAccessor",
     "betterP2P.ClientProxyMixin",
     "betterP2P.CommonProxyMixin",
+    "datagen.AECSDatagenMixin",
     "EUP2P.EUP2PMixin",
     "gtm.BlockPatternMixin",
     "gtm.KeyStorageMixin",

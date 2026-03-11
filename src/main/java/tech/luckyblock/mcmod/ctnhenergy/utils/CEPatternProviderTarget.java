@@ -1,11 +1,8 @@
 package tech.luckyblock.mcmod.ctnhenergy.utils;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
-
-import java.util.Set;
 
 public interface CEPatternProviderTarget extends PatternProviderTarget {
     // private static CEPatternProviderTarget wrapMeStorage(MEStorage storage, IActionSource src) {
