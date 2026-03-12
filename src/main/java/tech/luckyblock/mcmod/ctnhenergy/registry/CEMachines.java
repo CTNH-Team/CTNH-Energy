@@ -266,7 +266,7 @@ public class CEMachines {
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY)
                 .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .overlayTieredHullModel(GTCEu.id("block/machine/part/energy_output_hatch_64a"))
+                .colorOverlayTieredHullModel("me_substation", null, null)
                 .register();
     }
 
