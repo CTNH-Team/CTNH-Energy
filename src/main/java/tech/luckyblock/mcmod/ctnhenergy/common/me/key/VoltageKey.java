@@ -59,7 +59,7 @@ public class VoltageKey extends AEKey {
 
     @Override
     public AEKeyType getType() {
-        return null;
+        return VoltageKeyType.INSTANCE;
     }
 
     @Override
