@@ -14,6 +14,7 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKeyType;
 
 @Mixin(value = MEInventoryHandler.class, remap = false)
 public class MEInventoryHandlerMixin {
+
     @Shadow
     private IncludeExclude partitionListMode;
 
@@ -21,12 +22,10 @@ public class MEInventoryHandlerMixin {
     private IPartitionList partitionList;
 
     @Inject(method = "passesBlackOrWhitelist", at = @At("RETURN"), cancellable = true)
-    void includeVoltageKey(AEKey input, CallbackInfoReturnable<Boolean> cir){
-        if(
-                (!cir.getReturnValue() && partitionListMode == IncludeExclude.WHITELIST) ||
-                (cir.getReturnValue() && partitionListMode == IncludeExclude.BLACKLIST)
-        ){
-            if(input.getType() == VoltageKeyType.INSTANCE){
+    void includeVoltageKey(AEKey input, CallbackInfoReturnable<Boolean> cir) {
+        if ((!cir.getReturnValue() && partitionListMode == IncludeExclude.WHITELIST) ||
+                (cir.getReturnValue() && partitionListMode == IncludeExclude.BLACKLIST)) {
+            if (input.getType() == VoltageKeyType.INSTANCE) {
                 cir.setReturnValue(partitionList.matchesFilter(EUKey.EU, partitionListMode));
             }
         }
