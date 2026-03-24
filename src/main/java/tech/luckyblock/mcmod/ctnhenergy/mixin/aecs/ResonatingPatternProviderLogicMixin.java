@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
+package tech.luckyblock.mcmod.ctnhenergy.mixin.aecs;
 
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
 import org.spongepowered.asm.mixin.Mixin;
