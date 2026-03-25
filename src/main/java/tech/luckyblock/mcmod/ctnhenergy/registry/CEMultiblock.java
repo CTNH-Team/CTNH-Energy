@@ -73,7 +73,7 @@ public class CEMultiblock {
     })
     @CN({
             "§e电压等级§r由§7电压等级最高的电容§f决定",
-            "§4任何能源仓室的电压等级不能超过蓄能变电站§r"
+            "§4任何能源仓室的电压等级不能超过蓄能变电站电压等级§r"
     })
     static Lang[] powerstation_voltage;
 

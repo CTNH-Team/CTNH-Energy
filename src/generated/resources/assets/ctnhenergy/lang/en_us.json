@@ -75,6 +75,8 @@
   "machine.ctnhenergy.work_status.3": "§eSuspend§r",
   "multiblock.ctnhenergy.powerstation_voltage.0": "Voltage tier is determined by the §7highest-tier Capacitor§f.",
   "multiblock.ctnhenergy.powerstation_voltage.1": "§4No Energy Hatch may exceed the Substation's voltage tier.§r",
+  "power_station.ctnhenergy.invalid_batteries": "No valid batteries found.",
+  "power_station.ctnhenergy.invalid_dynamo_tier": "Dynamo hatch tier higher than battery tier.",
   "power_station.ctnhenergy.voltage_tier": "Voltage Tier: ",
   "predicates.ctnhenergy.batteries": "Batteries do not need to be the same tier",
   "predicates.ctnhenergy.crafting_storage": "Crafting storages do not need to be the same",

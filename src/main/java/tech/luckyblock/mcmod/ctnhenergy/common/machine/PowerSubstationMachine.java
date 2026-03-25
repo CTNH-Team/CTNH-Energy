@@ -60,6 +60,18 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
+    @CN("电压等级：")
+    @EN("Voltage Tier: ")
+    static Lang voltage_tier;
+
+    @CN("缺失有效电容。")
+    @EN("No valid batteries found.")
+    static Lang invalid_batteries;
+
+    @CN("动力仓等级高于最高电容等级。")
+    @EN("Dynamo hatch tier higher than battery tier.")
+    static Lang invalid_dynamo_tier;
+
     // Structure Constants
     public static final int MAX_BATTERY_LAYERS = 18;
     public static final int MIN_CASINGS = 14;
@@ -97,6 +109,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Setter
     BigInteger legacyEnergy = BigInteger.ZERO;
 
+    private Lang invalidReason;
+
     public PowerSubstationMachine(IMachineBlockEntity holder) {
         super(holder);
         this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isFormed);
@@ -118,6 +132,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         }
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
+            invalidReason = invalid_batteries;
             onStructureInvalid();
             return;
         }
@@ -148,6 +163,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
                 if (!containers.isEmpty() && part instanceof TieredPartMachine machine &&
                         machine.getTier() > energyBank.getTier()) {
+                    invalidReason = invalid_dynamo_tier;
                     onStructureInvalid();
                     return;
                 }
@@ -188,6 +204,12 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         super.onStructureInvalid();
     }
 
+    @Override
+    public boolean checkPatternWithLock() {
+        invalidReason = null;
+        return super.checkPatternWithLock();
+    }
+
     protected void transferEnergyTick() {
         if (!getLevel().isClientSide) {
             if (getOffsetTimer() % 20 == 0) {
@@ -218,10 +240,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             }
         }
     }
-
-    @CN("电压等级：")
-    @EN("Voltage Tier: ")
-    static Lang voltage_tier;
 
     @Override
     public void addDisplayText(List<Component> textList) {
@@ -292,6 +310,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                             getTimeToFillDrainText(timeToDrainSeconds).setStyle(STYLE_RED)));
                 }
             }
+        } else if (invalidReason != null) {
+            textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            textList.add(invalidReason.translate()
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
         }
         getDefinition().getAdditionalDisplay().accept(this, textList);
     }
