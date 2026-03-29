@@ -76,8 +76,10 @@ public class PatternProviderTargetCacheMixin {
                             boolean isMatch;
 
                             if (isCircuit) {
-                                isMatch = IntCircuitBehaviour
-                                        .getCircuitConfiguration(((AEItemKey) key).getReadOnlyStack()) == circuitNumber;
+                                // 对于不包含编程电路的样板，忽略编程电路的匹配
+                                isMatch = circuitNumber == -1 ||
+                                        IntCircuitBehaviour.getCircuitConfiguration(
+                                                ((AEItemKey) key).getReadOnlyStack()) == circuitNumber;
                             } else {
                                 allCircuit = false;
                                 isMatch = fuzzy ? matchSet.contains(key.dropSecondary()) :
