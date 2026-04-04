@@ -92,8 +92,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Persisted
     @Getter
     private final PowerStationEnergyBank energyBank;
-    private EnergyContainerList inputHatches;
-    private EnergyContainerList outputHatches;
+    private EnergyContainerList inputHatches = new EnergyContainerList(new ArrayList<>());
+    private EnergyContainerList outputHatches = new EnergyContainerList(new ArrayList<>());
     private long passiveDrain;
 
     // Stats tracked for UI display
@@ -187,6 +187,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Override
     public void onLoad() {
         super.onLoad();
+        tickSubscription.updateSubscription();
     }
 
     @Override
