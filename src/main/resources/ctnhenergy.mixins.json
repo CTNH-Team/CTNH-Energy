@@ -19,6 +19,7 @@
     "ae2.emi.EmiItemStackConverterMixin",
     "ae2.emi.EmiUseCraftingRecipeHandlerMixin",
     "ae2.emi.FillCraftingGridFromRecipePacketMixin",
+    "ae2.energy.EnergyOverlayGridMixin",
     "ae2.energy.EnergyServiceMixin",
     "ae2.energy.InterfaceEnergyDistributorLogic",
     "ae2.energy.MEInventoryHandlerMixin",
