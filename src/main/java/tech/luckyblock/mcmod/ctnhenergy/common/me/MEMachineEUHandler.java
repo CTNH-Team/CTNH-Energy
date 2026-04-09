@@ -9,7 +9,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEStorage;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.util.inv.AppEngInternalInventory;
 import lombok.Getter;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
@@ -30,13 +29,11 @@ public class MEMachineEUHandler implements IEnergyContainer {
         node = gridNode;
         inv = node.getGrid().getStorageService().getInventory();
         source = IActionSource.ofMachine(() -> node);
-        if (upgradeable.getUpgrades() instanceof AppEngInternalInventory inventory) {
-            for (var itemStack : inventory) {
-                if (itemStack.is(CEItems.DYNAMO_CARD.asItem()) && itemStack.hasTag()) {
-                    var tag = itemStack.getTag();
-                    if (tag.contains(DynamoCardItem.VOLTAGE))
-                        outputVoltage = V[tag.getInt(DynamoCardItem.VOLTAGE)];
-                }
+        for (var itemStack : upgradeable.getUpgrades()) {
+            if (itemStack.is(CEItems.DYNAMO_CARD.asItem()) && itemStack.hasTag()) {
+                var tag = itemStack.getTag();
+                if (tag.contains(DynamoCardItem.VOLTAGE))
+                    outputVoltage = V[tag.getInt(DynamoCardItem.VOLTAGE)];
             }
         }
     }
