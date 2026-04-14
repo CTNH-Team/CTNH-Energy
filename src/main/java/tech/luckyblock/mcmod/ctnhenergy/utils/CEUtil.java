@@ -28,6 +28,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -67,10 +68,18 @@ public abstract class CEUtil {
     }
 
     public static int getGridTier(IGridNode node) {
+        var eu = node.getGrid().getService(EnergyDistributeService.class);
+        if (eu.getVoltageTier() != -1) {
+            return eu.getVoltageTier();
+        }
+
         var storage = node.getGrid().getStorageService().getInventory();
+        var actionSource = IActionSource.ofMachine(() -> node);
+
         for (int i = GTValues.MAX; i >= GTValues.ULV; i--) {
-            if (storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, IActionSource.ofMachine(() -> node)) > 0)
+            if (storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, actionSource) > 0) {
                 return i;
+            }
         }
         return -1;
     }

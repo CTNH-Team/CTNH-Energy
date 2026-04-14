@@ -1,12 +1,16 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.service;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -19,12 +23,25 @@ public class EnergyDistributeService implements IGridService, IGridServiceProvid
     // IdentityHashMap is faster
     private final Set<IEnergyDistributor> activeNodes = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    public EnergyDistributeService() {
-        // NO-OP
+    private final IGrid grid;
+
+    @Getter
+    int voltageTier = -1;
+
+    public EnergyDistributeService(IGrid grid) {
+        this.grid = grid;
     }
 
     @Override
-    public void onLevelEndTick(Level level) {
+    public void onLevelStartTick(Level level) {
+        if (level instanceof ServerLevel serverLevel && serverLevel.getServer().getTickCount() % 100 == 0) {
+            voltageTier = -1;
+            voltageTier = CEUtil.getGridTier(grid.getPivot());
+        }
+    }
+
+    @Override
+    public void onServerEndTick() {
         for (var dis : this.activeNodes) {
             if (dis.isActive()) {
                 dis.distribute();
