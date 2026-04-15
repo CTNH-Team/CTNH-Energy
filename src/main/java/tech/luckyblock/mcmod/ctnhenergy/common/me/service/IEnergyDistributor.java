@@ -1,6 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.me.service;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,6 +25,7 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
     default void distribute() {
         var self = getHostBlockEntity();
         if (self.getLevel() != null) {
+            var source = getSource();
             for (Direction side : getAvailableSides()) {
                 var oppositeSide = side.getOpposite();
 
@@ -31,8 +33,7 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
                         oppositeSide);
                 if (target == null) continue;
 
-                var source = GTCapabilityHelper.getEnergyContainer(self.getLevel(), self.getBlockPos(), side);
-                if (source != null && !CEUtil.isInSameGrid(source, target)) {
+                if (!CEUtil.isInSameGrid(source, target)) {
                     if (!source.outputsEnergy(side)) continue;
                     long outputVoltage = source.getOutputVoltage();
                     long outputAmperes = Math.min(source.getEnergyStored() / outputVoltage, source.getOutputAmperage());
@@ -97,4 +98,8 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
     void setService(EnergyDistributeService service);
 
     Object getHost();
+
+    IEnergyContainer getSource();
+
+    void updateVoltage();
 }

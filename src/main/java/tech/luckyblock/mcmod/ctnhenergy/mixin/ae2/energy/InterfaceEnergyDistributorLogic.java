@@ -1,5 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,6 +17,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
 
@@ -31,6 +34,9 @@ public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
     @Final
     protected InterfaceLogicHost host;
 
+    @Unique
+    MEMachineEUHandler CE$EUHandler;
+
     @Inject(method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/InterfaceLogicHost;Lnet/minecraft/world/item/Item;I)V",
             at = @At("TAIL"))
     @SuppressWarnings("all")
@@ -38,6 +44,7 @@ public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
                                   CallbackInfo ci) {
         gridNode.addService(IEnergyDistributor.class, this)
                 .addService(IEnergyOverlayGridConnection.class, this::getOtherEnergyServices);
+        CE$EUHandler = new MEMachineEUHandler(gridNode::getNode, this);
     }
 
     @Override
@@ -80,8 +87,19 @@ public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
         return host;
     }
 
+    @Override
+    public IEnergyContainer getSource() {
+        return CE$EUHandler;
+    }
+
+    @Override
+    public void updateVoltage() {
+        CE$EUHandler.updateVoltage();
+    }
+
     @Inject(method = "onUpgradesChanged", at = @At("TAIL"))
     private void notifyUpgrade(CallbackInfo ci) {
         updateSleep();
+        updateVoltage();
     }
 }

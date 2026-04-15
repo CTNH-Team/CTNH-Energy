@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -230,7 +231,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 // netInLastSec += energyBanked;
 
                 // Passive drain
-                long energyPassiveDrained = energyBank.drain(getPassiveDrain());
+                // long energyPassiveDrained = energyBank.drain(getPassiveDrain());
                 // netOutLastSec += energyPassiveDrained;
 
                 // Debank to Dynamo Hatches
@@ -311,12 +312,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                             getTimeToFillDrainText(timeToDrainSeconds).setStyle(STYLE_RED)));
                 }
             }
-        } else if (invalidReason != null) {
-            textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-            textList.add(invalidReason.translate()
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+        } else {
+            MultiblockDisplayText.builder(textList, false);
+            if (invalidReason != null) {
+                textList.add(invalidReason.translate()
+                        .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            }
         }
+
         getDefinition().getAdditionalDisplay().accept(this, textList);
     }
 

@@ -51,7 +51,7 @@ public abstract class CEUtil {
 
     public static boolean isInSameGrid(IEnergyContainer a, IEnergyContainer b) {
         return a instanceof MEMachineEUHandler handlerA && b instanceof MEMachineEUHandler handlerB &&
-                handlerA.getNode().getGrid() == handlerB.getNode().getGrid();
+                handlerA.getGrid() == handlerB.getGrid();
     }
 
     public static List<Direction> getSides(Object host) {

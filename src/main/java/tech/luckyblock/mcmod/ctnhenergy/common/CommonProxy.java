@@ -158,9 +158,8 @@ public class CommonProxy {
                                                                   @Nullable Direction direction) {
                     if (capability == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
                         var upgradeable = CEUtil.getUpgradeable(blockEntity, direction);
-                        if (upgradeable instanceof IActionHost host && host.getActionableNode() != null &&
-                                host.getActionableNode().getGrid() != null) {
-                            return LazyOptional.of(() -> new MEMachineEUHandler(host.getActionableNode(), upgradeable))
+                        if (upgradeable instanceof IActionHost host) {
+                            return LazyOptional.of(() -> new MEMachineEUHandler(host::getActionableNode, upgradeable))
                                     .cast();
                         }
                     }

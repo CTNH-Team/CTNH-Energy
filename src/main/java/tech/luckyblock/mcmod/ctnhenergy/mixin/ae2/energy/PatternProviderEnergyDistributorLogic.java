@@ -1,5 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -14,6 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
 import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc.MachineUpgradeInventoryAccessor;
@@ -31,6 +34,9 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
     @Final
     private PatternProviderLogicHost host;
 
+    @Unique
+    MEMachineEUHandler CE$EUHandler;
+
     @Inject(
             method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
             at = @At("TAIL"))
@@ -40,6 +46,7 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
         mainNode.addService(IEnergyDistributor.class, this)
                 .addService(IEnergyOverlayGridConnection.class, this::getOtherEnergyServices);
         CE$injectUpgradeCallback();
+        CE$EUHandler = new MEMachineEUHandler(mainNode::getNode, this);
     }
 
     @Unique
@@ -82,6 +89,16 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
         return host;
     }
 
+    @Override
+    public IEnergyContainer getSource() {
+        return CE$EUHandler;
+    }
+
+    @Override
+    public void updateVoltage() {
+        CE$EUHandler.updateVoltage();
+    }
+
     @Unique
     boolean CE$injected = false;
 
@@ -94,8 +111,14 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
             accessor.setChangeCallback(() -> {
                 if (oldCallback != null)
                     oldCallback.onUpgradesChanged();
-                this.updateSleep();
+                CE$onUpgradesChanged();
             });
         }
+    }
+
+    @Unique
+    private void CE$onUpgradesChanged() {
+        updateSleep();
+        updateVoltage();
     }
 }
