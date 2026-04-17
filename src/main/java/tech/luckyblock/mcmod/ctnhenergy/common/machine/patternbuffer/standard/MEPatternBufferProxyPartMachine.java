@@ -26,10 +26,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ProgrammableProxySlotRecipeHandler;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEMachines;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,8 +52,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
     @DescSynced
     private @Nullable BlockPos bufferPos;
 
-    private @Nullable MEPatternBufferPartMachine buffer = null;
-    private boolean bufferResolved = false;
+    private @NotNull WeakReference<MEPatternBufferPartMachine> buffer = new WeakReference<>(null);
 
     public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
         this(holder, GTValues.LuV, MEPatternBufferPartMachine.MAX_PATTERN_COUNT);
@@ -76,18 +77,17 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
     }
 
     public void setBuffer(@Nullable BlockPos pos) {
-        bufferResolved = true;
         var level = getLevel();
         if (level == null || pos == null) {
-            buffer = null;
+            buffer = new WeakReference<>(null);
         } else
             if (MetaMachine.getMachine(level, pos) instanceof MEPatternBufferPartMachine machine && isBuffer(machine)) {
                 bufferPos = pos;
-                buffer = machine;
+                buffer = new WeakReference<>(machine);
                 machine.addProxy(this);
                 if (!isRemote()) updateProxy(machine);
             } else {
-                buffer = null;
+                buffer = new WeakReference<>(null);
             }
     }
 
@@ -101,8 +101,10 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
 
     @Nullable
     public MEPatternBufferPartMachine getBuffer() {
-        if (!bufferResolved) setBuffer(bufferPos);
-        return buffer;
+        if (buffer.get() == null || buffer.get().getHolder().self().isRemoved()) {
+            setBuffer(bufferPos);
+        }
+        return buffer.get();
     }
 
     @Override

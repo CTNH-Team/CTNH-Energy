@@ -13,7 +13,6 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
@@ -35,7 +34,7 @@ public class ForgeEventHandler {
             if (placedBE == null) return;
 
             // 情况 1：放下的是 PatternProvider
-            if (CEUtil.getUpgradeable(placedBE, Direction.UP) instanceof PatternProviderLogicHost) {
+            if (CEUtil.getUpgradeable(placedBE, Direction.UP) != null) {
                 tryConfigureNeighborMachine(level, pos);
                 return;
             }
@@ -66,7 +65,7 @@ public class ForgeEventHandler {
                                                          SimpleTieredMachine machine) {
         for (Direction dir : Direction.values()) {
             BlockEntity be = level.getBlockEntity(pos.relative(dir));
-            if (CEUtil.getUpgradeable(be, dir.getOpposite()) instanceof PatternProviderLogicHost) {
+            if (CEUtil.getUpgradeable(be, dir.getOpposite()) != null) {
                 configureMachine(machine, dir);
                 break;
             }

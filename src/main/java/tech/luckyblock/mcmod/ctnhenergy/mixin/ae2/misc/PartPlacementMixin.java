@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
+import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.parts.PartPlacement;
 import org.jetbrains.annotations.Nullable;
@@ -35,20 +36,22 @@ public class PartPlacementMixin {
                                                        BlockPos pos,
                                                        Direction side,
                                                        CallbackInfoReturnable<T> cir) {
-        T placedPart = cir.getReturnValue();
-        if (!(placedPart instanceof PatternProviderLogicHost) || level.isClientSide()) {
+        if (level.isClientSide()) {
             return;
         }
-        BlockPos targetPos = pos.relative(side);
-        BlockEntity be = level.getBlockEntity(targetPos);
-        if (be instanceof MetaMachineBlockEntity metaMachineBlockEntity &&
-                metaMachineBlockEntity.getMetaMachine() instanceof SimpleTieredMachine tieredMachine) {
-            tieredMachine.setAutoOutputFluids(true);
-            tieredMachine.setAutoOutputItems(true);
-            tieredMachine.setOutputFacingFluids(side.getOpposite());
-            tieredMachine.setOutputFacingItems(side.getOpposite());
-            tieredMachine.setAllowInputFromOutputSideItems(true);
-            tieredMachine.setAllowInputFromOutputSideFluids(true);
+        var placedPart = cir.getReturnValue();
+        if (placedPart instanceof PatternProviderLogicHost || placedPart instanceof InterfaceLogicHost) {
+            BlockPos targetPos = pos.relative(side);
+            BlockEntity be = level.getBlockEntity(targetPos);
+            if (be instanceof MetaMachineBlockEntity metaMachineBlockEntity &&
+                    metaMachineBlockEntity.getMetaMachine() instanceof SimpleTieredMachine tieredMachine) {
+                tieredMachine.setAutoOutputFluids(true);
+                tieredMachine.setAutoOutputItems(true);
+                tieredMachine.setOutputFacingFluids(side.getOpposite());
+                tieredMachine.setOutputFacingItems(side.getOpposite());
+                tieredMachine.setAllowInputFromOutputSideItems(true);
+                tieredMachine.setAllowInputFromOutputSideFluids(true);
+            }
         }
     }
 }
