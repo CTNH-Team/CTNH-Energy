@@ -119,6 +119,5 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
     @Unique
     private void CE$onUpgradesChanged() {
         updateSleep();
-        updateVoltage();
     }
 }

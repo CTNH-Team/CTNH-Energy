@@ -100,6 +100,5 @@ public class InterfaceEnergyDistributorLogic implements IEnergyDistributor {
     @Inject(method = "onUpgradesChanged", at = @At("TAIL"))
     private void notifyUpgrade(CallbackInfo ci) {
         updateSleep();
-        updateVoltage();
     }
 }

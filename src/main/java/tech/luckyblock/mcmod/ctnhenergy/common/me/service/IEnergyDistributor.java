@@ -59,6 +59,7 @@ public interface IEnergyDistributor extends IGridNodeService, IUpgradeableObject
         if (getService() != null) {
             if (getUpgrades().isInstalled(CEItems.DYNAMO_CARD)) {
                 getService().wake(this);
+                updateVoltage();
             } else {
                 getService().sleep(this);
             }
