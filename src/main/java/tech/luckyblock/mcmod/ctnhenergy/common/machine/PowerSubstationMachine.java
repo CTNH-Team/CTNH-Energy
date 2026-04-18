@@ -53,6 +53,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Prefix("power_station")
 public class PowerSubstationMachine extends WorkableMultiblockMachine
@@ -93,8 +94,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Persisted
     @Getter
     private final PowerStationEnergyBank energyBank;
-    private EnergyContainerList inputHatches = new EnergyContainerList(new ArrayList<>());
-    private EnergyContainerList outputHatches = new EnergyContainerList(new ArrayList<>());
+    @NotNull private EnergyContainerList inputHatches = new EnergyContainerList(new ArrayList<>());
+    @NotNull private EnergyContainerList outputHatches = new EnergyContainerList(new ArrayList<>());
     private long passiveDrain;
 
     // Stats tracked for UI display
@@ -196,13 +197,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         // don't null out energyBank since it holds the stored energy, which
         // we need to hold on to across rebuilds to not void all energy if a
         // multiblock part or block other than the controller is broken.
-        inputHatches = null;
-        outputHatches = null;
+        inputHatches = new EnergyContainerList(new ArrayList<>());
+        outputHatches = new EnergyContainerList(new ArrayList<>());
         passiveDrain = 0;
         netInLastSec = 0;
         inputPerSec = 0;
         netOutLastSec = 0;
         outputPerSec = 0;
+        maintenance = null;
         super.onStructureInvalid();
     }
 
@@ -405,7 +407,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     @Override
     public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast)
+        return getParts().stream().filter(Objects::nonNull).map(IFancyUIProvider.class::cast)
                 .toList();
     }
 
