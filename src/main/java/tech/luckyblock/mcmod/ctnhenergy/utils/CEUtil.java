@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartHost;
@@ -67,21 +68,26 @@ public abstract class CEUtil {
         }
     }
 
-    public static int getGridTier(IGridNode node) {
-        var eu = node.getGrid().getService(EnergyDistributeService.class);
+    public static int getGridTier(IGrid grid) {
+        if (grid == null) return -1;
+
+        var eu = grid.getService(EnergyDistributeService.class);
         if (eu.getVoltageTier() != -1) {
             return eu.getVoltageTier();
         }
 
-        var storage = node.getGrid().getStorageService().getInventory();
-        var actionSource = IActionSource.ofMachine(() -> node);
+        var storage = grid.getStorageService().getInventory();
 
         for (int i = GTValues.MAX; i >= GTValues.ULV; i--) {
-            if (storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, actionSource) > 0) {
+            if (storage.extract(VoltageKey.of(i), 1, Actionable.SIMULATE, IActionSource.empty()) > 0) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public static int getGridTier(IGridNode node) {
+        return getGridTier(node.getGrid());
     }
 
     public static long clampToLong(BigInteger v) {

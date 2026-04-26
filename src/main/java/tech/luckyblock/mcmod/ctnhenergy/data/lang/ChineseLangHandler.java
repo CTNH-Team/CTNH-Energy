@@ -22,6 +22,9 @@ public class ChineseLangHandler {
 
         provider.add("config.jade.plugin_ctnhenergy.ad_me_pattern_buffer_proxy", "高级ME样板总成");
         provider.add("config.jade.plugin_ctnhenergy.ad_me_pattern_buffer", "高级ME样板总成镜像");
+        provider.add("config.jade.plugin_ctnhenergy.ae_eu_info", "AE设备EU信息");
+        provider.add("ctnhenergy.jade.ae_eu.network_voltage", "网络电压等级：%s");
+        provider.add("ctnhenergy.jade.ae_eu.dynamo_voltage", "动力卡输出电压：%s");
 
         provider.add("gui.ctnhenergy.moveitem", "将可用原料转移至物品栏");
     }

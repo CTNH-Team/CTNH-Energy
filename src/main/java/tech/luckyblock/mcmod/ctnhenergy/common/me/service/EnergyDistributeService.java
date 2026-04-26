@@ -37,10 +37,8 @@ public class EnergyDistributeService implements IGridService, IGridServiceProvid
         if (level instanceof ServerLevel serverLevel && serverLevel.getServer().getTickCount() % 100 == 0) {
             voltageTier = -1;
             voltageTier = CEUtil.getGridTier(grid.getPivot());
-            for (var dis : this.activeNodes) {
-                if (dis.isActive()) {
-                    dis.updateVoltage();
-                }
+            for (var dis : this.distributors.values()) {
+                dis.updateSleep();
             }
         }
     }

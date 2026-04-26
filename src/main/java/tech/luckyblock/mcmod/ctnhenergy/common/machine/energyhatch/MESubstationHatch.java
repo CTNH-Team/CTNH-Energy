@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
@@ -76,6 +77,12 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
     @Override
     public IManagedGridNode getMainNode() {
         return nodeHolder.getMainNode();
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        IGridConnectedMachine.super.onMainNodeStateChanged(reason);
+        remountStorage();
     }
 
     @Override

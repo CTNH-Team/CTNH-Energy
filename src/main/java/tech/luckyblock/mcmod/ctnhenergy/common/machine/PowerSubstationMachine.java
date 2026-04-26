@@ -94,8 +94,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Persisted
     @Getter
     private final PowerStationEnergyBank energyBank;
-    @NotNull private EnergyContainerList inputHatches = new EnergyContainerList(new ArrayList<>());
-    @NotNull private EnergyContainerList outputHatches = new EnergyContainerList(new ArrayList<>());
+    @NotNull
+    private EnergyContainerList inputHatches = new EnergyContainerList(new ArrayList<>());
+    @NotNull
+    private EnergyContainerList outputHatches = new EnergyContainerList(new ArrayList<>());
     private long passiveDrain;
 
     // Stats tracked for UI display

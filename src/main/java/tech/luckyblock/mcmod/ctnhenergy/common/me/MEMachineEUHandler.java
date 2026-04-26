@@ -25,6 +25,7 @@ public class MEMachineEUHandler implements IEnergyContainer {
     @Getter
     Supplier<IGridNode> nodeSupplier;
     MEStorage inv;
+    IGrid cachedGrid;
     IActionSource source;
     IUpgradeableObject upgradeable;
     long outputVoltage = 0;
@@ -63,21 +64,26 @@ public class MEMachineEUHandler implements IEnergyContainer {
         }
 
         if (differenceAmount > 0) {
-            return getInventory().insert(EUKey.EU, differenceAmount, Actionable.MODULATE, source);
+            var inventory = getInventory();
+            return inventory == null ? 0 : inventory.insert(EUKey.EU, differenceAmount, Actionable.MODULATE, source);
         } else {
-            return -getInventory().extract(EUKey.EU, -differenceAmount, Actionable.MODULATE, source);
+            var inventory = getInventory();
+            return inventory == null ? 0 : -inventory.extract(EUKey.EU, -differenceAmount, Actionable.MODULATE, source);
         }
     }
 
     @Override
     public long getEnergyStored() {
-        return getInventory().extract(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, source);
+        var inventory = getInventory();
+        return inventory == null ? 0 : inventory.extract(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, source);
     }
 
     @Override
     public long getEnergyCapacity() {
         // 可能会有性能问题
-        return getInventory().insert(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, source) + getEnergyStored();
+        var inventory = getInventory();
+        return inventory == null ? 0 :
+                inventory.insert(EUKey.EU, Long.MAX_VALUE, Actionable.SIMULATE, source) + getEnergyStored();
     }
 
     @Override
@@ -112,23 +118,31 @@ public class MEMachineEUHandler implements IEnergyContainer {
     }
 
     public void updateVoltage() {
+        long voltage = 0;
         if (upgradeable.getUpgrades() != null) {
             for (var itemStack : upgradeable.getUpgrades()) {
                 if (itemStack.is(CEItems.DYNAMO_CARD.asItem()) && itemStack.hasTag()) {
                     var tag = itemStack.getTag();
                     if (tag.contains(DynamoCardItem.VOLTAGE))
-                        outputVoltage = V[tag.getInt(DynamoCardItem.VOLTAGE)];
+                        voltage = V[tag.getInt(DynamoCardItem.VOLTAGE)];
                 }
             }
         }
+        outputVoltage = voltage;
     }
 
     MEStorage getInventory() {
-        if (inv == null) {
-            var node = nodeSupplier.get();
-            if (node != null) {
-                inv = node.getGrid().getStorageService().getInventory();
-            }
+        var node = nodeSupplier.get();
+        if (node == null) {
+            inv = null;
+            cachedGrid = null;
+            return null;
+        }
+
+        var grid = node.getGrid();
+        if (inv == null || cachedGrid != grid) {
+            cachedGrid = grid;
+            inv = grid.getStorageService().getInventory();
         }
         return inv;
     }

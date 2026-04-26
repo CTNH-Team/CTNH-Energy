@@ -1,22 +1,18 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.energy;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.events.GridPowerStorageStateChanged;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.networking.energy.IEnergySource;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.blockentity.storage.DriveBlockEntity;
@@ -48,16 +44,16 @@ public abstract class DriveBlockEntityMixin extends AENetworkInvBlockEntity impl
     }
 
     @Inject(method = "onChangeInventory", at = @At("HEAD"))
-    void sendEnergyEvent(InternalInventory inv, int slot, CallbackInfo ci){
+    void sendEnergyEvent(InternalInventory inv, int slot, CallbackInfo ci) {
         for (var stack : inv) {
             var electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve();
-            if(electricItem.isPresent()){
-                getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER)));
+            if (electricItem.isPresent()) {
+                getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this,
+                        GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER)));
                 return;
             }
         }
     }
-
 
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
@@ -92,8 +88,7 @@ public abstract class DriveBlockEntityMixin extends AENetworkInvBlockEntity impl
                         GTValues.MAX,
                         true,
                         true,
-                        mode == Actionable.SIMULATE
-                );
+                        mode == Actionable.SIMULATE);
 
                 // GT -> AE
                 double providedAE = extractedGT * 2.0;
@@ -129,5 +124,4 @@ public abstract class DriveBlockEntityMixin extends AENetworkInvBlockEntity impl
     public AccessRestriction getPowerFlow() {
         return AccessRestriction.READ;
     }
-
 }
