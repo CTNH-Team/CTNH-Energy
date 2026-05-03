@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.core.definitions.AEItems;
+import com.ctnhlang.*;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
@@ -60,9 +61,6 @@ import tech.luckyblock.mcmod.ctnhenergy.network.packets.QCOpenCPUMenuPacket;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERecipeTypes;
 import tech.luckyblock.mcmod.ctnhenergy.utils.button.CETextures;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +71,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-@Prefix("machine")
 public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine
                                               implements IOpticalComputationReceiver,
                                               IRotationMultiblock<RubiksCubeContraptionEntity> {
@@ -515,6 +512,8 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
     }
 
+    @Category("quantumcomputer")
+    @Domain("gui")
     public class MaxMultiplierConfigurator implements IFancyConfigurator {
 
         @CN("设置样板自动翻倍最大倍数")

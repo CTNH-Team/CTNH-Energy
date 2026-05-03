@@ -22,8 +22,10 @@ dependencies {
     modCompileOnly(variantOf(ctnh.curios) { classifier("api") })
 
     modImplementation(ctnh.clothconfig)
+
     
     modLocalRuntime(ctnh.curios)
     modLocalRuntime(ctnh.constructionwand)
     modLocalRuntime(ctnh.buildinggadgets)
+    modLocalRuntime(forge.spark)
 }

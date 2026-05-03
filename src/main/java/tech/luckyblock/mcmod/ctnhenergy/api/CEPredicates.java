@@ -11,11 +11,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.Category;
+import com.ctnhlang.EN;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -29,7 +29,7 @@ import static tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMac
  * @author aaaAlant
  * @date 2025/8/14 18:04
  **/
-@Prefix("predicates")
+@Category("predicates")
 public class CEPredicates {
 
     public static Map<Block, Integer> CRAFTING_UNIT_STORAGE_KB;

@@ -10,6 +10,7 @@ import static tech.vixhentx.mcmod.ctnhlib.registrate.data.ProviderTypes.CNLANG;
 public class CEDatagen {
 
     public static void init() {
+        REGISTRATE.addLangProcessor();
         REGISTRATE.addDataGenerator(ProviderType.LANG, EnglishLangHandler::init);
         REGISTRATE.addDataGenerator(CNLANG, ChineseLangHandler::init);
     }

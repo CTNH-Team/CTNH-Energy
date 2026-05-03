@@ -12,15 +12,13 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import appeng.items.materials.UpgradeCardItem;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.util.List;
 
-@Prefix("item")
 public class DynamoCardItem extends UpgradeCardItem implements IComponentItem {
 
     @CN("每面最大输出电流为16A")

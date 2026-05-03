@@ -37,6 +37,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.google.common.annotations.VisibleForTesting;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -44,9 +46,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -55,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Prefix("power_station")
 public class PowerSubstationMachine extends WorkableMultiblockMachine
                                     implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
 
