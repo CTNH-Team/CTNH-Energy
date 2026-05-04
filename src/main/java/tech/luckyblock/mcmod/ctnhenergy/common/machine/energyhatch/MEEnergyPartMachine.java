@@ -202,9 +202,10 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                     it.remove();
                     continue;
                 }
-                var storage = getStorage();
-                if (storage != null) {
+
+                if (stack.voltage() <= V[tier]) {
                     long totalEU = stack.getTotalEU();
+
                     totalEU -= Math.abs(changeEnergy(io == IO.IN ? -totalEU : totalEU, simulate));
                     if (totalEU <= 0) {
                         it.remove();
@@ -290,7 +291,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
 
         @Override
         public long getInputVoltage() {
-            return handlerIO == IO.IN ? V[tier] : 0;
+            return handlerIO == IO.IN && checkGridTier() ? V[tier] : 0;
         }
 
         boolean checkGridTier() {
