@@ -171,6 +171,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         public MEEnergyContainer(MetaMachine machine, IO io) {
             super(machine);
             handlerIO = io;
+            capabilityValidator = direction -> false;
             updateEnergyCapacity();
         }
 
@@ -203,7 +204,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                     continue;
                 }
 
-                if (stack.voltage() <= V[tier]) {
+                if (io == IO.OUT || stack.voltage() <= V[tier]) {
                     long totalEU = stack.getTotalEU();
 
                     totalEU -= Math.abs(changeEnergy(io == IO.IN ? -totalEU : totalEU, simulate));
@@ -260,10 +261,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                 if (differenceAmount > 0) {
                     return storage.insert(EUKey.EU, differenceAmount, Actionable.ofSimulate(simulate), actionSource);
                 } else {
-                    if (checkGridTier())
-                        return -storage.extract(EUKey.EU, -differenceAmount, Actionable.ofSimulate(simulate),
-                                actionSource);
-                    return 0;
+                    return -storage.extract(EUKey.EU, -differenceAmount, Actionable.ofSimulate(simulate), actionSource);
                 }
             }
             return 0;
