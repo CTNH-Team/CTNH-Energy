@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.upgrades.MachineUpgradeInventory;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.me.energy.IEnergyOverlayGridConnection;
@@ -19,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc.MachineUpgradeInventoryAccessor;
 
 import java.util.List;
 
@@ -105,14 +105,14 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
     @Unique
     private void CE$injectUpgradeCallback() {
         if (CE$injected) return;
-        if (getUpgrades() instanceof MachineUpgradeInventoryAccessor accessor) {
+        if (getUpgrades() instanceof MachineUpgradeInventory upgrades) {
             CE$injected = true;
-            var oldCallback = accessor.getChangeCallback();
-            accessor.setChangeCallback(() -> {
+            var oldCallback = upgrades.changeCallback;
+            upgrades.changeCallback = () -> {
                 if (oldCallback != null)
                     oldCallback.onUpgradesChanged();
                 CE$onUpgradesChanged();
-            });
+            };
         }
     }
 

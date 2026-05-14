@@ -2,7 +2,11 @@ dependencies {
     modImplementation(project(":modules:CTNH-Lib")){ transitive = false }
     implementation(project(":modules:CTPP"))
 
-    modImplementation(ctnh.ae2)
+    modImplementation(ctnh.ae2){
+        accessTransformers.configure(it) {
+            config = project.file('src/main/resources/META-INF/accesstransformer.cfg')
+        }
+    }
     modImplementation(ctnh.guideme)
 
     modImplementation(ctnh.glodium)

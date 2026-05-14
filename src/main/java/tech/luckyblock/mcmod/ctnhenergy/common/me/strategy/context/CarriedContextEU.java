@@ -6,9 +6,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.parts.IPart;
 import appeng.helpers.WirelessTerminalMenuHost;
+import appeng.menu.AEBaseMenu;
 import tech.luckyblock.mcmod.ctnhenergy.api.EUItemContext;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.menu.AEBaseMenuAccessor;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 public record CarriedContextEU(Player player, AbstractContainerMenu menu) implements EUItemContext {
@@ -34,13 +35,14 @@ public record CarriedContextEU(Player player, AbstractContainerMenu menu) implem
     @Override
     public int getTier() {
         int tier = -1;
-        if (menu instanceof AEBaseMenuAccessor aeBaseMenu) {
-            var part = aeBaseMenu.getPart();
-            var item = aeBaseMenu.getItemMenuHost();
+        if (menu instanceof AEBaseMenu aeBaseMenu) {
+            var target = aeBaseMenu.getTarget();
+            var part = target instanceof IPart aePart ? aePart : null;
+            var item = target instanceof WirelessTerminalMenuHost host ? host : null;
             if (part != null && part.getGridNode() != null) {
                 tier = CEUtil.getGridTier(part.getGridNode());
-            } else if (item instanceof WirelessTerminalMenuHost host && host.getActionableNode() != null) {
-                tier = CEUtil.getGridTier(host.getActionableNode());
+            } else if (item != null && item.getActionableNode() != null) {
+                tier = CEUtil.getGridTier(item.getActionableNode());
             }
         }
         return tier == -1 ? GTValues.MAX : tier;
