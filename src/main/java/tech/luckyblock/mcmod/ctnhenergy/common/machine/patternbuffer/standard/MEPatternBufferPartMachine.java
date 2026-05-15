@@ -42,7 +42,6 @@ import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -113,9 +112,6 @@ import static appeng.helpers.patternprovider.PatternProviderLogic.NBT_MEMORY_CAR
 public class MEPatternBufferPartMachine extends TieredIOPartMachine
                                         implements ICraftingProvider, PatternContainer, IDataStickInteractable,
                                         IMachineLife, IHasCircuitSlot, IGridConnectedMachine, IRCFancyUIProvider {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEPatternBufferPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -468,11 +464,6 @@ public class MEPatternBufferPartMachine extends TieredIOPartMachine
             if (illegal) return false;
         }
         return true;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

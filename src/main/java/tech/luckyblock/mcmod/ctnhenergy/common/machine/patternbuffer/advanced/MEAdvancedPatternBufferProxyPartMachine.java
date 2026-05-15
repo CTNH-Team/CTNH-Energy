@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -26,9 +24,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MEAdvancedPatternBufferProxyPartMachine extends MEPatternBufferProxyPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEAdvancedPatternBufferProxyPartMachine.class, MEPatternBufferProxyPartMachine.MANAGED_FIELD_HOLDER);
 
     protected final ProxyRecipeHandler<Ingredient> itemOutput;
     protected final ProxyRecipeHandler<FluidIngredient> fluidOutput;
@@ -65,8 +60,4 @@ public class MEAdvancedPatternBufferProxyPartMachine extends MEPatternBufferProx
         return all;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

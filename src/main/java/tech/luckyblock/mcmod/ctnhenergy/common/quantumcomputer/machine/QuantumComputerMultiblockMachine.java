@@ -30,7 +30,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.networking.LDLNetworking;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -75,8 +74,6 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
                                               implements IOpticalComputationReceiver,
                                               IRotationMultiblock<RubiksCubeContraptionEntity> {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            QuantumComputerMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
     @Getter
     @Setter
     public List<RubiksCubeContraptionEntity> rotatingEntity = new ArrayList<>();
@@ -107,11 +104,6 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
     }
 
     private QuantumComputerMENetworkPortBlockEntity meNetworkPortBlockEntity;
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onStructureFormed() {

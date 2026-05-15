@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import appeng.api.stacks.GenericStack;
 import appeng.util.prioritylist.IPartitionList;
@@ -18,9 +17,6 @@ import tech.luckyblock.mcmod.ctnhenergy.common.machine.ITagFilter;
 import tech.vixhentx.mcmod.ctnhlib.client.gui.RightConfiguratorPanel;
 
 public class METagStockingBusPartMachine extends MEStockingBusPartMachine implements ITagFilter {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            METagStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     @DescSynced
@@ -42,11 +38,6 @@ public class METagStockingBusPartMachine extends MEStockingBusPartMachine implem
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return aeItemHandler;
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

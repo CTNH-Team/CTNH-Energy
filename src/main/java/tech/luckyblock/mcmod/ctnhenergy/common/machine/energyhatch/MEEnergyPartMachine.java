@@ -27,7 +27,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -58,9 +57,6 @@ import java.util.Optional;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
 public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridConnectedMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEEnergyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     protected final GridNodeHolder nodeHolder;
@@ -113,11 +109,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public Widget createUIWidget() {
         WidgetGroup configGroup = new WidgetGroup(0, 0, 100, 80);
         configGroup.addWidgets(
@@ -147,9 +138,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
 
     public static class MEEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack>
                                           implements IEnergyContainer {
-
-        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                MEEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
 
         @Persisted
         @Getter
@@ -233,11 +221,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         @Override
         public RecipeCapability<EnergyStack> getCapability() {
             return EURecipeCapability.CAP;
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
 
         @Override
