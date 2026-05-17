@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "mixins.ctnhenergy.refmap.json",
   "mixins": [
-    "ae2.IPartItemMixin",
+    "ae2.CableBusContainerMixin",
     "ae2.SettingsMixin",
     "ae2.cpu.CraftingCpuLogicMixin",
     "ae2.cpu.CraftingCPUMenuMixin",
