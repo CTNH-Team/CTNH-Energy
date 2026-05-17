@@ -219,5 +219,4 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
             powerStation = null;
         }
     }
-
 }

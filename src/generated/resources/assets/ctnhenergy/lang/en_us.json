@@ -75,6 +75,7 @@
   "gui.ctnhenergy.tagfilterconfigurator.tag_filter": "Configure Tag Filter",
   "item.ctnhenergy.dynamo_card": "Dynamo Card",
   "item.ctnhenergy.eu_cell_housing": "Eu Cell Housing",
+  "item.ctnhenergy.eu_p2p_tunnel": "EU P2P Tunnel",
   "item.ctnhenergy.ev_eu_cell": "§5EV§r ME EU Storage Cell",
   "item.ctnhenergy.hv_eu_cell": "§6HV§r ME EU Storage Cell",
   "item.ctnhenergy.iv_eu_cell": "§9IV§r ME EU Storage Cell",

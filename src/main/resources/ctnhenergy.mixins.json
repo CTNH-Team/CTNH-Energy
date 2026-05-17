@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "mixins.ctnhenergy.refmap.json",
   "mixins": [
+    "ae2.IPartItemMixin",
     "ae2.SettingsMixin",
     "ae2.cpu.CraftingCpuLogicMixin",
     "ae2.cpu.CraftingCPUMenuMixin",
@@ -41,7 +42,6 @@
     "betterP2P.ClientProxyMixin",
     "betterP2P.CommonProxyMixin",
     "datagen.AECSDatagenMixin",
-    "EUP2P.EUP2PMixin",
     "gtm.BlockPatternMixin",
     "gtm.KeyStorageMixin",
     "gtm.MEPatternBufferPartMachineMixin",

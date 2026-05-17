@@ -59,5 +59,4 @@ public class MEAdvancedPatternBufferProxyPartMachine extends MEPatternBufferProx
         all.add(outList);
         return all;
     }
-
 }

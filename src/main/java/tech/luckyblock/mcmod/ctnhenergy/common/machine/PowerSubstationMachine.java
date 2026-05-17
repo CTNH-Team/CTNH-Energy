@@ -669,7 +669,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
             return drain + PASSIVE_DRAIN_MAX_PER_STORAGE * excluded;
         }
-
     }
 
     @Getter
