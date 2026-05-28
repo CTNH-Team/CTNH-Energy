@@ -20,7 +20,9 @@ import com.ctnhlang.EN;
 import com.wintercogs.ae2omnicells.common.blocks.OmniCraftingUnitBlock;
 import com.wintercogs.ae2omnicells.common.items.OmniCraftingBlockItem;
 import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
+import net.createmod.ponder.foundation.PonderIndex;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderPlugin;
 import tech.luckyblock.mcmod.ctnhenergy.client.render.EUKeyRenderHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
@@ -59,6 +61,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            PonderIndex.addPlugin(new CTNHEnergyPonderPlugin());
+        });
         event.enqueueWork(() -> {
             // 注册内容类型谓词
             ItemProperties.register(

@@ -1,0 +1,55 @@
+package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
+
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
+
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.minecraft.core.Direction;
+
+import appeng.core.definitions.AEItems;
+
+import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
+
+public class Interface {
+
+    private Interface() {}
+
+    public static void common(SceneBuilder builder, SceneBuildingUtil util) {
+        CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        scene.title("interface_common", InterfaceCommonHeader.translate().getContents().toString());
+        scene.showBasePlate();
+        scene.idle(20);
+        scene.world().showSection(util.select().fromTo(1, 1, 1, 1, 1, 3), Direction.DOWN);
+        scene.world().showSection(util.select().fromTo(1, 1, 2, 3, 1, 2), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showText(60)
+                .text(InterfaceCommonText1.translate().getContents().toString())
+                .attachKeyFrame();
+        scene.idle(60);
+        scene.world().showSection(util.select().position(3, 2, 2), Direction.DOWN);
+        scene.markAsFinished();
+        scene.idle(20);
+        scene.overlay().showText(60)
+                .text(InterfaceCommonText2.translate().getContents().toString())
+                .attachKeyFrame();
+        scene.idle(70);
+        scene.world().hideSection(util.select().position(3, 2, 2), Direction.UP);
+        scene.idle(20);
+        scene.overlay().showText(40)
+                .text(InterfaceCommonText3.translate().getContents().toString())
+                .attachKeyFrame();
+        scene.idle(40);
+        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(3, 1, 2), Direction.UP), Pointing.DOWN, 40)
+                .rightClick()
+                .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
+        scene.idle(40);
+        scene.world().showSection(util.select().position(3, 1, 1), Direction.SOUTH);
+        scene.idle(20);
+        scene.overlay().showText(60)
+                .text(InterfaceCommonText4.translate().getContents().toString())
+                .attachKeyFrame();
+        scene.world().flapFunnel(util.grid().at(3, 1, 1), true);
+        scene.idle(60);
+    }
+}
