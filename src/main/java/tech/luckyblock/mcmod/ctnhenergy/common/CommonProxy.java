@@ -24,6 +24,7 @@ import net.minecraftforge.registries.RegisterEvent;
 
 import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.behaviors.GenericSlotCapacities;
+import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.networking.GridServices;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.stacks.AEKeyTypes;
@@ -146,6 +147,7 @@ public class CommonProxy {
                 Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, 1,
                         "block.ae2cs.resonating_pattern_provider");
 
+                P2PTunnelAttunement.registerAttunementTag(CEItems.EU_P2P);
             });
         });
 

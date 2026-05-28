@@ -21,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,9 +48,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IMachineLife, IInteractedMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEDualOutputHatchPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private KeyStorage internalBuffer;
@@ -110,11 +106,6 @@ public class MEDualOutputHatchPartMachine extends MEBusPartMachine implements IM
                         Actionable.MODULATE, actionSource);
             }
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////

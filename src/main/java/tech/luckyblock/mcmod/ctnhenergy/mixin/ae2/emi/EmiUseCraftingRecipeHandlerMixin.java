@@ -13,6 +13,8 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.integration.modules.emi.AbstractRecipeHandler.Result;
+import appeng.integration.modules.emi.AbstractRecipeHandler.Result.PartiallyCraftable;
 import appeng.integration.modules.emi.EmiStackHelper;
 import appeng.integration.modules.emi.EmiUseCraftingRecipeHandler;
 import appeng.menu.me.items.CraftingTermMenu;
@@ -25,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
-import tech.luckyblock.mcmod.ctnhenergy.utils.ResultReflection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +76,7 @@ public abstract class EmiUseCraftingRecipeHandlerMixin implements StandardRecipe
             at = @At(value = "HEAD"),
             cancellable = true)
     void handleNonCraftingRecipe(CraftingTermMenu menu, Recipe<?> recipeBase, EmiRecipe emiRecipe, boolean doTransfer,
-                                 CallbackInfoReturnable<Object> cir) {
+                                 CallbackInfoReturnable<Result> cir) {
         if (!CEUtil.isCrafting(emiRecipe)) {
 
             Map<Integer, Ingredient> slotToIngredientMap = new HashMap<>();
@@ -85,13 +86,12 @@ public abstract class EmiUseCraftingRecipeHandlerMixin implements StandardRecipe
             }
             var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
             if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
-                cir.setReturnValue(
-                        ResultReflection.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots()));
+                cir.setReturnValue(Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots()));
             }
 
             if (!doTransfer) {
                 if (missingSlots.anyMissingOrCraftable()) {
-                    cir.setReturnValue(ResultReflection.createPartiallyCraftable(missingSlots));
+                    cir.setReturnValue(new PartiallyCraftable(missingSlots));
                 }
             } else {
                 var templateItems = NonNullList.of(ItemStack.EMPTY);
@@ -106,7 +106,7 @@ public abstract class EmiUseCraftingRecipeHandlerMixin implements StandardRecipe
                 NetworkHandler.instance()
                         .sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems,
                                 AbstractContainerScreen.hasControlDown()));
-                cir.setReturnValue(ResultReflection.createSuccessful());
+                cir.setReturnValue(Result.createSuccessful());
 
             }
 

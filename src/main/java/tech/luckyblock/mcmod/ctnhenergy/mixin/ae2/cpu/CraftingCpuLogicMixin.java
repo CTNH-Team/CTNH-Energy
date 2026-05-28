@@ -10,6 +10,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ExecutingCraftingJob;
+import appeng.crafting.execution.ExecutingCraftingJob.TaskProgress;
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -85,17 +86,16 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
             return;
         }
 
-        ExecutingCraftingJobAccessor jobAccessor = (ExecutingCraftingJobAccessor) jobLocal;
-        ListCraftingInventory waitingFor = jobAccessor.getWaitingFor();
-        var timeTracker = jobAccessor.getTimeTracker();
+        ListCraftingInventory waitingFor = jobLocal.waitingFor;
+        var timeTracker = jobLocal.timeTracker;
 
         int pushedPatterns = 0;
 
-        var it = jobAccessor.getTasks().entrySet().iterator();
+        var it = jobLocal.tasks.entrySet().iterator();
         while (it.hasNext() && maxProviders > 0) {
             var task = it.next();
-            TaskProgressAccessor progressAccessor = (TaskProgressAccessor) (task.getValue());
-            long totalCount = progressAccessor.getValue();
+            TaskProgress progress = task.getValue();
+            long totalCount = progress.value;
 
             if (totalCount <= 0) {
                 it.remove();
@@ -161,8 +161,7 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                     }
                     for (var expected : expectedContainerItems) {
                         waitingFor.insert(expected.getKey(), expected.getLongValue(), Actionable.MODULATE);
-                        ((ElapsedTimeTrackerInvoker) timeTracker).invokeAddMaxItems(expected.getLongValue(),
-                                expected.getKey().getType());
+                        timeTracker.addMaxItems(expected.getLongValue(), expected.getKey().getType());
                     }
 
                     cluster.markDirty();
@@ -171,11 +170,11 @@ public abstract class CraftingCpuLogicMixin implements IAutoMultiplyCPU {
                     totalCount -= workingMultiplier;
 
                     if (totalCount <= 0) {
-                        progressAccessor.setValue(0);
+                        progress.value = 0;
                         it.remove();
                         break;
                     } else {
-                        progressAccessor.setValue(totalCount);
+                        progress.value = totalCount;
                     }
                 } else {
                     CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);

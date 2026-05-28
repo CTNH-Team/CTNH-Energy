@@ -15,7 +15,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.network.chat.Component;
 
@@ -37,9 +36,6 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 public class MESubstationHatch extends TieredIOPartMachine implements IGridConnectedMachine, IStorageProvider {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MESubstationHatch.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     protected final GridNodeHolder nodeHolder;
@@ -222,10 +218,5 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
         void reset() {
             powerStation = null;
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

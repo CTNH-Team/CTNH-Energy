@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
@@ -33,8 +32,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEAdvancedPatternBufferPartMachine.class, MEPatternBufferPartMachine.MANAGED_FIELD_HOLDER);
     public static final int MAX_PATTERN_COUNT = 72;
 
     @Nullable
@@ -125,11 +122,6 @@ public class MEAdvancedPatternBufferPartMachine extends MEPatternBufferPartMachi
     @Override
     public int getMaxPatternCount() {
         return MAX_PATTERN_COUNT;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

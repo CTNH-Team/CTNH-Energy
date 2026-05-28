@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 
 import net.minecraft.network.chat.Component;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MEEnergyPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch.MESubstationHatch;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.iohatch.MEDualOutputHatchPartMachine;
@@ -23,15 +25,11 @@ import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.standard.ME
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate.MEUltimatePatternBufferPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.ultimate.MEUltimatePatternBufferProxyPartMachine;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_OUTPUT_HATCH_ABILITIES;
 import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
 
-@Prefix("machine")
 public class CEMachines {
 
     static {

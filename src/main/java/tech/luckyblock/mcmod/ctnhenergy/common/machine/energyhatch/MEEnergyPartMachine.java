@@ -27,7 +27,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -58,9 +57,6 @@ import java.util.Optional;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
 public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridConnectedMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEEnergyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     protected final GridNodeHolder nodeHolder;
@@ -113,11 +109,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public Widget createUIWidget() {
         WidgetGroup configGroup = new WidgetGroup(0, 0, 100, 80);
         configGroup.addWidgets(
@@ -148,9 +139,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
     public static class MEEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack>
                                           implements IEnergyContainer {
 
-        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                MEEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
-
         @Persisted
         @Getter
         int tier = 0;
@@ -171,6 +159,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         public MEEnergyContainer(MetaMachine machine, IO io) {
             super(machine);
             handlerIO = io;
+            capabilityValidator = direction -> false;
             updateEnergyCapacity();
         }
 
@@ -202,9 +191,10 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                     it.remove();
                     continue;
                 }
-                var storage = getStorage();
-                if (storage != null) {
+
+                if (io == IO.OUT || stack.voltage() <= V[tier]) {
                     long totalEU = stack.getTotalEU();
+
                     totalEU -= Math.abs(changeEnergy(io == IO.IN ? -totalEU : totalEU, simulate));
                     if (totalEU <= 0) {
                         it.remove();
@@ -234,11 +224,6 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
         }
 
         @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
-        }
-
-        @Override
         public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
             return 0;
         }
@@ -259,10 +244,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
                 if (differenceAmount > 0) {
                     return storage.insert(EUKey.EU, differenceAmount, Actionable.ofSimulate(simulate), actionSource);
                 } else {
-                    if (checkGridTier())
-                        return -storage.extract(EUKey.EU, -differenceAmount, Actionable.ofSimulate(simulate),
-                                actionSource);
-                    return 0;
+                    return -storage.extract(EUKey.EU, -differenceAmount, Actionable.ofSimulate(simulate), actionSource);
                 }
             }
             return 0;
@@ -290,7 +272,7 @@ public class MEEnergyPartMachine extends TieredIOPartMachine implements IGridCon
 
         @Override
         public long getInputVoltage() {
-            return handlerIO == IO.IN ? V[tier] : 0;
+            return handlerIO == IO.IN && checkGridTier() ? V[tier] : 0;
         }
 
         boolean checkGridTier() {

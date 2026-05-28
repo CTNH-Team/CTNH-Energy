@@ -2,14 +2,17 @@ dependencies {
     modImplementation(project(":modules:CTNH-Lib")){ transitive = false }
     implementation(project(":modules:CTPP"))
 
-    modImplementation(ctnh.ae2)
+    modImplementation(ctnh.ae2){
+        accessTransformers.configure(it) {
+            config = project.file('src/main/resources/META-INF/accesstransformer.cfg')
+        }
+    }
     modImplementation(ctnh.guideme)
 
     modImplementation(ctnh.glodium)
     modImplementation(ctnh.eae)
 
     modImplementation(ctnh.pcc)
-    modImplementation(ctnh.eup2p)
     modImplementation(ctnh.omnicells)
     modImplementation(ctnh.merequester)
     modImplementation(ctnh.ae2wt)
@@ -22,8 +25,10 @@ dependencies {
     modCompileOnly(variantOf(ctnh.curios) { classifier("api") })
 
     modImplementation(ctnh.clothconfig)
+
     
     modLocalRuntime(ctnh.curios)
     modLocalRuntime(ctnh.constructionwand)
     modLocalRuntime(ctnh.buildinggadgets)
+    modLocalRuntime(forge.spark)
 }

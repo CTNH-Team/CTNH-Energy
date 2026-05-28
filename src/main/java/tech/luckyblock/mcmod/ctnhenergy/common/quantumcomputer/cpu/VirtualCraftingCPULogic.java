@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.common.pattern.DynamicProcessingPattern;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider.PatternProviderLogicAccessor;
 import tech.luckyblock.mcmod.ctnhenergy.utils.ProviderRecord;
 
 import java.util.*;
@@ -268,8 +267,8 @@ public class VirtualCraftingCPULogic {
     }
 
     public static boolean CE$isBlock(ICraftingProvider provider) {
-        if (provider instanceof PatternProviderLogic) {
-            var configManager = ((PatternProviderLogicAccessor) provider).getConfigManager();
+        if (provider instanceof PatternProviderLogic patternProviderLogic) {
+            var configManager = patternProviderLogic.getConfigManager();
             if (configManager.getSetting(Settings.LOCK_CRAFTING_MODE) != LockCraftingMode.NONE)
                 return true;
             else {

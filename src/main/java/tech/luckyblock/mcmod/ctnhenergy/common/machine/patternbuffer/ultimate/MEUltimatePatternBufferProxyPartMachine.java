@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import org.jetbrains.annotations.NotNull;
 import tech.luckyblock.mcmod.ctnhenergy.api.ProxyRecipeHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.MEAdvancedPatternBufferProxyPartMachine;
@@ -19,10 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MEUltimatePatternBufferProxyPartMachine extends MEAdvancedPatternBufferProxyPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEUltimatePatternBufferProxyPartMachine.class,
-            MEAdvancedPatternBufferProxyPartMachine.MANAGED_FIELD_HOLDER);
 
     private final ProxyRecipeHandler.ProxyEnergyRecipeHandler proxyEnergyRecipeHandler;
 

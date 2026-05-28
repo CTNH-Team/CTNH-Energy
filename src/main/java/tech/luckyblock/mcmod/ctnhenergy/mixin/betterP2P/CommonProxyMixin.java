@@ -3,7 +3,6 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.betterP2P;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-import com.jerry.eup2p.common.registry.EUP2PItem;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.lasm.betterp2p.ClientProxy;
 import dev.lasm.betterp2p.CommonProxy;
@@ -12,6 +11,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
+import tech.luckyblock.mcmod.ctnhenergy.registry.CEItems;
 
 import java.util.function.Supplier;
 
@@ -27,7 +28,8 @@ public abstract class CommonProxyMixin {
             method = { "initTunnels" },
             at = { @At("RETURN") })
     private void onInit(CallbackInfo ci, @Local(name = "typeId") int typeID) {
-        registerModTunnel(EUP2PItem.EU_P2P_TUNNEL::asItem, typeID, "com.jerry.eup2p.common.parts.p2p.EUP2PTunnelPart");
+        registerModTunnel(CEItems.EU_P2P::asItem, typeID,
+                "tech.luckyblock.mcmod.ctnhenergy.common.me.parts.p2p.EUP2PTunnelPart");
     }
 }
 
@@ -42,9 +44,9 @@ abstract class ClientProxyMixin {
             at = { @At("RETURN") })
     private void onInit(CallbackInfo ci, @Local(name = "typeId") int typeID) {
         registerModTunnel(
-                EUP2PItem.EU_P2P_TUNNEL::asItem,
+                CEItems.EU_P2P::asItem,
                 typeID,
-                "com.jerry.eup2p.common.parts.p2p.EUP2PTunnelPart",
-                ResourceLocation.fromNamespaceAndPath("eup2p", "textures/item/eu.png"));
+                "tech.luckyblock.mcmod.ctnhenergy.common.me.parts.p2p.EUP2PTunnelPart",
+                CTNHEnergy.id("textures/item/eu.png"));
     }
 }

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import appeng.api.networking.IGridNodeListener;
 import lombok.Getter;
@@ -20,9 +19,6 @@ import tech.luckyblock.mcmod.ctnhenergy.common.machine.patternbuffer.advanced.ME
 import java.util.List;
 
 public class MEUltimatePatternBufferPartMachine extends MEAdvancedPatternBufferPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEUltimatePatternBufferPartMachine.class, MEAdvancedPatternBufferPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     @Getter
@@ -70,10 +66,5 @@ public class MEUltimatePatternBufferPartMachine extends MEAdvancedPatternBufferP
             energyContainer.updateEnergyCapacity();
             updateEnergySubscription();
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

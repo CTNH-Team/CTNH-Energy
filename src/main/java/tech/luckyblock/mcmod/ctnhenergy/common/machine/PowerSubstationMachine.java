@@ -28,7 +28,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -37,6 +36,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.google.common.annotations.VisibleForTesting;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -44,9 +45,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -55,12 +53,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Prefix("power_station")
 public class PowerSubstationMachine extends WorkableMultiblockMachine
                                     implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     @CN("电压等级：")
     @EN("Voltage Tier: ")
@@ -386,11 +380,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
@@ -421,9 +410,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     public static class PowerStationEnergyBank extends MachineTrait {
-
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                PowerStationEnergyBank.class);
 
         /*
          * ----------------------------
@@ -682,11 +668,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             }
 
             return drain + PASSIVE_DRAIN_MAX_PER_STORAGE * excluded;
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
     }
 

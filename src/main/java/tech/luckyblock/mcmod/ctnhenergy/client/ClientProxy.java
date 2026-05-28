@@ -14,6 +14,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.init.client.InitScreens;
+import com.ctnhlang.CN;
+import com.ctnhlang.Category;
+import com.ctnhlang.EN;
 import com.wintercogs.ae2omnicells.common.blocks.OmniCraftingUnitBlock;
 import com.wintercogs.ae2omnicells.common.items.OmniCraftingBlockItem;
 import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
@@ -27,14 +30,11 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.gui.QuantumComputerScreen;
 import tech.luckyblock.mcmod.ctnhenergy.registry.AEMenus;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CELL;
 import static tech.luckyblock.mcmod.ctnhenergy.registry.CEItems.DYNAMO_CARD;
 
-@Prefix("tooltip")
+@Category("tooltip")
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
 

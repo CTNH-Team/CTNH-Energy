@@ -4,6 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.emi.AbstractRecipeHandler;
+import appeng.integration.modules.emi.AbstractRecipeHandler.Result.PartiallyCraftable;
 import appeng.menu.me.items.CraftingTermMenu;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
@@ -22,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(targets = "appeng.integration.modules.emi.AbstractRecipeHandler", remap = false)
+@Mixin(value = AbstractRecipeHandler.class, remap = false)
 public class AbstractRecipeHandlerMixin {
 
     @Inject(method = "getRecipeInputSlots", at = @At("HEAD"), cancellable = true)
@@ -43,7 +45,7 @@ public class AbstractRecipeHandlerMixin {
         }
     }
 
-    @Mixin(targets = "appeng.integration.modules.emi.AbstractRecipeHandler$Result$PartiallyCraftable", remap = false)
+    @Mixin(value = PartiallyCraftable.class, remap = false)
     static class PartiallyCraftableMixin {
 
         @Shadow

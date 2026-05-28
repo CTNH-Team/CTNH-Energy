@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import tech.luckyblock.mcmod.ctnhenergy.client.ClientProxy;
 import tech.luckyblock.mcmod.ctnhenergy.common.CommonProxy;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CERegistrate;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.LangProcessor;
 
 @SuppressWarnings("removal")
 @Mod(CTNHEnergy.MODID)
@@ -21,9 +20,6 @@ public class CTNHEnergy {
     public static final CERegistrate REGISTRATE = CERegistrate.create();
 
     public CTNHEnergy() {
-        LangProcessor langProcessor = new LangProcessor(REGISTRATE);
-        langProcessor.processAll();
-
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     }
 
