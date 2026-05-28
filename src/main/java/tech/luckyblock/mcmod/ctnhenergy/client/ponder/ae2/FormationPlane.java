@@ -1,8 +1,6 @@
 // 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
-
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -11,13 +9,13 @@ import net.minecraft.core.Direction;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class FormationPlane {
 
-    private FormationPlane() {
-    }
+    private FormationPlane() {}
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -39,11 +37,11 @@ public class FormationPlane {
         var item1 = scene.world().createItemEntity(
                 util.vector().of(3.5, 5, 1.5),
                 util.vector().of(0, 0, 0),
-                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance()
-        );
+                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(15);
         scene.world().modifyEntity(item1, e -> e.kill());
-        scene.world().setBlocks(util.select().position(2, 1, 1), AEBlocks.QUARTZ_BLOCK.block().defaultBlockState(), false);
+        scene.world().setBlocks(util.select().position(2, 1, 1), AEBlocks.QUARTZ_BLOCK.block().defaultBlockState(),
+                false);
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.GREEN, "placed", util.select().position(2, 1, 1), 60);
         scene.overlay().showText(60)
@@ -59,8 +57,7 @@ public class FormationPlane {
         scene.world().createItemEntity(
                 util.vector().of(2.5, 1.5, 1.75),
                 util.vector().of(0, 0, 0),
-                AEBlocks.QUARTZ_BLOCK.asItem().getDefaultInstance()
-        );
+                AEBlocks.QUARTZ_BLOCK.asItem().getDefaultInstance());
         scene.overlay().showOutline(PonderPalette.GREEN, "drop", util.select().position(2, 1, 1), 60);
         scene.overlay().showText(60)
                 .text(FormationPlaneText5.translate().getContents().toString())
@@ -71,7 +68,8 @@ public class FormationPlane {
                 .text(FormationPlaneText6.translate().getContents().toString())
                 .attachKeyFrame();
         scene.idle(80);
-        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(2, 1, 1), Direction.UP), Pointing.RIGHT, 40)
+        scene.overlay()
+                .showControls(util.vector().blockSurface(util.grid().at(2, 1, 1), Direction.UP), Pointing.RIGHT, 40)
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(60);

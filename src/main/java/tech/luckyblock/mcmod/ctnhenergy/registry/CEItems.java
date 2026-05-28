@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ModelFile;
 
@@ -12,6 +11,7 @@ import appeng.api.parts.PartModels;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellItem;

@@ -2,11 +2,11 @@ package tech.luckyblock.mcmod.ctnhenergy.client.ponder;
 
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
-import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.api.ids.AEPartIds;
 import appeng.core.definitions.AEItems;
+import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 
 public final class CTNHEnergyPonderTags {
 

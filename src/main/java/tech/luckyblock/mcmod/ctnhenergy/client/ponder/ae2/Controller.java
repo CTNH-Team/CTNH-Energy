@@ -1,28 +1,27 @@
 // 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
-
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
 
 import appeng.core.definitions.AEBlocks;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class Controller {
 
-    private Controller() {
-    }
+    private Controller() {}
 
     public static void controller(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
         AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("controller", ControllerHeader.translate().getContents().toString());
         scene.world().showSection(util.select().fromTo(0, 0, 0, 9, 0, 9), Direction.UP);
-        scene.world().setBlocks(util.select().position(8, 1, 1), AEBlocks.CONTROLLER.block().defaultBlockState(), false);
+        scene.world().setBlocks(util.select().position(8, 1, 1), AEBlocks.CONTROLLER.block().defaultBlockState(),
+                false);
         scene.idle(20);
         cables.showSectionAndConnect(0, 1, 1, 1, 1, 1, Direction.DOWN);
         scene.idle(20);

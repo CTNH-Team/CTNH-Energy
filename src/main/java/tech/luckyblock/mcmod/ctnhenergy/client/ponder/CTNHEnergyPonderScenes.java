@@ -1,14 +1,13 @@
-//代码来源于Create Delights，原作者为SSW，已获得授权
+// 代码来源于Create Delights，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder;
-
-import appeng.api.ids.AEBlockIds;
-import appeng.api.ids.AEPartIds;
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.*;
 
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.ids.AEBlockIds;
+import appeng.api.ids.AEPartIds;
 import appeng.core.definitions.AEItems;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.*;
 
 import java.util.ArrayList;
 
@@ -26,11 +25,11 @@ public final class CTNHEnergyPonderScenes {
 
         // 赛特斯石英母岩
         helper.forComponents(
-                        AEBlockIds.FLAWLESS_BUDDING_QUARTZ,
-                        AEBlockIds.FLAWED_BUDDING_QUARTZ,
-                        AEBlockIds.CHIPPED_BUDDING_QUARTZ,
-                        AEBlockIds.DAMAGED_BUDDING_QUARTZ,
-                        AEItems.CERTUS_QUARTZ_CRYSTAL.id())
+                AEBlockIds.FLAWLESS_BUDDING_QUARTZ,
+                AEBlockIds.FLAWED_BUDDING_QUARTZ,
+                AEBlockIds.CHIPPED_BUDDING_QUARTZ,
+                AEBlockIds.DAMAGED_BUDDING_QUARTZ,
+                AEItems.CERTUS_QUARTZ_CRYSTAL.id())
                 .addStoryBoard("budding_quartz/budding_quart", BuddingQuartz::obtain, AEOriginal)
                 .addStoryBoard("budding_quartz/budding_quart", BuddingQuartz::grow, AEOriginal)
                 .addStoryBoard("budding_quartz/budding_quart", BuddingQuartz::repair, AEOriginal);
@@ -57,9 +56,9 @@ public final class CTNHEnergyPonderScenes {
 
         // 自动合成系统
         helper.forComponents(
-                        AEBlockIds.PATTERN_PROVIDER,
-                        AEBlockIds.CRAFTING_UNIT,
-                        AEBlockIds.MOLECULAR_ASSEMBLER)
+                AEBlockIds.PATTERN_PROVIDER,
+                AEBlockIds.CRAFTING_UNIT,
+                AEBlockIds.MOLECULAR_ASSEMBLER)
                 .addStoryBoard("crafting_system/system", CraftingSystem::system, AEOriginal);
 
         // 成型面板
@@ -68,15 +67,15 @@ public final class CTNHEnergyPonderScenes {
 
         // 输入/输出总线
         helper.forComponents(
-                        AEPartIds.IMPORT_BUS,
-                        AEPartIds.EXPORT_BUS)
+                AEPartIds.IMPORT_BUS,
+                AEPartIds.EXPORT_BUS)
                 .addStoryBoard("import_export_bus/common", ImportExportBus::common, AEOriginal)
                 .addStoryBoard("import_export_bus/transport", ImportExportBus::transport, AEOriginal);
 
         // ME接口
         helper.forComponents(
-                        AEBlockIds.INTERFACE,
-                        AEPartIds.INTERFACE)
+                AEBlockIds.INTERFACE,
+                AEPartIds.INTERFACE)
                 .addStoryBoard("interface/common", Interface::common, AEOriginal);
 
         // IO端口
@@ -90,16 +89,16 @@ public final class CTNHEnergyPonderScenes {
 
         // 样板供应器
         helper.forComponents(
-                        AEBlockIds.PATTERN_PROVIDER,
-                        AEPartIds.PATTERN_PROVIDER)
+                AEBlockIds.PATTERN_PROVIDER,
+                AEPartIds.PATTERN_PROVIDER)
                 .addStoryBoard("pattern_provider/common", PatternProvider::common, AEOriginal)
                 .addStoryBoard("pattern_provider/parallel", PatternProvider::parallel, AEOriginal)
                 .addStoryBoard("pattern_provider/interaction", PatternProvider::interaction, AEOriginal);
 
         // 量子网桥
         helper.forComponents(
-                        AEBlockIds.QUANTUM_RING,
-                        AEBlockIds.QUANTUM_LINK)
+                AEBlockIds.QUANTUM_RING,
+                AEBlockIds.QUANTUM_LINK)
                 .addStoryBoard("quantum_network_bridge/bridge", QuantumNetworkBridge::bridge, AEOriginal);
 
         // 存储总线

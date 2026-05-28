@@ -1,8 +1,6 @@
 // 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
-
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -10,13 +8,13 @@ import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
 
 import appeng.core.definitions.AEItems;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class StorageBus {
 
-    private StorageBus() {
-    }
+    private StorageBus() {}
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -61,7 +59,8 @@ public class StorageBus {
         scene.idle(10);
         cables.showSectionAndConnect(4, 1, 2, Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showOutline(PonderPalette.GREEN, "interface_contact", util.select().fromTo(3, 1, 2, 4, 1, 2), 60);
+        scene.overlay().showOutline(PonderPalette.GREEN, "interface_contact", util.select().fromTo(3, 1, 2, 4, 1, 2),
+                60);
         scene.overlay().showText(60)
                 .text(StorageBusInterfaceText2.translate().getContents().toString())
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 1, 2), Direction.UP))
@@ -87,7 +86,8 @@ public class StorageBus {
         scene.idle(30);
         cables.showSectionAndConnect(5, 2, 4, Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(5, 1, 4), Direction.UP), Pointing.DOWN, 60)
+        scene.overlay()
+                .showControls(util.vector().blockSurface(util.grid().at(5, 1, 4), Direction.UP), Pointing.DOWN, 60)
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(60);

@@ -1,8 +1,6 @@
 // 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
-
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -10,13 +8,13 @@ import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
 
 import appeng.core.definitions.AEItems;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class QuantumNetworkBridge {
 
-    private QuantumNetworkBridge() {
-    }
+    private QuantumNetworkBridge() {}
 
     public static void bridge(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -69,13 +67,15 @@ public class QuantumNetworkBridge {
         scene.idle(80);
         scene.overlay().showText(60)
                 .text(QuantumNetworkBridgeText5.translate().getContents().toString());
-        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(7, 2, 8), Direction.WEST), Pointing.LEFT, 40)
+        scene.overlay()
+                .showControls(util.vector().blockSurface(util.grid().at(7, 2, 8), Direction.WEST), Pointing.LEFT, 40)
                 .rightClick()
                 .withItem(AEItems.QUANTUM_ENTANGLED_SINGULARITY.asItem().getDefaultInstance());
         scene.idle(40);
         scene.rotateCameraY(180);
         scene.idle(30);
-        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(1, 2, 0), Direction.WEST), Pointing.LEFT, 40)
+        scene.overlay()
+                .showControls(util.vector().blockSurface(util.grid().at(1, 2, 0), Direction.WEST), Pointing.LEFT, 40)
                 .rightClick()
                 .withItem(AEItems.QUANTUM_ENTANGLED_SINGULARITY.asItem().getDefaultInstance());
         scene.idle(60);
@@ -85,7 +85,8 @@ public class QuantumNetworkBridge {
         scene.idle(20);
         scene.rotateCameraY(90);
         scene.idle(30);
-        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(5, 1, 6), Direction.UP), Pointing.DOWN, 40)
+        scene.overlay()
+                .showControls(util.vector().blockSurface(util.grid().at(5, 1, 6), Direction.UP), Pointing.DOWN, 40)
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(60);

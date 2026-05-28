@@ -1,8 +1,6 @@
 // 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
-
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -11,13 +9,13 @@ import net.minecraft.core.Direction;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class AnnihilationPlane {
 
-    private AnnihilationPlane() {
-    }
+    private AnnihilationPlane() {}
 
     public static void annihilationPlane(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -32,7 +30,8 @@ public class AnnihilationPlane {
                 .text(AnnihilationPlaneText1.translate().getContents().toString())
                 .attachKeyFrame();
         scene.idle(60);
-        scene.world().setBlocks(util.select().position(2, 2, 1), AEBlocks.QUARTZ_CLUSTER.block().defaultBlockState(), false);
+        scene.world().setBlocks(util.select().position(2, 2, 1), AEBlocks.QUARTZ_CLUSTER.block().defaultBlockState(),
+                false);
         scene.world().showSection(util.select().position(2, 2, 1), Direction.UP);
         scene.idle(20);
         cables.showSectionAndConnect(0, 1, 2, 1, 1, 2, Direction.DOWN);
@@ -46,8 +45,7 @@ public class AnnihilationPlane {
         var item1 = scene.world().createItemEntity(
                 util.vector().of(2.5, 5, 2.5),
                 util.vector().of(0, 0, 0),
-                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance()
-        );
+                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(10);
         scene.world().modifyEntity(item1, e -> e.kill());
         scene.idle(20);
@@ -65,7 +63,8 @@ public class AnnihilationPlane {
         cables.showSectionAndConnect(0, 1, 0, 3, 1, 2, Direction.DOWN);
         cables.showSectionAndConnect(2, 2, 2, Direction.DOWN);
         scene.idle(40);
-        scene.world().setBlocks(util.select().position(2, 2, 1), AEBlocks.SMALL_QUARTZ_BUD.block().defaultBlockState(), false);
+        scene.world().setBlocks(util.select().position(2, 2, 1), AEBlocks.SMALL_QUARTZ_BUD.block().defaultBlockState(),
+                false);
         scene.world().showSection(util.select().position(2, 2, 1), Direction.UP);
         scene.idle(20);
         scene.world().destroyBlock(util.grid().at(2, 2, 1));
@@ -90,15 +89,15 @@ public class AnnihilationPlane {
                 .attachKeyFrame();
         scene.overlay().showOutline(PonderPalette.GREEN, "storage_bus", util.select().fromTo(4, 1, 2, 5, 1, 2), 60);
         scene.idle(80);
-        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(4, 1, 2), Direction.DOWN), Pointing.DOWN, 40)
+        scene.overlay()
+                .showControls(util.vector().blockSurface(util.grid().at(4, 1, 2), Direction.DOWN), Pointing.DOWN, 40)
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(40);
         var item1 = scene.world().createItemEntity(
                 util.vector().of(2.5, 5, 2.5),
                 util.vector().of(0, 0, 0),
-                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance()
-        );
+                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(15);
         scene.world().modifyEntity(item1, e -> e.kill());
         scene.idle(40);

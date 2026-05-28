@@ -1,9 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
-import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.core.definitions.AEBlocks;
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
-
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +11,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.core.definitions.AEBlocks;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -160,8 +160,7 @@ public final class AE2CablePonderHelper {
             cableBus.setChanged();
             cableBus.requestModelDataUpdate();
         });
-        scene.world().modifyBlockEntityNBT(util.select().position(pos), CableBusBlockEntity.class, tag -> {
-        }, true);
+        scene.world().modifyBlockEntityNBT(util.select().position(pos), CableBusBlockEntity.class, tag -> {}, true);
     }
 
     static void writeCableVisualConnections(CompoundTag tag, EnumSet<Direction> connections) {
@@ -190,7 +189,8 @@ public final class AE2CablePonderHelper {
         if (KNOWN_CONNECTABLE_AE2_BLOCKS.contains(blockId)) return true;
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        return blockEntity != null && "ae2".equals(blockId.getNamespace()) && blockEntity.saveWithoutMetadata().contains("proxy");
+        return blockEntity != null && "ae2".equals(blockId.getNamespace()) &&
+                blockEntity.saveWithoutMetadata().contains("proxy");
     }
 
     private static boolean isCableBus(Level level, BlockPos pos) {
