@@ -1,3 +1,4 @@
+// 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
@@ -14,21 +15,23 @@ import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersL
 
 public class StorageBus {
 
-    private StorageBus() {}
+    private StorageBus() {
+    }
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("storage_bus", StorageBusHeader.translate().getContents().toString());
         scene.showBasePlate();
         scene.idle(20);
-        scene.world().showSection(util.select().fromTo(1, 1, 1, 1, 1, 3), Direction.DOWN);
+        cables.showSectionAndConnect(1, 1, 1, 1, 1, 3, Direction.DOWN);
         scene.overlay().showText(60)
                 .text(StorageBusText1.translate().getContents().toString())
                 .attachKeyFrame();
         scene.idle(80);
-        scene.world().showSection(util.select().fromTo(2, 1, 2, 4, 1, 2), Direction.DOWN);
+        cables.showSectionAndConnect(2, 1, 2, 4, 1, 2, Direction.DOWN);
         scene.idle(10);
-        scene.world().showSection(util.select().fromTo(4, 1, 3, 4, 2, 3), Direction.DOWN);
+        cables.showSectionAndConnect(4, 1, 3, 4, 2, 3, Direction.DOWN);
         scene.markAsFinished();
         scene.idle(10);
         scene.rotateCameraY(-180);
@@ -41,21 +44,22 @@ public class StorageBus {
 
     public static void interfaceInteraction(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("storage_bus_interface", StorageBusInterfaceHeader.translate().getContents().toString());
         scene.showBasePlate();
         scene.idle(20);
-        scene.world().showSection(util.select().fromTo(1, 1, 1, 1, 1, 3), Direction.DOWN);
+        cables.showSectionAndConnect(1, 1, 1, 1, 1, 3, Direction.DOWN);
         scene.idle(10);
-        scene.world().showSection(util.select().fromTo(5, 1, 1, 5, 1, 4), Direction.DOWN);
+        cables.showSectionAndConnect(5, 1, 1, 5, 1, 4, Direction.DOWN);
         scene.overlay().showText(60)
                 .text(StorageBusInterfaceText1.translate().getContents().toString())
                 .attachKeyFrame();
         scene.idle(60);
         scene.rotateCameraY(90);
         scene.idle(30);
-        scene.world().showSection(util.select().fromTo(2, 1, 2, 3, 1, 2), Direction.DOWN);
+        cables.showSectionAndConnect(2, 1, 2, 3, 1, 2, Direction.DOWN);
         scene.idle(10);
-        scene.world().showSection(util.select().position(4, 1, 2), Direction.DOWN);
+        cables.showSectionAndConnect(4, 1, 2, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.GREEN, "interface_contact", util.select().fromTo(3, 1, 2, 4, 1, 2), 60);
         scene.overlay().showText(60)
@@ -81,7 +85,7 @@ public class StorageBus {
         scene.idle(60);
         scene.markAsFinished();
         scene.idle(30);
-        scene.world().showSection(util.select().position(5, 2, 4), Direction.DOWN);
+        cables.showSectionAndConnect(5, 2, 4, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showControls(util.vector().blockSurface(util.grid().at(5, 1, 4), Direction.UP), Pointing.DOWN, 60)
                 .rightClick()

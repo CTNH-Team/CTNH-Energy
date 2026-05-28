@@ -1,3 +1,4 @@
+// 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
@@ -13,15 +14,17 @@ import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersL
 
 public class Controller {
 
-    private Controller() {}
+    private Controller() {
+    }
 
     public static void controller(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("controller", ControllerHeader.translate().getContents().toString());
         scene.world().showSection(util.select().fromTo(0, 0, 0, 9, 0, 9), Direction.UP);
         scene.world().setBlocks(util.select().position(8, 1, 1), AEBlocks.CONTROLLER.block().defaultBlockState(), false);
         scene.idle(20);
-        scene.world().showSection(util.select().fromTo(0, 1, 1, 1, 1, 1), Direction.DOWN);
+        cables.showSectionAndConnect(0, 1, 1, 1, 1, 1, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showText(40)
                 .text(ControllerText1.translate().getContents().toString())
@@ -34,9 +37,9 @@ public class Controller {
         scene.overlay().showOutline(PonderPalette.GREEN, "energy", util.select().position(0, 1, 1), 60);
         scene.idle(80);
         for (int index = 0; index < 6; index++) {
-            scene.world().showSection(util.select().position(index + 2, 1, 1), Direction.WEST);
-            scene.world().showSection(util.select().position(1, 2 + index, 1), Direction.DOWN);
-            scene.world().showSection(util.select().position(1, 1, 2 + index), Direction.NORTH);
+            cables.showSectionAndConnect(index + 2, 1, 1, Direction.WEST);
+            cables.showSectionAndConnect(1, 2 + index, 1, Direction.DOWN);
+            cables.showSectionAndConnect(1, 1, 2 + index, Direction.NORTH);
             scene.idle(5);
         }
         scene.idle(10);
@@ -45,7 +48,7 @@ public class Controller {
                 .attachKeyFrame();
         scene.idle(60);
         scene.idle(30);
-        scene.world().showSection(util.select().position(8, 1, 1), Direction.DOWN);
+        cables.showSectionAndConnect(8, 1, 1, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showText(60)
                 .text(ControllerText4.translate().getContents().toString())
@@ -53,14 +56,14 @@ public class Controller {
         scene.idle(60);
         scene.rotateCameraY(180);
         scene.idle(40);
-        scene.world().showSection(util.select().fromTo(3, 1, 3, 5, 1, 4), Direction.DOWN);
+        cables.showSectionAndConnect(3, 1, 3, 5, 1, 4, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showText(60)
                 .text(ControllerText5.translate().getContents().toString())
                 .attachKeyFrame();
         scene.overlay().showOutline(PonderPalette.RED, "no_connect", util.select().fromTo(3, 1, 3, 5, 1, 4), 60);
         scene.idle(80);
-        scene.world().showSection(util.select().fromTo(3, 1, 5, 8, 3, 7), Direction.DOWN);
+        cables.showSectionAndConnect(3, 1, 5, 8, 3, 7, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showText(60)
                 .text(ControllerText6.translate().getContents().toString())

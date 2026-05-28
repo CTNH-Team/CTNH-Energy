@@ -1,3 +1,4 @@
+// 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
@@ -15,20 +16,22 @@ import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersL
 
 public class FormationPlane {
 
-    private FormationPlane() {}
+    private FormationPlane() {
+    }
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("formation_plane", FormationPlaneHeader.translate().getContents().toString());
         scene.showBasePlate();
         scene.idle(20);
-        scene.world().showSection(util.select().fromTo(0, 1, 0, 6, 1, 6), Direction.DOWN);
+        cables.showSectionAndConnect(0, 1, 0, 6, 1, 6, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showText(60)
                 .text(FormationPlaneText1.translate().getContents().toString())
                 .attachKeyFrame();
         scene.idle(80);
-        scene.world().showSection(util.select().position(3, 2, 1), Direction.DOWN);
+        cables.showSectionAndConnect(3, 2, 1, Direction.DOWN);
         scene.overlay().showText(60)
                 .text(FormationPlaneText2.translate().getContents().toString())
                 .attachKeyFrame();

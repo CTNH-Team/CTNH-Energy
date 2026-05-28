@@ -1,3 +1,4 @@
+// 代码来源于Create Delights's PonderJs，原作者为SSW，已获得授权
 package tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
@@ -16,7 +17,8 @@ import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersL
 
 public class PatternProvider {
 
-    private PatternProvider() {}
+    private PatternProvider() {
+    }
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -74,18 +76,19 @@ public class PatternProvider {
 
     public static void parallel(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("crafting_parallel", CraftingParallelHeader.translate().getContents().toString());
         scene.world().showSection(util.select().fromTo(1, 0, 0, 8, 0, 8), Direction.UP);
         scene.idle(20);
-        scene.world().showSection(util.select().fromTo(1, 1, 0, 1, 1, 3), Direction.DOWN);
+        cables.showSectionAndConnect(1, 1, 0, 1, 1, 3, Direction.DOWN);
         scene.idle(10);
         for (int index = 0; index < 4; index++) {
-            scene.world().showSection(util.select().position(0, index, 4), Direction.DOWN);
+            cables.showSectionAndConnect(0, index, 4, Direction.DOWN);
             scene.idle(5);
         }
-        scene.world().showSection(util.select().fromTo(1, 1, 4, 1, 1, 5), Direction.DOWN);
+        cables.showSectionAndConnect(1, 1, 4, 1, 1, 5, Direction.DOWN);
         scene.idle(10);
-        scene.world().showSection(util.select().position(1, 3, 4), Direction.DOWN);
+        cables.showSectionAndConnect(1, 3, 4, Direction.DOWN);
         scene.idle(40);
         scene.overlay().showText(60)
                 .text(CraftingParallelText1.translate().getContents().toString())
@@ -107,9 +110,9 @@ public class PatternProvider {
         scene.overlay().showText(60)
                 .text(CraftingParallelText4.translate().getContents().toString());
         scene.idle(60);
-        scene.world().showSection(util.select().fromTo(2, 1, 3, 2, 1, 5), Direction.DOWN);
+        cables.showSectionAndConnect(2, 1, 3, 2, 1, 5, Direction.DOWN);
         scene.idle(20);
-        scene.world().showSection(util.select().position(2, 3, 4), Direction.DOWN);
+        cables.showSectionAndConnect(2, 3, 4, Direction.DOWN);
         scene.overlay().showText(60)
                 .text(CraftingParallelText5.translate().getContents().toString())
                 .attachKeyFrame();
@@ -126,29 +129,30 @@ public class PatternProvider {
                 .text(CraftingParallelText7.translate().getContents().toString());
         scene.idle(20);
         for (int index = 1; index <= 5; index++) {
-            scene.world().showSection(util.select().fromTo(2 + index, 1, 3, 2 + index, 1, 5), Direction.DOWN);
-            scene.world().showSection(util.select().position(2 + index, 3, 4), Direction.DOWN);
+            cables.showSectionAndConnect(2 + index, 1, 3, 2 + index, 1, 5, Direction.DOWN);
+            cables.showSectionAndConnect(2 + index, 3, 4, Direction.DOWN);
             scene.idle(5);
         }
         scene.idle(10);
-        scene.world().showSection(util.select().fromTo(2, 1, 0, 7, 1, 1), Direction.DOWN);
+        cables.showSectionAndConnect(2, 1, 0, 7, 1, 1, Direction.DOWN);
         scene.idle(10);
-        scene.world().showSection(util.select().fromTo(1, 1, 6, 8, 1, 6), Direction.DOWN);
-        scene.world().showSection(util.select().fromTo(8, 1, 0, 8, 1, 6), Direction.DOWN);
+        cables.showSectionAndConnect(1, 1, 6, 8, 1, 6, Direction.DOWN);
+        cables.showSectionAndConnect(8, 1, 0, 8, 1, 6, Direction.DOWN);
         scene.idle(10);
         scene.rotateCameraY(90);
         scene.idle(40);
         scene.rotateCameraY(90);
         scene.idle(40);
-        scene.world().showSection(util.select().fromTo(1, 2, 5, 7, 2, 6), Direction.DOWN);
+        cables.showSectionAndConnect(1, 2, 5, 7, 2, 6, Direction.DOWN);
     }
 
     public static void interaction(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
+        AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
         scene.title("pattern_provider_interaction", PatternProviderInteractionHeader.translate().getContents().toString());
         scene.showBasePlate();
         scene.idle(20);
-        scene.world().showSection(util.select().fromTo(1, 1, 0, 4, 1, 1), Direction.DOWN);
+        cables.showSectionAndConnect(1, 1, 0, 4, 1, 1, Direction.DOWN);
         scene.idle(20);
         scene.rotateCameraY(90);
         scene.idle(20);
