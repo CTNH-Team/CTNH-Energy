@@ -8,19 +8,18 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class CraftingProcessUnit {
 
-    private CraftingProcessUnit() {}
+    private CraftingProcessUnit() {
+    }
 
     public static void unit(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
-        scene.title("crafting_process_unit", CraftingProcessUnitHeader.translate().getContents().toString());
+        scene.title("crafting_process_unit", "Building a CPU", "CPU的搭建");
         scene.world().showSection(util.select().fromTo(0, 0, 0, 8, 0, 8), Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showText(40)
-                .text(CraftingProcessUnitText1.translate().getContents().toString())
+        scene.showText(40, "Building a CPU has certain rules...", "CPU的搭建有一定的规则……")
                 .attachKeyFrame();
         scene.idle(60);
         scene.world().showSection(util.select().position(1, 1, 1), Direction.DOWN);
@@ -29,8 +28,7 @@ public class CraftingProcessUnit {
         scene.idle(10);
         scene.world().showSection(util.select().fromTo(6, 1, 1, 7, 2, 1), Direction.DOWN);
         scene.idle(10);
-        scene.overlay().showText(40)
-                .text(CraftingProcessUnitText2.translate().getContents().toString())
+        scene.showText(40, "The CPU must be a rectangular cuboid", "CPU的形体必须得是长方体")
                 .attachKeyFrame();
         scene.idle(60);
         scene.rotateCameraY(90);
@@ -41,23 +39,20 @@ public class CraftingProcessUnit {
         scene.idle(10);
         scene.world().showSection(util.select().fromTo(7, 1, 3, 8, 2, 4), Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showText(40)
-                .text(CraftingProcessUnitText3.translate().getContents().toString())
+        scene.showText(40, "A non-cuboid CPU will not form properly", "不为长方体的CPU则不会显示以成型的状态")
                 .attachKeyFrame();
         scene.idle(60);
         scene.world().showSection(util.select().fromTo(1, 1, 6, 2, 2, 7), Direction.DOWN);
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.RED, "need_storage", util.select().fromTo(1, 1, 6, 2, 2, 7), 40);
-        scene.overlay().showText(60)
-                .text(CraftingProcessUnitText4.translate().getContents().toString())
+        scene.showText(60, "The CPU needs at least one crafting storage", "CPU结构内至少需要有一个合成存储器")
                 .pointAt(util.vector().blockSurface(util.grid().at(1, 2, 7), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);
         scene.world().showSection(util.select().fromTo(4, 1, 6, 5, 2, 7), Direction.DOWN);
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.GREEN, "alternatives", util.select().fromTo(4, 1, 6, 5, 2, 7), 40);
-        scene.overlay().showText(60)
-                .text(CraftingProcessUnitText5.translate().getContents().toString())
+        scene.showText(60, "Other parts can be crafting units, monitors, storages, or co-processors", "其余部分则可使用合成单元，合成监控室，合成存储器，并行处理单元代替")
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 2, 7), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);

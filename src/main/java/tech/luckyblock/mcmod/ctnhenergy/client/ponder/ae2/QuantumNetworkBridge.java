@@ -10,23 +10,21 @@ import net.minecraft.core.Direction;
 import appeng.core.definitions.AEItems;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class QuantumNetworkBridge {
 
-    private QuantumNetworkBridge() {}
+    private QuantumNetworkBridge() {
+    }
 
     public static void bridge(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
         AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
-        scene.title("quantum_network_bridge", QuantumNetworkBridgeHeader.translate().getContents().toString());
+        scene.title("quantum_network_bridge", "Extending Networks with Quantum Bridges", "使用量子网桥将网络传递到远端");
         scene.world().showSection(util.select().fromTo(0, 0, 0, 9, 0, 9), Direction.UP);
         scene.idle(20);
-        scene.overlay().showText(60)
-                .text(QuantumNetworkBridgeText1.translate().getContents().toString());
+        scene.showText(60, "Quantum network bridges can extend your network", "量子网桥可用于网络的传输");
         scene.idle(80);
-        scene.overlay().showText(60)
-                .text(QuantumNetworkBridgeText2.translate().getContents().toString())
+        scene.showText(60, "A quantum ring requires 8 quantum rings and 1 quantum link chamber", "为了搭建一个量子环结构，你需要八个量子环和一个量子链接仓")
                 .attachKeyFrame();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -47,8 +45,7 @@ public class QuantumNetworkBridge {
         scene.overlay().showOutline(PonderPalette.GREEN, "connect2", util.select().position(0, 2, 0), 60);
         scene.overlay().showOutline(PonderPalette.GREEN, "connect3", util.select().position(1, 3, 0), 60);
         scene.overlay().showOutline(PonderPalette.GREEN, "connect4", util.select().position(2, 2, 0), 60);
-        scene.overlay().showText(60)
-                .text(QuantumNetworkBridgeText3.translate().getContents().toString())
+        scene.showText(60, "Connect the ring to your network via the 4 ring blocks around the link chamber", "连接量子环和网络只能通过围绕量子连接仓的四个量子环方块")
                 .pointAt(util.vector().blockSurface(util.grid().at(1, 2, 0), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);
@@ -61,12 +58,10 @@ public class QuantumNetworkBridge {
             }
         }
         cables.showSectionAndConnect(7, 2, 8, Direction.DOWN);
-        scene.overlay().showText(60)
-                .text(QuantumNetworkBridgeText4.translate().getContents().toString())
+        scene.showText(60, "Rings are used in pairs - place another ring structure at the remote location", "量子环是成双成对使用的，你需要在你需要的远端也放置一个量子环结构")
                 .attachKeyFrame();
         scene.idle(80);
-        scene.overlay().showText(60)
-                .text(QuantumNetworkBridgeText5.translate().getContents().toString());
+        scene.showText(60, "Insert quantum entangled singularities (from the same pair) into both rings", "使用量子环，你需要为两个量子环分别放入同时产生的量子缠绕态奇点");
         scene.overlay()
                 .showControls(util.vector().blockSurface(util.grid().at(7, 2, 8), Direction.WEST), Pointing.LEFT, 40)
                 .rightClick()
@@ -90,8 +85,7 @@ public class QuantumNetworkBridge {
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(60);
-        scene.overlay().showText(60)
-                .text(QuantumNetworkBridgeText6.translate().getContents().toString())
+        scene.showText(60, "A pair of quantum rings consumes a fixed 400 AE/t regardless of distance", "一对量子环固定消耗400AE/t，且不随距离变化")
                 .attachKeyFrame();
         scene.idle(60);
     }

@@ -8,36 +8,33 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-import static tech.luckyblock.mcmod.ctnhenergy.client.ponder.ae2.CTNHAE2PondersLang.*;
 
 public class CraftingSystem {
 
-    private CraftingSystem() {}
+    private CraftingSystem() {
+    }
 
     public static void system(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
         AE2CablePonderHelper cables = new AE2CablePonderHelper(scene, util);
-        scene.title("crafting_system", CraftingSystemHeader.translate().getContents().toString());
+        scene.title("crafting_system", "AE Auto Crafting System", "AE的自动合成系统");
         scene.showBasePlate();
         scene.idle(20);
         cables.showSectionAndConnect(2, 1, 1, 2, 1, 3, Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showText(40)
-                .text(CraftingSystemText1.translate().getContents().toString())
+        scene.showText(40, "To build an auto-crafting system...", "要搭建一个自动合成系统……")
                 .attachKeyFrame();
         scene.idle(60);
         cables.showSectionAndConnect(0, 1, 1, 1, 1, 3, Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showText(40)
-                .text(CraftingSystemText2.translate().getContents().toString())
+        scene.showText(40, "You need a CPU multiblock", "你需要一个CPU多方块")
                 .pointAt(util.vector().blockSurface(util.grid().at(0, 1, 1), Direction.UP))
                 .attachKeyFrame();
         scene.overlay().showOutline(PonderPalette.GREEN, "cpu", util.select().fromTo(0, 1, 1, 0, 1, 3), 40);
         scene.idle(60);
         cables.showSectionAndConnect(3, 1, 0, 4, 1, 2, Direction.DOWN);
         scene.idle(20);
-        scene.overlay().showText(40)
-                .text(CraftingSystemText3.translate().getContents().toString())
+        scene.showText(40, "And a pattern provider with output target", "还有样板供应器与输出对象")
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 1, 0), Direction.UP))
                 .attachKeyFrame();
         scene.overlay().showOutline(PonderPalette.GREEN, "provider", util.select().fromTo(4, 1, 0, 4, 1, 1), 40);
