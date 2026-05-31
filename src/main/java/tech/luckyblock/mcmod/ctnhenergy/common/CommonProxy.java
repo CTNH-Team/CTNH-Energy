@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,6 +17,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -41,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
+import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderPlugin;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.MEMachineEUHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.cell.EuCellHandler;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
@@ -53,6 +56,7 @@ import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProvid
 import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProxyProvider;
 import tech.luckyblock.mcmod.ctnhenergy.registry.*;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
+import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 import yuuki1293.pccard.PCCard;
 
@@ -67,7 +71,7 @@ public class CommonProxy {
         CommonProxy.init();
     }
 
-    @SuppressWarnings({ "UnstableApiUsage", "removal" })
+    @SuppressWarnings({"UnstableApiUsage", "removal"})
     public static void init() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         CTNHEnergy.REGISTRATE.registerRegistrate();
@@ -76,6 +80,7 @@ public class CommonProxy {
         CENetWorking.init();
 
         CEDatagen.init();
+        eventBus.addListener(CommonProxy::gatherData);
         CECreativeModeTabs.init();
         eventBus.addGenericListener(GTRecipeType.class, CommonProxy::registerRecipeTypes);
         eventBus.addGenericListener(MachineDefinition.class, CommonProxy::registerMachines);
@@ -187,6 +192,13 @@ public class CommonProxy {
 
     public static void registerRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         CERecipeTypes.init();
+    }
+
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
+        if (event.includeClient()) {
+            CTNHPonderLang.init(new CTNHEnergyPonderPlugin());
+        }
     }
 
     private static void registerCellUpgrades(ItemLike... cells) {

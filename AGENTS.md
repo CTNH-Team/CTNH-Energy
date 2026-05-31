@@ -21,7 +21,7 @@ CTNH-Energy adds AE2/energy integration, pattern buffer machinery, quantum compu
 - Recipe types: `registry/CERecipeTypes.java`; registered from `common/CommonProxy.registerRecipeTypes()`.
 - AE/menu/network: `registry/AEMenus.java`, `registry/CENetWorking.java`.
 - Creative tabs/datagen: `registry/CECreativeModeTabs.java`, `data/CEDatagen.java`.
-- Ponder: `client/ponder/CTNHEnergyPonderPlugin.java` registers `CTNHEnergyPonderScenes` and `CTNHEnergyPonderTags`; scenes live in `client/ponder/ae2/` and use `scene.title(..., en, cn)` / `scene.showText(..., en, cn)` with text embedded directly in scene files.
+- Ponder: `client/ponder/CTNHEnergyPonderPlugin.java` registers `CTNHEnergyPonderScenes` and `CTNHEnergyPonderTags`; scenes live in `client/ponder/ae2/` and use `scene.title(..., en, cn)` / `scene.showText(..., en, cn)` with text embedded directly in scene files. Datagen wires `common/CommonProxy.gatherData()` on the mod event bus and calls CTNH-Lib's `CTNHPonderLang.init(new CTNHEnergyPonderPlugin())` to extract Ponder language entries.
 - Recipes are mostly integration behavior here; put broad crafting/processing recipes in Core unless they are Energy-only AE2 setup.
 
 ## CONVENTIONS
