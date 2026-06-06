@@ -12,11 +12,9 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class BuddingQuartz {
 
-    private BuddingQuartz() {
-    }
+    private BuddingQuartz() {}
 
     public static void obtain(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -32,7 +30,7 @@ public class BuddingQuartz {
                 .pointAt(util.vector().blockSurface(util.grid().at(2, 1, 2), Direction.UP));
         scene.idle(60);
 
-        var blocks = new BlockState[]{
+        var blocks = new BlockState[] {
                 AEBlocks.DAMAGED_BUDDING_QUARTZ.block().defaultBlockState(),
                 AEBlocks.FLAWED_BUDDING_QUARTZ.block().defaultBlockState(),
                 AEBlocks.QUARTZ_BLOCK.block().defaultBlockState(),
@@ -43,7 +41,7 @@ public class BuddingQuartz {
                 AEBlocks.CHIPPED_BUDDING_QUARTZ.block().defaultBlockState(),
                 AEBlocks.MYSTERIOUS_CUBE.block().defaultBlockState()
         };
-        var positions = new BlockPos[]{
+        var positions = new BlockPos[] {
                 util.grid().at(1, 1, 1),
                 util.grid().at(1, 1, 2),
                 util.grid().at(1, 1, 3),
@@ -82,7 +80,7 @@ public class BuddingQuartz {
         scene.showText(100, "Budding quartz grows crystals over time", "赛特斯石英母岩会随着时间生长");
         scene.idle(20);
 
-        var quartzStages = new BlockState[]{
+        var quartzStages = new BlockState[] {
                 AEBlocks.SMALL_QUARTZ_BUD.block().defaultBlockState(),
                 AEBlocks.MEDIUM_QUARTZ_BUD.block().defaultBlockState(),
                 AEBlocks.LARGE_QUARTZ_BUD.block().defaultBlockState(),
@@ -93,11 +91,12 @@ public class BuddingQuartz {
             scene.world().setBlocks(util.select().position(2, 2, 2), stage, false);
             scene.idle(20);
         }
-        scene.showText(100, "During growth, the budding quartz may degrade one tier (except flawless)", "在生长过程中，赛特斯石英母岩有概率降低一个等级（除了无瑕母岩）")
+        scene.showText(100, "During growth, the budding quartz may degrade one tier (except flawless)",
+                "在生长过程中，赛特斯石英母岩有概率降低一个等级（除了无瑕母岩）")
                 .attachKeyFrame();
         scene.world().showSection(util.select().position(2, 1, 1), Direction.NORTH);
 
-        var degradedStates = new BlockState[]{
+        var degradedStates = new BlockState[] {
                 AEBlocks.FLAWLESS_BUDDING_QUARTZ.block().defaultBlockState(),
                 AEBlocks.FLAWED_BUDDING_QUARTZ.block().defaultBlockState(),
                 AEBlocks.CHIPPED_BUDDING_QUARTZ.block().defaultBlockState(),
@@ -146,7 +145,8 @@ public class BuddingQuartz {
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(60);
-        scene.showText(60, "Right-click with a budding quartz of the same tier for a 50% chance to upgrade it!", "手持与放置的相同等级的母岩右键右击它就有50%的概率生成一个更高级的母岩！")
+        scene.showText(60, "Right-click with a budding quartz of the same tier for a 50% chance to upgrade it!",
+                "手持与放置的相同等级的母岩右键右击它就有50%的概率生成一个更高级的母岩！")
                 .attachKeyFrame();
         scene.idle(60);
         scene.showText(60, "You can obtain flawless budding quartz this way!", "使用该方法修复可以获取无瑕母岩！")

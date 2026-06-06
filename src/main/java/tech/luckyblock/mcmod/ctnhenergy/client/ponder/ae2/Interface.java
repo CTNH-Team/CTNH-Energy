@@ -9,11 +9,9 @@ import net.minecraft.core.Direction;
 import appeng.core.definitions.AEItems;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class Interface {
 
-    private Interface() {
-    }
+    private Interface() {}
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);

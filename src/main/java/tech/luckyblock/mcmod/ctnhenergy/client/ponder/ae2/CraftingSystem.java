@@ -8,11 +8,9 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class CraftingSystem {
 
-    private CraftingSystem() {
-    }
+    private CraftingSystem() {}
 
     public static void system(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);

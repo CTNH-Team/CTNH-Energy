@@ -194,6 +194,8 @@
   "ctnhenergy.ponder.storage_bus_interface.text_4": "能够访问ME接口那一段的网络",
   "ctnhenergy.ponder.storage_bus_interface.text_5": "反之则不可",
   "ctnhenergy.ponder.storage_bus_interface.title": "存储总线与ME接口的互动",
+  "ctnhenergy.ponder.tag.ae_original": "AE原版",
+  "ctnhenergy.ponder.tag.ae_original.description": "AE2原版方块与部件思索",
   "ctnhenergy.powersubstationmachine.invalid_batteries": "缺失有效电容。",
   "ctnhenergy.powersubstationmachine.invalid_dynamo_tier": "动力仓等级高于最高电容等级。",
   "ctnhenergy.powersubstationmachine.voltage_tier": "电压等级：",

@@ -7,13 +7,18 @@ import appeng.api.ids.AEBlockIds;
 import appeng.api.ids.AEPartIds;
 import appeng.core.definitions.AEItems;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
+import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderTagHelper;
+
+import static tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy.REGISTRATE;
 
 public final class CTNHEnergyPonderTags {
 
     public static final ResourceLocation AEOriginal = ResourceLocation.tryBuild(CTNHEnergy.MODID, "ae_original");
 
     public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
-        helper.registerTag(AEOriginal)
+        CTNHPonderTagHelper.registerTag(REGISTRATE, helper, AEOriginal,
+                "AE Original", "AE原版",
+                "Ponders on original Applied Energistics 2 blocks and parts", "AE2原版方块与部件思索")
                 .addToIndex()
                 .item(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), true, false)
                 .register();

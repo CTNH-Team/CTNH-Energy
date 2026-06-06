@@ -11,11 +11,9 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class FormationPlane {
 
-    private FormationPlane() {
-    }
+    private FormationPlane() {}
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -25,7 +23,8 @@ public class FormationPlane {
         scene.idle(20);
         cables.showSectionAndConnect(0, 1, 0, 6, 1, 6, Direction.DOWN);
         scene.idle(20);
-        scene.showText(60, "The formation plane outputs network items as blocks or items into the world", "成型面板可以输入进网络的物料以掉落物或者方块形式输出到世界上")
+        scene.showText(60, "The formation plane outputs network items as blocks or items into the world",
+                "成型面板可以输入进网络的物料以掉落物或者方块形式输出到世界上")
                 .attachKeyFrame();
         scene.idle(80);
         cables.showSectionAndConnect(3, 2, 1, Direction.DOWN);
@@ -59,7 +58,8 @@ public class FormationPlane {
                 .pointAt(util.vector().blockSurface(util.grid().at(2, 1, 1), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);
-        scene.showText(60, "Configure the formation plane filter to only output specific items", "配置成型面板的过滤选项可使其只输出过滤内的物品")
+        scene.showText(60, "Configure the formation plane filter to only output specific items",
+                "配置成型面板的过滤选项可使其只输出过滤内的物品")
                 .attachKeyFrame();
         scene.idle(80);
         scene.overlay()

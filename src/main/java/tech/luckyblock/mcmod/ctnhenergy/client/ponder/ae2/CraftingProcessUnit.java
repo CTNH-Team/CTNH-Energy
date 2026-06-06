@@ -8,11 +8,9 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class CraftingProcessUnit {
 
-    private CraftingProcessUnit() {
-    }
+    private CraftingProcessUnit() {}
 
     public static void unit(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -52,7 +50,8 @@ public class CraftingProcessUnit {
         scene.world().showSection(util.select().fromTo(4, 1, 6, 5, 2, 7), Direction.DOWN);
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.GREEN, "alternatives", util.select().fromTo(4, 1, 6, 5, 2, 7), 40);
-        scene.showText(60, "Other parts can be crafting units, monitors, storages, or co-processors", "其余部分则可使用合成单元，合成监控室，合成存储器，并行处理单元代替")
+        scene.showText(60, "Other parts can be crafting units, monitors, storages, or co-processors",
+                "其余部分则可使用合成单元，合成监控室，合成存储器，并行处理单元代替")
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 2, 7), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);

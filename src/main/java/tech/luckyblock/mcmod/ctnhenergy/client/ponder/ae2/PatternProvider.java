@@ -11,11 +11,9 @@ import appeng.core.definitions.AEItems;
 import com.simibubi.create.AllItems;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class PatternProvider {
 
-    private PatternProvider() {
-    }
+    private PatternProvider() {}
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -85,7 +83,8 @@ public class PatternProvider {
         scene.showText(60, "Multiple pattern providers allow parallel crafting", "使用多个样板供应器可以做到多个机器的并行")
                 .attachKeyFrame();
         scene.idle(80);
-        scene.showText(60, "Memory cards can copy and apply configurations, including pattern providers", "内存卡可以复制机器的配置以及将其中配置应用于机器，当然样板供应器也不例外")
+        scene.showText(60, "Memory cards can copy and apply configurations, including pattern providers",
+                "内存卡可以复制机器的配置以及将其中配置应用于机器，当然样板供应器也不例外")
                 .attachKeyFrame();
         scene.idle(80);
         scene.showText(60, "Sneak-right-click the pattern provider with a memory card...", "使用内存卡shift右击样板供应器……")
@@ -102,7 +101,8 @@ public class PatternProvider {
         cables.showSectionAndConnect(2, 1, 3, 2, 1, 5, Direction.DOWN);
         scene.idle(20);
         cables.showSectionAndConnect(2, 3, 4, Direction.DOWN);
-        scene.showText(60, "Then right-click the target pattern provider with the memory card...", "然后再使用内存卡右击目标的样板供应器……")
+        scene.showText(60, "Then right-click the target pattern provider with the memory card...",
+                "然后再使用内存卡右击目标的样板供应器……")
                 .attachKeyFrame();
         scene.idle(40);
         scene.overlay()
@@ -110,7 +110,8 @@ public class PatternProvider {
                 .rightClick()
                 .withItem(AEItems.MEMORY_CARD.asItem().getDefaultInstance());
         scene.idle(20);
-        scene.showText(40, "The memory card consumes blank patterns and copies the saved patterns to the target", "内存卡会消耗物品栏中的空白样板，并依照其记录的样板复制到目标样板供应器中")
+        scene.showText(40, "The memory card consumes blank patterns and copies the saved patterns to the target",
+                "内存卡会消耗物品栏中的空白样板，并依照其记录的样板复制到目标样板供应器中")
                 .attachKeyFrame();
         scene.idle(60);
         scene.showText(80, "Repeat this process to build parallelization", "然后以此类推，建造并行");
@@ -153,7 +154,8 @@ public class PatternProvider {
                 .rightClick()
                 .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
         scene.idle(40);
-        scene.showText(40, "The pattern provider directly inputs ingredients into the interface's network", "样板供应器会直接将原料输入到ME接口所在的网络");
+        scene.showText(40, "The pattern provider directly inputs ingredients into the interface's network",
+                "样板供应器会直接将原料输入到ME接口所在的网络");
         scene.idle(60);
     }
 }

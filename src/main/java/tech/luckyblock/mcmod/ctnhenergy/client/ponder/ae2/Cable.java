@@ -8,11 +8,9 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class Cable {
 
-    private Cable() {
-    }
+    private Cable() {}
 
     public static void cable(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -62,7 +60,8 @@ public class Cable {
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.RED, "overload", util.select().fromTo(0, 1, 2, 3, 1, 3), 60);
         scene.overlay().showOutline(PonderPalette.RED, "extra", util.select().position(3, 1, 0), 60);
-        scene.showText(60, "When the network has more than 8 channel-consuming devices, it will overload", "当网络中拥有超过八个消耗频道的机器时网络便会过载")
+        scene.showText(60, "When the network has more than 8 channel-consuming devices, it will overload",
+                "当网络中拥有超过八个消耗频道的机器时网络便会过载")
                 .attachKeyFrame();
         scene.idle(60);
     }
@@ -80,7 +79,8 @@ public class Cable {
         scene.showText(60, "Dense cables can carry 32 channels", "致密线缆能够传递32个频道")
                 .attachKeyFrame();
         scene.idle(80);
-        scene.showText(60, "However, it cannot connect to single-block machines (planes, buses, cable-type machines)", "但它并不能接入单格类机器（破坏/成型面板，输入/输出/存储总线，线缆内形式的机器）")
+        scene.showText(60, "However, it cannot connect to single-block machines (planes, buses, cable-type machines)",
+                "但它并不能接入单格类机器（破坏/成型面板，输入/输出/存储总线，线缆内形式的机器）")
                 .attachKeyFrame();
         scene.idle(60);
     }

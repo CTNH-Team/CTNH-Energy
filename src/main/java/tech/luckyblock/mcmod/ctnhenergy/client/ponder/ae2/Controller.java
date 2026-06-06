@@ -9,11 +9,9 @@ import net.minecraft.core.Direction;
 import appeng.core.definitions.AEBlocks;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class Controller {
 
-    private Controller() {
-    }
+    private Controller() {}
 
     public static void controller(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -28,7 +26,8 @@ public class Controller {
         scene.showText(40, "This is a controller...", "这是一个控制器……")
                 .attachKeyFrame();
         scene.idle(60);
-        scene.showText(60, "The controller needs power to work, other mods' power also works", "控制器需要接入能源才能工作，使用其他mod的能源也可")
+        scene.showText(60, "The controller needs power to work, other mods' power also works",
+                "控制器需要接入能源才能工作，使用其他mod的能源也可")
                 .pointAt(util.vector().blockSurface(util.grid().at(0, 1, 1), Direction.WEST))
                 .attachKeyFrame();
         scene.overlay().showOutline(PonderPalette.GREEN, "energy", util.select().position(0, 1, 1), 60);

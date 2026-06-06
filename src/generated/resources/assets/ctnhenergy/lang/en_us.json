@@ -183,6 +183,8 @@
   "ctnhenergy.ponder.storage_bus_interface.text_4": "Can access the network on the ME interface side",
   "ctnhenergy.ponder.storage_bus_interface.text_5": "But not vice versa",
   "ctnhenergy.ponder.storage_bus_interface.title": "Storage Bus & ME Interface Interaction",
+  "ctnhenergy.ponder.tag.ae_original": "AE Original",
+  "ctnhenergy.ponder.tag.ae_original.description": "Ponders on original Applied Energistics 2 blocks and parts",
   "ctnhenergy.powersubstationmachine.invalid_batteries": "No valid batteries found.",
   "ctnhenergy.powersubstationmachine.invalid_dynamo_tier": "Dynamo hatch tier higher than battery tier.",
   "ctnhenergy.powersubstationmachine.voltage_tier": "Voltage Tier: ",

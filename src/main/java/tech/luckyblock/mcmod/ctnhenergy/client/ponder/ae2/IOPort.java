@@ -8,11 +8,9 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class IOPort {
 
-    private IOPort() {
-    }
+    private IOPort() {}
 
     public static void ioPort(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -23,7 +21,8 @@ public class IOPort {
         cables.showSectionAndConnect(3, 1, 4, 5, 1, 4, Direction.DOWN);
         scene.idle(20);
         scene.overlay().showOutline(PonderPalette.GREEN, "io_port", util.select().position(4, 1, 4), 60);
-        scene.showText(60, "The IO port can transfer items between storage cells and the network", "ME IO端口能够将其中的存储元件内的东西导入到网络，或者将网络内的存储内容导入元件")
+        scene.showText(60, "The IO port can transfer items between storage cells and the network",
+                "ME IO端口能够将其中的存储元件内的东西导入到网络，或者将网络内的存储内容导入元件")
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 1, 4), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);
@@ -37,7 +36,8 @@ public class IOPort {
         scene.idle(20);
         cables.showSectionAndConnect(4, 1, 5, 6, 1, 8, Direction.DOWN);
         scene.idle(20);
-        scene.showText(60, "Use the IO port to organize storage cell contents in drives", "使用ME IO端口来整理驱动器中存储元件的内容似乎也是一个不错的选择")
+        scene.showText(60, "Use the IO port to organize storage cell contents in drives",
+                "使用ME IO端口来整理驱动器中存储元件的内容似乎也是一个不错的选择")
                 .attachKeyFrame();
         scene.idle(60);
     }

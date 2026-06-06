@@ -7,11 +7,9 @@ import net.minecraft.core.Direction;
 
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
-
 public class MolecularAssembler {
 
-    private MolecularAssembler() {
-    }
+    private MolecularAssembler() {}
 
     public static void common(SceneBuilder builder, SceneBuildingUtil util) {
         CTNHEnergyPonderSceneBuilder scene = new CTNHEnergyPonderSceneBuilder(builder);
@@ -29,10 +27,12 @@ public class MolecularAssembler {
                 .pointAt(util.vector().blockSurface(util.grid().at(1, 1, 2), Direction.UP))
                 .attachKeyFrame();
         scene.idle(80);
-        scene.showText(60, "It can automate crafting table, stonecutter, and smithing table recipes", "分子装配室可以自动化工作台，切石机，锻造台的配方，且会把产物自动送回样板供应器")
+        scene.showText(60, "It can automate crafting table, stonecutter, and smithing table recipes",
+                "分子装配室可以自动化工作台，切石机，锻造台的配方，且会把产物自动送回样板供应器")
                 .attachKeyFrame();
         scene.idle(80);
-        scene.showText(60, "Both pattern providers and molecular assemblers can pass through the network...", "样板供应器和分子装配室都可以传递网络……")
+        scene.showText(60, "Both pattern providers and molecular assemblers can pass through the network...",
+                "样板供应器和分子装配室都可以传递网络……")
                 .attachKeyFrame();
         scene.idle(80);
         cables.showSectionAndConnect(0, 1, 1, 1, 2, 2, Direction.DOWN);
