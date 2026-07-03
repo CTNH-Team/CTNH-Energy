@@ -46,7 +46,7 @@ import appeng.core.definitions.AEItems;
 import com.ctnhlang.*;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
@@ -72,11 +72,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblockMachine
                                               implements IOpticalComputationReceiver,
-                                              IRotationMultiblock<RubiksCubeContraptionEntity> {
+                                              IContraptionMultiblock<RubiksCubeContraptionEntity> {
 
     @Getter
     @Setter
-    public List<RubiksCubeContraptionEntity> rotatingEntity = new ArrayList<>();
+    public List<RubiksCubeContraptionEntity> contraptionEntity = new ArrayList<>();
     public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
 
     protected TickableSubscription rotatingSubs;
@@ -127,10 +127,10 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         this.storageKilobyte = getMultiblockState().getMatchContext().getOrPut("StorageKb", 0);
         this.workStatus = WorkStatus.SUSPEND;
         qcCasings = getMultiblockState().getMatchContext().getOrDefault("qcCasings", LongSets.emptySet());
-        if (rotatingEntity.isEmpty()) {
+        if (contraptionEntity.isEmpty()) {
             var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 6));
             if (rotatingEntities != null) {
-                this.rotatingEntity = new ArrayList<>(rotatingEntities.values());
+                this.contraptionEntity = new ArrayList<>(rotatingEntities.values());
             }
         }
         this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
@@ -207,24 +207,24 @@ public class QuantumComputerMultiblockMachine extends WorkableElectricMultiblock
         }
         updateCasings(QuantumComputerCasingBlock.State.GREY);
         qcCasings = null;
-        if (!rotatingEntity.isEmpty()) {
-            this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
+        if (!contraptionEntity.isEmpty()) {
+            this.contraptionEntity.forEach(AbstractContraptionEntity::disassemble);
         }
-        this.rotatingEntity = new ArrayList<>();
+        this.contraptionEntity = new ArrayList<>();
         if (rotatingSubs != null) {
             unsubscribe(rotatingSubs);
         }
     }
 
     public void rotatingTick() {
-        if (isFormed && rotatingEntity != null) {
+        if (isFormed && contraptionEntity != null) {
             var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
             if (getOffsetTimer() % (2 * halfTick) == 0) {
                 int index = RandomSource.create().nextInt(avalibleMoving.size());
-                rotatingEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
+                contraptionEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
             if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-                rotatingEntity.forEach(entity -> entity.performStandardMove("STOP"));
+                contraptionEntity.forEach(entity -> entity.performStandardMove("STOP"));
             }
         }
     }
