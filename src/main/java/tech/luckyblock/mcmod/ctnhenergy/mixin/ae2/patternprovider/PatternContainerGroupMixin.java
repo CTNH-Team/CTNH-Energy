@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -67,7 +68,7 @@ public class PatternContainerGroupMixin {
                 machineDefinition = controller.self().getDefinition();
                 tooltip.add(Component.translatable(machine.getDefinition().getDescriptionId()));
                 name = Component.translatable(machineDefinition.getDescriptionId());
-                if (controller instanceof WorkableMultiblockMachine workableMultiblockMachine) {
+                if (controller instanceof RecipeElectricMultiblockMachine workableMultiblockMachine) {
                     name.append(" - ").append(Component
                             .translatable(workableMultiblockMachine.getRecipeType().registryName.toLanguageKey()));
                 }
