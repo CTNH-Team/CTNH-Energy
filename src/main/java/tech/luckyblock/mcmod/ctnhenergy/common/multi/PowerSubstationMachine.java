@@ -1,4 +1,4 @@
-package tech.luckyblock.mcmod.ctnhenergy.common.machine;
+package tech.luckyblock.mcmod.ctnhenergy.common.multi;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;

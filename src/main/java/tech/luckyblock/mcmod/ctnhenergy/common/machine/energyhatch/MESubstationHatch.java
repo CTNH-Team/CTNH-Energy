@@ -5,9 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
@@ -20,7 +17,6 @@ import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -30,15 +26,13 @@ import appeng.api.storage.MEStorage;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.machine.MEPartMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.multi.PowerSubstationMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
-public class MESubstationHatch extends TieredIOPartMachine implements IGridConnectedMachine, IStorageProvider {
-
-    @Persisted
-    protected final GridNodeHolder nodeHolder;
+public class MESubstationHatch extends MEPartMachine implements IStorageProvider {
 
     @DescSynced
     @Getter
@@ -49,41 +43,28 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
     @Getter
     private int priority = 0;
 
-    protected final IActionSource actionSource;
-
     private final SubstationEUStorage storage = new SubstationEUStorage();
 
     PowerSubstationMachine.PowerStationEnergyBank mountedEnergyBank;
 
     public MESubstationHatch(IMachineBlockEntity holder) {
         super(holder, GTValues.IV, IO.BOTH);
-        this.nodeHolder = createNodeHolder();
-        this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
-        nodeHolder.getMainNode().addService(IStorageProvider.class, this);
+        nodeHost.getMainNode().addService(IStorageProvider.class, this);
     }
 
     //////////////////////////////////////
     // ***** AE ******//
     //////////////////////////////////////
 
-    protected GridNodeHolder createNodeHolder() {
-        return new GridNodeHolder(this);
-    }
-
-    @Override
-    public IManagedGridNode getMainNode() {
-        return nodeHolder.getMainNode();
-    }
-
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        IGridConnectedMachine.super.onMainNodeStateChanged(reason);
+        super.onMainNodeStateChanged(reason);
         remountStorage();
     }
 
     @Override
     public void mountInventories(IStorageMounts storageMounts) {
-        if (getMainNode().isOnline() && storage.getPowerBank() != null)
+        if (isNodeActive() && storage.getPowerBank() != null)
             storageMounts.mount(storage, priority);
     }
 
@@ -93,7 +74,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
     }
 
     private void remountStorage() {
-        IStorageProvider.requestUpdate(getMainNode());
+        IStorageProvider.requestUpdate(nodeHost.getMainNode());
     }
 
     @Override
@@ -179,7 +160,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
                             .clampToLong(getPowerBank().getCapacity().subtract(getPowerBank().getStored()));
                     return Math.min(amount, canInsert);
                 } else {
-                    getPowerStation().getTickSubscription().updateSubscription();
+                    getPowerStation().getWorkLogic().updateTickSubscription();
                     return getPowerBank().fill(amount);
                 }
 
@@ -201,7 +182,7 @@ public class MESubstationHatch extends TieredIOPartMachine implements IGridConne
                     long canExtract = CEUtil.clampToLong(getPowerBank().getStored());
                     return Math.min(amount, canExtract);
                 } else {
-                    getPowerStation().getTickSubscription().updateSubscription();
+                    getPowerStation().getWorkLogic().updateTickSubscription();
                     return getPowerBank().drain(amount);
                 }
             }

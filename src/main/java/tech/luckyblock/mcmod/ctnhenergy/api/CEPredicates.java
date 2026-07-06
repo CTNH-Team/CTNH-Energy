@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.ctnhlang.CN;
 import com.ctnhlang.Category;
 import com.ctnhlang.EN;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine;
+import tech.luckyblock.mcmod.ctnhenergy.common.multi.PowerSubstationMachine;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.Comparator;
@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import static appeng.core.definitions.AEBlocks.*;
 import static com.wintercogs.ae2omnicells.common.init.OCBlocks.*;
-import static tech.luckyblock.mcmod.ctnhenergy.common.machine.PowerSubstationMachine.PMC_BATTERY_HEADER;
+import static tech.luckyblock.mcmod.ctnhenergy.common.multi.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 /**
  * @author aaaAlant
