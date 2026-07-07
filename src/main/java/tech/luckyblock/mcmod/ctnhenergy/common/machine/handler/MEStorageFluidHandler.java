@@ -10,9 +10,13 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngredient;
 import lombok.Getter;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -145,5 +149,17 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
     @Override
     public RecipeCapability<FluidIngredient> getCapability() {
         return FluidRecipeCapability.CAP;
+    }
+
+    @Override
+    public @NotNull List<AbstractMapIngredient> getMapIngredients() {
+        List<AbstractMapIngredient> ingredients = new ArrayList<>();
+        for(var stack: getContents()) {
+            FluidStack fluidStack = (FluidStack)stack;
+            if (fluidStack.isEmpty()) continue;
+            ingredients.addAll(FluidStackMapIngredient.from(fluidStack));
+            ingredients.addAll(FluidTagMapIngredient.from(fluidStack));
+        }
+        return ingredients;
     }
 }

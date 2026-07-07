@@ -12,9 +12,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -149,5 +151,14 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
     @Override
     public RecipeCapability<ItemIngredient> getCapability() {
         return ItemRecipeCapability.CAP;
+    }
+
+    @Override
+    public @NotNull List<AbstractMapIngredient> getMapIngredients() {
+        List<AbstractMapIngredient> ingredients = new ArrayList<>();
+        for(var stack: getContents()) {
+            ingredients.addAll(NotifiableItemStackHandler.mapItemStack((ItemStack)stack));
+        }
+        return ingredients;
     }
 }

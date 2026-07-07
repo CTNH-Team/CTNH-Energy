@@ -1,5 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch;
 
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
@@ -32,12 +36,7 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
-public class MESubstationHatch extends MEPartMachine implements IStorageProvider {
-
-    @DescSynced
-    @Getter
-    @Setter
-    protected boolean isOnline;
+public class MESubstationHatch extends MEPartMachine implements IStorageProvider, IAEPowerStorage {
 
     @Persisted
     @Getter
@@ -48,8 +47,9 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
     PowerSubstationMachine.PowerStationEnergyBank mountedEnergyBank;
 
     public MESubstationHatch(IMachineBlockEntity holder) {
-        super(holder, GTValues.IV, IO.BOTH);
-        nodeHost.getMainNode().addService(IStorageProvider.class, this);
+        super(holder, GTValues.IV, IO.BOTH, false, false);
+        nodeHost.getMainNode().addService(IStorageProvider.class, this)
+                .addService(IAEPowerStorage.class, this);
     }
 
     //////////////////////////////////////
@@ -75,6 +75,18 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
 
     private void remountStorage() {
         IStorageProvider.requestUpdate(nodeHost.getMainNode());
+        nodeHost.getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this,
+                GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER)));
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        super.setWorkingEnabled(workingEnabled);
+        if(isWorkingEnabled()) {
+            nodeHost.getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this,
+                            GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER)));
+        }
+        //TODO: 监听主机的开启事件
     }
 
     @Override
@@ -90,7 +102,7 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
         WidgetGroup priorityAmountGroup = new WidgetGroup(0, 0, 100, 70);
         priorityAmountGroup.addWidgets(
                 new LabelWidget(0, 2,
-                        () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"),
+                        () -> isNodeActive() ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"),
                 new TextTextureWidget(25, 20, 50, 15, "gui.ae2.Priority"),
                 new IntInputWidget(0, 35, 100, 20, this::getPriority, this::setPriority) {
 
@@ -119,6 +131,36 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
         remountStorage();
     }
 
+    @Override
+    public double injectAEPower(double v, Actionable actionable) {
+        return 0;
+    }
+
+    @Override
+    public double getAEMaxPower() {
+        return 0;
+    }
+
+    @Override
+    public double getAECurrentPower() {
+        return 0;
+    }
+
+    @Override
+    public boolean isAEPublicPowerStorage() {
+        return true;
+    }
+
+    @Override
+    public AccessRestriction getPowerFlow() {
+        return AccessRestriction.READ;
+    }
+
+    @Override
+    public double extractAEPower(double v, Actionable mode, PowerMultiplier pm) {
+        return pm.divide(2 * storage.extract(EUKey.EU, (long)Math.ceil(pm.multiply(v) / 2), mode, actionSource));
+    }
+
     public class SubstationEUStorage implements MEStorage {
 
         PowerSubstationMachine powerStation;
@@ -141,7 +183,7 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
         }
 
         public PowerSubstationMachine.PowerStationEnergyBank getPowerBank() {
-            if (getPowerStation() != null) {
+            if (isWorkingEnabled() && getPowerStation() != null) {
                 return getPowerStation().getEnergyBank();
             }
             return null;

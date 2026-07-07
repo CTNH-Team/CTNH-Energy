@@ -11,6 +11,5 @@ public class MEDualOutputMachine extends MEPartMachine {
         super(holder, tier, io);
         new MEStorageItemHandler(this, io,  this.nodeSupplier, null);
         new MEStorageFluidHandler(this, io, this.nodeSupplier, null);
-
     }
 }
