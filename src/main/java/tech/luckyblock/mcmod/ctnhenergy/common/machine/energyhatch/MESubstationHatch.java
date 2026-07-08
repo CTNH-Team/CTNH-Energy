@@ -1,9 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.energyhatch;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.events.GridPowerStorageStateChanged;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
@@ -14,13 +10,16 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.network.chat.Component;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -28,12 +27,11 @@ import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.MEPartMachine;
-import tech.luckyblock.mcmod.ctnhenergy.common.multi.PowerSubstationMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKey;
+import tech.luckyblock.mcmod.ctnhenergy.common.multi.PowerSubstationMachine;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 
 public class MESubstationHatch extends MEPartMachine implements IStorageProvider, IAEPowerStorage {
@@ -82,11 +80,11 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
     @Override
     public void setWorkingEnabled(boolean workingEnabled) {
         super.setWorkingEnabled(workingEnabled);
-        if(isWorkingEnabled()) {
+        if (isWorkingEnabled()) {
             nodeHost.getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this,
-                            GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER)));
+                    GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER)));
         }
-        //TODO: 监听主机的开启事件
+        // TODO: 监听主机的开启事件
     }
 
     @Override
@@ -158,7 +156,7 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
 
     @Override
     public double extractAEPower(double v, Actionable mode, PowerMultiplier pm) {
-        return pm.divide(2 * storage.extract(EUKey.EU, (long)Math.ceil(pm.multiply(v) / 2), mode, actionSource));
+        return pm.divide(2 * storage.extract(EUKey.EU, (long) Math.ceil(pm.multiply(v) / 2), mode, actionSource));
     }
 
     public class SubstationEUStorage implements MEStorage {

@@ -29,8 +29,6 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -42,6 +40,8 @@ import net.minecraft.world.entity.player.Player;
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.google.common.annotations.VisibleForTesting;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -211,7 +211,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         }
         long energyBanked = energyBank.fill(inputHatches.getEnergyStored());
         inputHatches.changeEnergy(-energyBanked);
-         // Passive drain
+        // Passive drain
         energyBank.drain(getPassiveDrain());
 
         long energyDebanked = energyBank

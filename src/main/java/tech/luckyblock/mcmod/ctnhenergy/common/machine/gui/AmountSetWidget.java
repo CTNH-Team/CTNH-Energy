@@ -1,18 +1,21 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.gui;
 
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
-import lombok.Getter;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
@@ -45,10 +48,10 @@ public class AmountSetWidget extends WidgetGroup {
         TextTexture maxLabel = createLabelTexture(() -> max.translate().getString());
         addWidget(new ImageWidget(LABEL_X, 6, LABEL_WIDTH, 10, minLabel));
         addWidget(new ImageWidget(LABEL_X, 21, LABEL_WIDTH, 10, maxLabel));
-        addWidget(minAmountText = new TextFieldWidget( 68,  4, 40, 13, this::getMinAmountStr, this::setNewMinAmount)
+        addWidget(minAmountText = new TextFieldWidget(68, 4, 40, 13, this::getMinAmountStr, this::setNewMinAmount)
                 .setNumbersOnly(0, Integer.MAX_VALUE)
                 .setMaxStringLength(10));
-        addWidget(maxAmountText = new TextFieldWidget( 68,  19, 40, 13, this::getMaxAmountStr, this::setNewMaxAmount)
+        addWidget(maxAmountText = new TextFieldWidget(68, 19, 40, 13, this::getMaxAmountStr, this::setNewMaxAmount)
                 .setNumbersOnly(0, Integer.MAX_VALUE)
                 .setMaxStringLength(10));
     }

@@ -1,14 +1,6 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.handler;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -17,15 +9,21 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import lombok.Getter;
+
 import net.minecraft.world.item.ItemStack;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.luckyblock.mcmod.ctnhenergy.common.machine.MEPartMachine;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.utils.GenericStackHandler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -39,20 +37,24 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
 
     private final Supplier<IGridNode> nodeSupplier;
 
-    public MEStorageItemHandler(MetaMachine machine, IO io, Supplier<IGridNode> nodeSupplier, @Nullable GenericStackHandler handler) {
+    public MEStorageItemHandler(MetaMachine machine, IO io, Supplier<IGridNode> nodeSupplier,
+                                @Nullable GenericStackHandler handler) {
         super(machine);
         this.handlerIO = io;
         this.nodeSupplier = nodeSupplier;
         this.handler = handler;
+        if (handler != null) {
+            handler.setOnContentsChanged(this::notifyListeners);
+        }
     }
 
     @Override
     public boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate) {
         if (!handlerIO.support(io)) return false;
-        if(io == IO.IN && handler == null) return false;
+        if (io == IO.IN && handler == null) return false;
 
         var service = getStorageService();
-        if(service == null) return false;
+        if (service == null) return false;
 
         IActionSource actionSource = IActionSource.ofMachine(nodeSupplier::get);
         var storage = service.getInventory();
@@ -73,11 +75,11 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
                     amount = stack.getCount();
                 }
 
-                for(int slot = 0; slot < handler.getSlots(); slot++) {
+                for (int slot = 0; slot < handler.getSlots(); slot++) {
                     GenericStack genericStack = handler.getStackInSlot(slot);
-                    if(genericStack != null && genericStack.what() instanceof AEItemKey itemKey
-                        && ingredient.test(itemKey.getReadOnlyStack())) {
-                        if(simulate) {
+                    if (genericStack != null && genericStack.what() instanceof AEItemKey itemKey &&
+                            ingredient.test(itemKey.getReadOnlyStack())) {
+                        if (simulate) {
                             int cachedAmount = (int) Math.min(genericStack.amount(), cache.get(itemKey));
                             if (cachedAmount == 0) continue;
                             int toExtract = Math.min(amount, cachedAmount);
@@ -86,7 +88,7 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
                             int toExtract = Math.min(amount, (int) genericStack.amount());
                             amount -= (int) storage.extract(itemKey, toExtract, Actionable.MODULATE, actionSource);
                         }
-                        if(amount <= 0) {
+                        if (amount <= 0) {
                             it.remove();
                             break;
                         }
@@ -111,8 +113,9 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
                     amount = outputStack.getCount();
                 }
                 AEItemKey output = AEItemKey.of(outputStack);
-                amount -= (int) storage.insert(output, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE, actionSource);
-                if(amount <= 0) {
+                amount -= (int) storage.insert(output, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE,
+                        actionSource);
+                if (amount <= 0) {
                     it.remove();
                 }
             }
@@ -124,7 +127,7 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
     }
 
     protected @Nullable IStorageService getStorageService() {
-        var mainNode =  nodeSupplier.get();
+        var mainNode = nodeSupplier.get();
         if (mainNode == null || !mainNode.isActive()) return null;
         return mainNode.getGrid().getStorageService();
     }
@@ -132,10 +135,10 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
     @Override
     public @NotNull List<Object> getContents() {
         List<ItemStack> contents = new ArrayList<>();
-        if(handlerIO.support(IO.IN) && handler != null) {
-            for(int slot = 0; slot < handler.getSlots(); slot++) {
+        if (handlerIO.support(IO.IN) && handler != null) {
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
                 GenericStack genericStack = handler.getStackInSlot(slot);
-                if(genericStack != null && genericStack.what() instanceof AEItemKey itemKey) {
+                if (genericStack != null && genericStack.what() instanceof AEItemKey itemKey) {
                     contents.add(itemKey.getReadOnlyStack().copyWithCount((int) genericStack.amount()));
                 }
             }
@@ -156,8 +159,8 @@ public class MEStorageItemHandler extends NotifiableRecipeHandlerTrait<ItemIngre
     @Override
     public @NotNull List<AbstractMapIngredient> getMapIngredients() {
         List<AbstractMapIngredient> ingredients = new ArrayList<>();
-        for(var stack: getContents()) {
-            ingredients.addAll(NotifiableItemStackHandler.mapItemStack((ItemStack)stack));
+        for (var stack : getContents()) {
+            ingredients.addAll(NotifiableItemStackHandler.mapItemStack((ItemStack) stack));
         }
         return ingredients;
     }

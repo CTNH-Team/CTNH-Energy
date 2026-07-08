@@ -9,7 +9,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -52,12 +51,9 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.strategy.EUContainerItemStrategy;
 import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
-import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProvider;
-import tech.luckyblock.mcmod.ctnhenergy.integration.jade.AdMEPatternBufferProxyProvider;
 import tech.luckyblock.mcmod.ctnhenergy.registry.*;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
-import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 import yuuki1293.pccard.PCCard;
 
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -175,14 +171,14 @@ public class CommonProxy {
             });
         });
 
-        JadePriorityManager.registerBlockData(new AdMEPatternBufferProvider(), BlockEntity.class, 2901,
-                "ad_me_pattern_buffer_data");
-        JadePriorityManager.registerBlockData(new AdMEPatternBufferProxyProvider(), BlockEntity.class, 3001,
-                "ad_me_pattern_buffer_proxy_data");
-        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProvider(), Block.class, 2901,
-                "ad_me_pattern_buffer_component");
-        JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProxyProvider(), Block.class, 3001,
-                "ad_me_pattern_buffer_proxy_component");
+        // JadePriorityManager.registerBlockData(new AdMEPatternBufferProvider(), BlockEntity.class, 2901,
+        // "ad_me_pattern_buffer_data");
+        // JadePriorityManager.registerBlockData(new AdMEPatternBufferProxyProvider(), BlockEntity.class, 3001,
+        // "ad_me_pattern_buffer_proxy_data");
+        // JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProvider(), Block.class, 2901,
+        // "ad_me_pattern_buffer_component");
+        // JadePriorityManager.registerBlockComponent(new AdMEPatternBufferProxyProvider(), Block.class, 3001,
+        // "ad_me_pattern_buffer_proxy_component");
     }
 
     public static void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {

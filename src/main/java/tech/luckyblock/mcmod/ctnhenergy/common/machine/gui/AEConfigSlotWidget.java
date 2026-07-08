@@ -1,18 +1,13 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.gui;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.integration.modules.emi.EmiStackHelper;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+
 import com.lowdragmc.lowdraglib.gui.ingredient.IIngredientSlot;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -21,6 +16,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import appeng.api.client.AEKeyRendering;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.integration.modules.emi.EmiStackHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import tech.luckyblock.mcmod.ctnhenergy.api.IGhostKeyTarget;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.utils.GenericStackHandler;
@@ -69,7 +72,7 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         GenericStackHandler.Entry entry = parentWidget.getEntry(index);
-        if(entry != null) {
+        if (entry != null) {
             AEKey key = entry.key();
             int minAmount = entry.minAmount();
             int maxAmount = entry.maxAmount();
@@ -78,15 +81,15 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
                     Minecraft.getInstance(),
                     graphics,
                     stackX, stackY, key);
-            if(minAmount != 0) {
+            if (minAmount != 0) {
                 String minAmountStr = ">=" + TextFormattingUtil.formatLongToCompactString(minAmount, 4);
                 drawStringRightBorder(graphics, minAmountStr, stackX + 16, stackY + 1, 16777215, true, 0.5f);
             }
-            if(maxAmount != 0) {
+            if (maxAmount != 0) {
                 String maxAmountStr = TextFormattingUtil.formatLongToCompactString(maxAmount, 4);
                 drawStringFixedCorner(graphics, maxAmountStr, stackX + 16, stackY + 16, 16777215, true, 0.5f);
             }
-            if(stack != null) {
+            if (stack != null) {
                 AEKeyRendering.drawInGui(
                         Minecraft.getInstance(),
                         graphics,
@@ -179,11 +182,10 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
                 parentWidget.disableAmountClient();
             } else if (button == 0) {
                 ItemStack item = gui.getModularUIContainer().getCarried();
-                if(!item.isEmpty()) {
+                if (!item.isEmpty()) {
                     AEKey key = getKeyFromItem(item);
                     writeClientAction(UPDATE_ID, buf -> AEKey.writeKey(buf, key));
-                }
-                else if(parentWidget.getKey(index) != null) {
+                } else if (parentWidget.getKey(index) != null) {
                     parentWidget.enableAmountClient(this.index);
                     select = true;
                 }
@@ -195,7 +197,7 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
     @Override
     public void handleClientAction(int id, FriendlyByteBuf buffer) {
         super.handleClientAction(id, buffer);
-        if(parentWidget.isAutoPull()) return;
+        if (parentWidget.isAutoPull()) return;
         switch (id) {
             case REMOVE_ID -> {
                 parentWidget.setKey(index, null);
@@ -204,22 +206,22 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
             }
             case UPDATE_ID -> {
                 AEKey key = AEKey.readKey(buffer);
-                if(key != null) {
-                    if(!isKeyValidForSlot(key)) return;
+                if (key != null) {
+                    if (!isKeyValidForSlot(key)) return;
                     parentWidget.setKey(index, key);
                     parentWidget.enableAmount(index);
                     writeUpdateInfo(UPDATE_ID, buf -> AEKey.writeKey(buf, key));
                 }
             }
             case MIN_AMOUNT_CHANGE_ID -> {
-                if(parentWidget.getKey(index) != null) {
+                if (parentWidget.getKey(index) != null) {
                     int minAmount = buffer.readVarInt();
                     parentWidget.setMinAmount(index, minAmount);
                     writeUpdateInfo(MIN_AMOUNT_CHANGE_ID, buf -> buf.writeVarInt(minAmount));
                 }
             }
             case MAX_AMOUNT_CHANGE_ID -> {
-                if(parentWidget.getKey(index) != null) {
+                if (parentWidget.getKey(index) != null) {
                     int maxAmount = buffer.readVarInt();
                     parentWidget.setMaxAmount(index, maxAmount);
                     writeUpdateInfo(MAX_AMOUNT_CHANGE_ID, buf -> buf.writeVarInt(maxAmount));
@@ -231,23 +233,23 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);
-//        switch (id) {
-//            case REMOVE_ID -> {
-//                parentWidget.setKey(index, null);
-//            }
-//            case UPDATE_ID -> {
-//                AEKey key = AEKey.readKey(buffer);
-//                if(key != null) {
-//                    parentWidget.setKey(index, key);
-//                }
-//            }
-//            case MIN_AMOUNT_CHANGE_ID -> {
-//                parentWidget.setMinAmount(index, buffer.readVarInt());
-//            }
-//            case MAX_AMOUNT_CHANGE_ID -> {
-//                parentWidget.setMaxAmount(index, buffer.readVarInt());
-//            }
-//        }
+        // switch (id) {
+        // case REMOVE_ID -> {
+        // parentWidget.setKey(index, null);
+        // }
+        // case UPDATE_ID -> {
+        // AEKey key = AEKey.readKey(buffer);
+        // if(key != null) {
+        // parentWidget.setKey(index, key);
+        // }
+        // }
+        // case MIN_AMOUNT_CHANGE_ID -> {
+        // parentWidget.setMinAmount(index, buffer.readVarInt());
+        // }
+        // case MAX_AMOUNT_CHANGE_ID -> {
+        // parentWidget.setMaxAmount(index, buffer.readVarInt());
+        // }
+        // }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -261,7 +263,7 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
     @OnlyIn(Dist.CLIENT)
     @Override
     public void acceptKey(AEKey aeKey) {
-        if(aeKey != null) {
+        if (aeKey != null) {
             writeClientAction(UPDATE_ID, buf -> AEKey.writeKey(buf, aeKey));
         }
     }
@@ -269,18 +271,18 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
     @Override
     public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
         var box = getRectangleBox();
-        if(parentWidget.getKey(index) == null || wheelDelta == 0 || !box.contains((int) mouseX, (int) mouseY)) {
+        if (parentWidget.getKey(index) == null || wheelDelta == 0 || !box.contains((int) mouseX, (int) mouseY)) {
             return false;
         }
         int amount;
         amount = isCtrlDown() ? parentWidget.getMinAmount(index) : parentWidget.getMaxAmount(index);
 
-        if(isShiftDown()) {
+        if (isShiftDown()) {
             amount = wheelDelta > 0 ? amount * 2 : amount / 2;
         } else {
             amount = wheelDelta > 0 ? amount + 1 : amount - 1;
         }
-        if(amount >= 0) {
+        if (amount >= 0) {
             int id = isCtrlDown() ? MIN_AMOUNT_CHANGE_ID : MAX_AMOUNT_CHANGE_ID;
             int finalAmount = amount;
             writeClientAction(id, buf -> buf.writeVarInt(finalAmount));
@@ -290,7 +292,7 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
     }
 
     protected boolean isKeyValidForSlot(AEKey key) {
-        if (key == null ) return true;
+        if (key == null) return true;
         return parentWidget.isKeyValid(key);
     }
 
@@ -301,13 +303,13 @@ public class AEConfigSlotWidget extends Widget implements IGhostKeyTarget, IIngr
     @Override
     public Object getXEIIngredientOverMouse(double mouseX, double mouseY) {
         GenericStack stack = null;
-        if(mouseOverConfig(mouseX, mouseY)) {
+        if (mouseOverConfig(mouseX, mouseY)) {
             var key = parentWidget.getKey(index);
             stack = key == null ? null : new GenericStack(key, 1);
         } else if (mouseOverStack(mouseX, mouseY)) {
             stack = parentWidget.getStack(index);
         }
-        if(stack != null) {
+        if (stack != null) {
             return EmiStackHelper.toEmiStack(stack);
         }
         return null;

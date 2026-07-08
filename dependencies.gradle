@@ -1,6 +1,7 @@
 dependencies {
     modImplementation(project(":modules:CTNH-Lib")){ transitive = false }
-    implementation(project(":modules:CTPP"))
+
+    // implementation(project(":modules:CTPP"))
 
     modImplementation(ctnh.ae2){
         accessTransformers.configure(it) {

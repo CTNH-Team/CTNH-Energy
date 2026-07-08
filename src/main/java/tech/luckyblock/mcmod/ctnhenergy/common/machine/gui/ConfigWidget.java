@@ -1,22 +1,24 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.gui;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.utils.GenericStackHandler;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ConfigWidget extends WidgetGroup {
 
@@ -24,30 +26,36 @@ public class ConfigWidget extends WidgetGroup {
 
     protected final GenericStackHandler config;
     protected GenericStackHandler cached;
+    private boolean init = false;
     protected final Int2ObjectMap<GenericStackHandler.Entry> changeMap = new Int2ObjectOpenHashMap<>();
     protected AmountSetWidget amountSetWidget;
-    
-    @Getter
-    protected boolean autoPull;
 
     private static final int SLOTS_PER_ROW = 8;
     private static final int SLOT_SIZE = 18;
     private static final int ROW_SPACING = 2;
     private final Predicate<AEKey> keyPredicate;
 
-    public ConfigWidget(int x, int y, GenericStackHandler handler, Predicate<AEKey> predicate) {
+    private final Supplier<Boolean> autoPullProvider;
+
+    public ConfigWidget(int x, int y, GenericStackHandler handler, Predicate<AEKey> predicate,
+                        Supplier<Boolean> autoPull) {
         super(new Position(x, y), new Size(handler.getSlots() / 2 * 18, 18 * 4 + 2));
         config = handler;
         keyPredicate = predicate;
+        autoPullProvider = autoPull;
         cached = new GenericStackHandler(config.getSlots());
         for (int index = 0; index < this.config.getSlots(); index++) {
             int line = index / SLOTS_PER_ROW;
-            addWidget(new AEConfigSlotWidget((index - line * SLOTS_PER_ROW)* SLOT_SIZE,
+            addWidget(new AEConfigSlotWidget((index - line * SLOTS_PER_ROW) * SLOT_SIZE,
                     line * (SLOT_SIZE * 2 + ROW_SPACING), this, index));
         }
         amountSetWidget = new AmountSetWidget(16, -50, this);
         addWidget(amountSetWidget);
         disableAmount();
+    }
+
+    public boolean isAutoPull() {
+        return autoPullProvider.get();
     }
 
     public boolean isKeyValid(AEKey key) {
@@ -78,8 +86,6 @@ public class ConfigWidget extends WidgetGroup {
 
     private void setAmountVisible(boolean visible) {
         amountSetWidget.setVisible(visible);
-//        amountSetWidget.getMinAmountText().setVisible(visible);
-//        amountSetWidget.getMaxAmountText().setVisible(visible);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -104,12 +110,13 @@ public class ConfigWidget extends WidgetGroup {
         for (int index = 0; index < config.getSlots(); index++) {
             GenericStackHandler.Entry newEntry = config.getEntry(index);
             GenericStackHandler.Entry oldEntry = cached.getEntry(index);
-            if (!areEntriesEqual(newEntry, oldEntry)) {
+            if (!init || !areEntriesEqual(newEntry, oldEntry)) {
                 changeMap.put(index, newEntry);
                 cached.setEntry(index, newEntry);
                 gui.holder.markAsDirty();
             }
         }
+        init = true;
         if (!changeMap.isEmpty()) {
             writeUpdateInfo(UPDATE_ID, buf -> {
                 buf.writeVarInt(changeMap.size());

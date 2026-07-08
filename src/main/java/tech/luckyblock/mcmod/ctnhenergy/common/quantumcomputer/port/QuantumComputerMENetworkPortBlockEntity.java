@@ -1,5 +1,8 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.port;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,13 +31,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.cpu.QuantumComputerCluster;
-import tech.luckyblock.mcmod.ctnhenergy.common.quantumcomputer.machine.QuantumComputerMultiblockMachine;
 import tech.luckyblock.mcmod.ctnhenergy.registry.CEBlocks;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+
+import static com.gregtechceu.gtceu.api.machine.trait.WorkLogic.Status.SUSPEND;
+import static com.gregtechceu.gtceu.api.machine.trait.WorkLogic.Status.WORKING;
 
 /**
  * @author aaaAlant
@@ -52,9 +57,9 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
 
     @Setter
     @Getter
-    private QuantumComputerMultiblockMachine machine;
+    private MetaMachine machine;
 
-    private QuantumComputerMultiblockMachine.WorkStatus workStatus;
+    private WorkLogic.Status workStatus;
 
     public QuantumComputerMENetworkPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos,
                                                    BlockState blockState) {
@@ -67,11 +72,11 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
     }
 
     public void active() {
-        if (this.workStatus == QuantumComputerMultiblockMachine.WorkStatus.WORKING) {
+        if (this.workStatus == WORKING) {
             return;
         }
 
-        this.workStatus = QuantumComputerMultiblockMachine.WorkStatus.WORKING;
+        this.workStatus = WORKING;
         if (cluster == null) {
             cluster = new QuantumComputerCluster(getBlockPos(), getBlockPos());
             cluster.setMeNetworkPortBlockEntity(this);
@@ -86,11 +91,11 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
     }
 
     public void suspend() {
-        if (this.workStatus == QuantumComputerMultiblockMachine.WorkStatus.SUSPEND) {
+        if (this.workStatus == SUSPEND) {
             return;
         }
 
-        this.workStatus = QuantumComputerMultiblockMachine.WorkStatus.SUSPEND;
+        this.workStatus = SUSPEND;
         if (cluster != null) {
             // 保存当前任务到 previousState
             CompoundTag state = new CompoundTag();
@@ -112,12 +117,12 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
         if (machine == null) {
             return 0;
         }
-        return 1024L * machine.getStorageKilobyte();
+        return 1024L;
     }
 
     public long getRemainingStorage() {
         if (cluster == null) {
-            return machine.getStorageKilobyte();
+            return 0;
         }
         return cluster.getRemainingStorage() / 1024L;
     }
@@ -126,14 +131,14 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
         if (machine == null) {
             return 0;
         }
-        return machine.getCoprocessing();
+        return 0;
     }
 
     public int getMaxMultiplier() {
         if (machine == null) {
             return 1;
         }
-        return machine.getMaxMultiplier();
+        return 0;
     }
 
     @Override
@@ -188,7 +193,7 @@ public class QuantumComputerMENetworkPortBlockEntity extends AENetworkBlockEntit
     public boolean isFormed() {
         if (isClientSide()) {
             // return getBlockState().getValue(QuantumComputerMENetworkPortBlock.FORMED);
-            return this.workStatus == QuantumComputerMultiblockMachine.WorkStatus.WORKING;
+            return this.workStatus == WORKING;
         }
         return this.cluster != null;
     }

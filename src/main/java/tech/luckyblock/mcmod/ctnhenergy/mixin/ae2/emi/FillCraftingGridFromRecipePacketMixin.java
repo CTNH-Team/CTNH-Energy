@@ -2,7 +2,7 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.emi;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -71,10 +71,14 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
         if (!cct.useRealItems()) {
             AELog.warn("Trying to use real items for crafting in a pattern encoding terminal");
             ci.cancel();
+            return;
         }
 
         var node = cct.getNetworkNode();
-        if (node == null) ci.cancel();
+        if (node == null) {
+            ci.cancel();
+            return;
+        }
 
         var grid = node.getGrid();
         var storageService = grid.getStorageService();
@@ -89,25 +93,25 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
         boolean touchedGridStorage = false;
 
         List<Ingredient> ingredients;
+        List<ItemIngredient> itemIngredients = List.of();
 
         if (recipe instanceof GTRecipe gtRecipe) {
-            ingredients = gtRecipe.getInputContents(ItemRecipeCapability.CAP).stream()
-                    .map(c -> c.content)
-                    .filter(Ingredient.class::isInstance)
-                    .map(Ingredient.class::cast)
+            itemIngredients = gtRecipe.getInputContents(ItemRecipeCapability.CAP);
+            ingredients = itemIngredients.stream()
+                    .map(ItemIngredient::toVanillaIngredient)
                     .toList();
         } else {
             ingredients = ingredientTemplates.stream().map(Ingredient::of).toList();
         }
 
-        for (var ingredient : ingredients) {
-
+        for (int i = 0; i < ingredients.size(); i++) {
+            var ingredient = ingredients.get(i);
             if (ingredient.isEmpty()) continue;
 
             // === ① 计算所需数量 ===
             int required = ingredient.getItems().length > 0 ? ingredient.getItems()[0].getCount() : 1;
-            if (ingredient instanceof SizedIngredient sizedIngredient) {
-                required = sizedIngredient.getAmount();
+            if (!itemIngredients.isEmpty()) {
+                required = itemIngredients.get(i).getCount();
             }
             if (required <= 0) required = 1;
 
@@ -131,15 +135,6 @@ public abstract class FillCraftingGridFromRecipePacketMixin {
                     remaining -= (int) extracted;
                     toGivePlayer.add(what.toStack(Ints.saturatedCast(extracted)));
                 }
-            }
-
-            // === ③ 网络不足 → 从玩家背包补 ===
-            while (remaining > 0) {
-                var taken = takeIngredientFromPlayer(cct, player, ingredient);
-                if (taken.isEmpty()) break;
-
-                remaining--;
-                toGivePlayer.add(taken);
             }
 
             for (var stack : toGivePlayer) {

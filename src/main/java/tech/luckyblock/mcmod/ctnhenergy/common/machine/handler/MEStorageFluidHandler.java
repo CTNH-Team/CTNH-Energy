@@ -1,24 +1,25 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.handler;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngredient;
-import lombok.Getter;
+
 import net.minecraftforge.fluids.FluidStack;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.luckyblock.mcmod.ctnhenergy.common.machine.utils.GenericStackHandler;
@@ -37,7 +38,8 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
 
     private final Supplier<IGridNode> nodeSupplier;
 
-    public MEStorageFluidHandler(MetaMachine machine, IO io, Supplier<IGridNode> nodeSupplier, @Nullable GenericStackHandler handler) {
+    public MEStorageFluidHandler(MetaMachine machine, IO io, Supplier<IGridNode> nodeSupplier,
+                                 @Nullable GenericStackHandler handler) {
         super(machine);
         this.handlerIO = io;
         this.nodeSupplier = nodeSupplier;
@@ -47,10 +49,10 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
     @Override
     public boolean handleRecipe(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
         if (!handlerIO.support(io)) return false;
-        if(io == IO.IN && handler == null) return false;
+        if (io == IO.IN && handler == null) return false;
 
         var service = getStorageService();
-        if(service == null) return false;
+        if (service == null) return false;
 
         IActionSource actionSource = IActionSource.ofMachine(nodeSupplier::get);
         var storage = service.getInventory();
@@ -71,11 +73,11 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
                     amount = stack.getAmount();
                 }
 
-                for(int slot = 0; slot < handler.getSlots(); slot++) {
+                for (int slot = 0; slot < handler.getSlots(); slot++) {
                     GenericStack genericStack = handler.getStackInSlot(slot);
-                    if(genericStack != null && genericStack.what() instanceof AEFluidKey fluidKey
-                            && ingredient.test(fluidKey.toStack(1))) {
-                        if(simulate) {
+                    if (genericStack != null && genericStack.what() instanceof AEFluidKey fluidKey &&
+                            ingredient.test(fluidKey.toStack(1))) {
+                        if (simulate) {
                             int cachedAmount = (int) Math.min(genericStack.amount(), cache.get(fluidKey));
                             if (cachedAmount == 0) continue;
                             int toExtract = Math.min(amount, cachedAmount);
@@ -84,7 +86,7 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
                             int toExtract = Math.min(amount, (int) genericStack.amount());
                             amount -= (int) storage.extract(fluidKey, toExtract, Actionable.MODULATE, actionSource);
                         }
-                        if(amount <= 0) {
+                        if (amount <= 0) {
                             it.remove();
                             break;
                         }
@@ -109,8 +111,9 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
                     amount = outputStack.getAmount();
                 }
                 AEFluidKey output = AEFluidKey.of(outputStack);
-                amount -= (int) storage.insert(output, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE, actionSource);
-                if(amount <= 0) {
+                amount -= (int) storage.insert(output, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE,
+                        actionSource);
+                if (amount <= 0) {
                     it.remove();
                 }
             }
@@ -122,7 +125,7 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
     }
 
     protected @Nullable IStorageService getStorageService() {
-        var mainNode =  nodeSupplier.get();
+        var mainNode = nodeSupplier.get();
         if (mainNode == null || !mainNode.isActive()) return null;
         return mainNode.getGrid().getStorageService();
     }
@@ -130,10 +133,10 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
     @Override
     public @NotNull List<Object> getContents() {
         List<FluidStack> contents = new ArrayList<>();
-        if(handlerIO.support(IO.IN) && handler != null) {
-            for(int slot = 0; slot < handler.getSlots(); slot++) {
+        if (handlerIO.support(IO.IN) && handler != null) {
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
                 GenericStack genericStack = handler.getStackInSlot(slot);
-                if(genericStack != null && genericStack.what() instanceof AEFluidKey fluidKey) {
+                if (genericStack != null && genericStack.what() instanceof AEFluidKey fluidKey) {
                     contents.add(fluidKey.toStack((int) genericStack.amount()));
                 }
             }
@@ -154,8 +157,8 @@ public class MEStorageFluidHandler extends NotifiableRecipeHandlerTrait<FluidIng
     @Override
     public @NotNull List<AbstractMapIngredient> getMapIngredients() {
         List<AbstractMapIngredient> ingredients = new ArrayList<>();
-        for(var stack: getContents()) {
-            FluidStack fluidStack = (FluidStack)stack;
+        for (var stack : getContents()) {
+            FluidStack fluidStack = (FluidStack) stack;
             if (fluidStack.isEmpty()) continue;
             ingredients.addAll(FluidStackMapIngredient.from(fluidStack));
             ingredients.addAll(FluidTagMapIngredient.from(fluidStack));

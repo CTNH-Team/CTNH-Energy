@@ -1,20 +1,26 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine.utils;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.With;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.With;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /**
  * Multi-slot GenericStack storage handler, similar to ItemStackHandler.
@@ -29,8 +35,7 @@ public class GenericStackHandler implements ITagSerializable<CompoundTag>, ICont
 
     @Getter
     @Setter
-    private Runnable onContentsChanged = () -> {
-    };
+    private Runnable onContentsChanged = () -> {};
 
     public GenericStackHandler(int size) {
         entries = new Entry[size];
@@ -85,19 +90,17 @@ public class GenericStackHandler implements ITagSerializable<CompoundTag>, ICont
 
     public void setKeyInSlot(int slot, @Nullable AEKey key) {
         validateSlotIndex(slot);
-        if(key == null) {
+        if (key == null) {
             entries[slot] = null;
         } else {
             entries[slot] = new Entry(key, 0, 0, null);
         }
-        onContentsChanged(slot);
     }
 
     public void setMinAmount(int slot, int amount) {
         validateSlotIndex(slot);
         if (entries[slot] != null) {
             entries[slot] = entries[slot].withMinAmount(amount);
-            onContentsChanged(slot);
         }
     }
 
@@ -105,24 +108,89 @@ public class GenericStackHandler implements ITagSerializable<CompoundTag>, ICont
         validateSlotIndex(slot);
         if (entries[slot] != null) {
             entries[slot] = entries[slot].withMaxAmount(amount);
-            onContentsChanged(slot);
         }
     }
 
     public void updateStacks(KeyCounter keyCounter) {
-        for(int slot = 0; slot < entries.length; slot ++) {
+        Runnable original = onContentsChanged;
+        MutableBoolean changed = new MutableBoolean(false);
+        onContentsChanged = changed::setTrue;
+        for (int slot = 0; slot < entries.length; slot++) {
             var entry = entries[slot];
-            if(entry != null) {
+            if (entry != null) {
                 long storage = keyCounter.get(entry.key);
-                if(storage != 0 && storage >= entry.minAmount) {
+                if (storage != 0 && storage >= entry.minAmount) {
                     int maxAmount = entry.maxAmount == 0 ? Integer.MAX_VALUE : entry.maxAmount;
                     var stack = new GenericStack(entry.key, Math.min(storage, maxAmount));
-                    entries[slot] = entry.withStack(stack);
+                    setStackInSlot(slot, stack);
                 } else {
-                    entries[slot] = entry.withStack(null);
+                    setStackInSlot(slot, null);
                 }
             }
         }
+        onContentsChanged = original;
+        if (changed.booleanValue()) {
+            onContentsChanged.run();
+        }
+    }
+
+    /**
+     * Refresh configuration with Top-K keys (by amount) from the ME storage.
+     * Only keys matching the filter are considered.
+     *
+     * @param source ME storage source
+     * @param filter key filter
+     */
+    public void autoPull(KeyCounter source, int maxStackSize, Filter filter) {
+        int slots = getSlots();
+        if (slots == 0) return;
+
+        // Top-K via PriorityQueue: keep the highest 'slotCount' entries by amount
+        var topEntries = new PriorityQueue<>(Comparator.comparingLong(Object2LongMap.Entry<AEKey>::getLongValue));
+
+        for (var entry : source) {
+            AEKey key = entry.getKey();
+            long amount = entry.getLongValue();
+
+            if (!filter.test(key, amount)) {
+                continue;
+            }
+
+            assert topEntries.peek() != null;
+            if (topEntries.size() < slots) {
+                // If the heap is not full, add the entry
+                topEntries.offer(entry);
+            } else if (topEntries.peek().getLongValue() < amount) {
+                // If the heap is full but the current entry has a higher amount, replace the smallest entry
+                topEntries.poll();
+                topEntries.offer(entry);
+            }
+        }
+
+        // Suppress listener; batch updates with a single notification
+        Runnable original = onContentsChanged;
+        MutableBoolean changed = new MutableBoolean(false);
+        onContentsChanged = changed::setTrue;
+        // Fill slots from highest to lowest
+        for (int i = slots - 1; i >= 0; i--) {
+            // Pad with null if no entry available
+            if (i >= topEntries.size()) {
+                setEntry(i, null);
+                continue;
+            }
+            var entry = topEntries.poll();
+            var stack = new GenericStack(entry.getKey(), Math.min(entry.getLongValue(), maxStackSize));
+            setEntry(i, new Entry(entry.getKey(), 0, 0, stack));
+        }
+        // Restore listener and emit once if changed
+        onContentsChanged = original;
+        if (changed.booleanValue()) {
+            onContentsChanged.run();
+        }
+    }
+
+    public void clear() {
+        entries = new Entry[entries.length];
     }
 
     public GenericStackHandler copy() {
@@ -188,21 +256,27 @@ public class GenericStackHandler implements ITagSerializable<CompoundTag>, ICont
         private static final String NBT_STACK = "Stack";
 
         public CompoundTag serializeNBT() {
-                CompoundTag tag = new CompoundTag();
-                tag.put(NBT_KEY, key.toTagGeneric());
-                if (minAmount != 0) tag.putInt(NBT_MIN_AMOUNT, minAmount);
-                if (maxAmount != 0) tag.putInt(NBT_MAX_AMOUNT, maxAmount);
-                if (stack != null) tag.put(NBT_STACK, GenericStack.writeTag(stack));
-                return tag;
-            }
+            CompoundTag tag = new CompoundTag();
+            tag.put(NBT_KEY, key.toTagGeneric());
+            if (minAmount != 0) tag.putInt(NBT_MIN_AMOUNT, minAmount);
+            if (maxAmount != 0) tag.putInt(NBT_MAX_AMOUNT, maxAmount);
+            if (stack != null) tag.put(NBT_STACK, GenericStack.writeTag(stack));
+            return tag;
+        }
 
         public static Entry deserializeNBT(CompoundTag tag) {
-                var key = AEKey.fromTagGeneric(tag.getCompound(NBT_KEY));
-                if(key == null) return null;
-                int minAmount = tag.contains(NBT_MIN_AMOUNT, Tag.TAG_INT) ? tag.getInt(NBT_MIN_AMOUNT) : 0;
-                int maxAmount = tag.contains(NBT_MAX_AMOUNT, Tag.TAG_INT) ? tag.getInt(NBT_MAX_AMOUNT) : 0;
-                var stack = tag.contains(NBT_STACK, Tag.TAG_COMPOUND) ? GenericStack.readTag(tag.getCompound(NBT_STACK)) : null;
-                return new Entry(key, minAmount, maxAmount, stack);
-            }
+            var key = AEKey.fromTagGeneric(tag.getCompound(NBT_KEY));
+            if (key == null) return null;
+            int minAmount = tag.contains(NBT_MIN_AMOUNT, Tag.TAG_INT) ? tag.getInt(NBT_MIN_AMOUNT) : 0;
+            int maxAmount = tag.contains(NBT_MAX_AMOUNT, Tag.TAG_INT) ? tag.getInt(NBT_MAX_AMOUNT) : 0;
+            var stack = tag.contains(NBT_STACK, Tag.TAG_COMPOUND) ? GenericStack.readTag(tag.getCompound(NBT_STACK)) :
+                    null;
+            return new Entry(key, minAmount, maxAmount, stack);
         }
+    }
+
+    public interface Filter {
+
+        boolean test(AEKey key, long amount);
+    }
 }
