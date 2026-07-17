@@ -283,15 +283,6 @@ public class CEMachines {
             .colorOverlayTieredHullModel("me_substation", null, null)
             .register();
 
-    public static MachineDefinition ME_PATTERN_BUFFER;
-    public static MachineDefinition ME_PATTERN_BUFFER_PROXY;
-
-    public static MachineDefinition ME_ADVANCED_PATTERN_BUFFER;
-    public static MachineDefinition ME_ADVANCED_PATTERN_BUFFER_PROXY;
-
-    public static MachineDefinition ME_ULTIMATE_PATTERN_BUFFER;
-    public static MachineDefinition ME_ULTIMATE_PATTERN_BUFFER_PROXY;
-
     @CN("具有%s个样板槽位")
     @EN("")
     static Lang slot_number;
