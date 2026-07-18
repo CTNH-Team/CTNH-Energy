@@ -35,18 +35,15 @@ import static com.glodblock.github.extendedae.common.EPPItemAndBlock.INFINITY_CE
 import static tech.luckyblock.mcmod.ctnhenergy.registry.CEItems.DYNAMO_CARD;
 
 @Category("tooltip")
-@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     @SuppressWarnings("removal")
     public ClientProxy() {
         super();
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(ClientProxy::initClientAE2);
-        modEventBus.addListener(ClientProxy::onClientSetup);
     }
 
-    public static void initClientAE2(FMLClientSetupEvent event) {
+    @SubscribeEvent
+    public void initClientAE2(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             try {
                 InitScreens.register(
@@ -60,7 +57,8 @@ public class ClientProxy extends CommonProxy {
         });
     }
 
-    public static void onClientSetup(FMLClientSetupEvent event) {
+    @SubscribeEvent
+    public void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             PonderIndex.addPlugin(new CTNHEnergyPonderPlugin());
         });
@@ -106,7 +104,7 @@ public class ClientProxy extends CommonProxy {
     static Lang auto_multiply;
 
     @SubscribeEvent
-    public static void onTooltip(ItemTooltipEvent event) {
+    public void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         if (stack.getItem() instanceof OmniCraftingBlockItem blockItem &&
                 blockItem.getBlock() instanceof OmniCraftingUnitBlock craftingUnitBlock) {

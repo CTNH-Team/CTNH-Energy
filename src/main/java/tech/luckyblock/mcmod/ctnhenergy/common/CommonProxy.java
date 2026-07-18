@@ -56,7 +56,6 @@ import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 import yuuki1293.pccard.PCCard;
 
-@Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonProxy {
 
     @SuppressWarnings("removal")
@@ -76,7 +75,6 @@ public class CommonProxy {
         CENetWorking.init();
 
         CEDatagen.init();
-        eventBus.addListener(CommonProxy::gatherData);
         CECreativeModeTabs.init();
         eventBus.addGenericListener(GTRecipeType.class, CommonProxy::registerRecipeTypes);
         eventBus.addGenericListener(MachineDefinition.class, CommonProxy::registerMachines);
@@ -191,7 +189,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public void gatherData(GatherDataEvent event) {
         if (event.includeClient()) {
             CTNHPonderLang.init(new CTNHEnergyPonderPlugin());
         }
