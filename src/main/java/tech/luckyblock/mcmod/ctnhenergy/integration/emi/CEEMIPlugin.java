@@ -1,7 +1,9 @@
 package tech.luckyblock.mcmod.ctnhenergy.integration.emi;
 
+import appeng.api.integrations.emi.EmiStackConverters;
 import com.mojang.logging.LogUtils;
 import dev.emi.emi.api.EmiEntrypoint;
+import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.Comparison;
@@ -16,7 +18,16 @@ public class CEEMIPlugin implements EmiPlugin {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     @Override
+    public void initialize(EmiInitRegistry registry) {
+        registry.addIngredientSerializer(EUEmiStack.class, EUEmiStackSerializer.INSTANCE);
+    }
+
+    @Override
     public void register(EmiRegistry registry) {
+        EmiStackConverters.register(new EUStackConverter());
+
+        registry.addEmiStack(EUEmiStack.of(1));
+
         // Treat Dynamo Card NBT variants as distinct stacks in EMI.
         registry.setDefaultComparison(CEItems.DYNAMO_CARD.asItem(), Comparison.compareData(stack -> {
             var nbt = stack.getNbt();
