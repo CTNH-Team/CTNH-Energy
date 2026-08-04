@@ -57,8 +57,7 @@
     "ae2.emi.EmiScreenBaseMixin",
     "ae2.patternprovider.PatternProviderScreenMixin",
     "ae2.patternprovider.SettingToggleButtonMixin",
-    "ae2ct.CraftingTreeScreenMixin",
-    "meRequester.RequestSlotMixin"
+    "ae2ct.CraftingTreeScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
