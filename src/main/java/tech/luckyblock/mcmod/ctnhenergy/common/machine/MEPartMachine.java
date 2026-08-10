@@ -59,6 +59,7 @@ public class MEPartMachine extends TieredIOPartMachine
 
     @Getter
     @Persisted
+    @DescSynced
     protected final NotifiableItemStackHandler circuitInventory;
 
     @Getter
