@@ -48,7 +48,6 @@
     "betterP2P.CommonProxyMixin",
     "datagen.AECSDatagenMixin",
     "gtm.BlockPatternMixin",
-    "gtm.MultiblockStateMixin",
     "omni.AEUniversalCellInventoryMixin",
     "omni.OCItemsMixin",
     "omni.OmniCraftingBlockEntityMixin"
