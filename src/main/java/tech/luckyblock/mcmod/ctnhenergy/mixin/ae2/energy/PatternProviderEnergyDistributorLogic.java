@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.upgrades.MachineUpgradeInventory;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.me.energy.IEnergyOverlayGridConnection;
@@ -45,7 +44,6 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
                                              int patternInventorySize, CallbackInfo ci) {
         mainNode.addService(IEnergyDistributor.class, this)
                 .addService(IEnergyOverlayGridConnection.class, this::getOtherEnergyServices);
-        CE$injectUpgradeCallback();
         CE$EUHandler = new MEMachineEUHandler(mainNode::getNode, this);
     }
 
@@ -97,27 +95,5 @@ public class PatternProviderEnergyDistributorLogic implements IEnergyDistributor
     @Override
     public void updateVoltage() {
         CE$EUHandler.updateVoltage();
-    }
-
-    @Unique
-    boolean CE$injected = false;
-
-    @Unique
-    private void CE$injectUpgradeCallback() {
-        if (CE$injected) return;
-        if (getUpgrades() instanceof MachineUpgradeInventory upgrades) {
-            CE$injected = true;
-            var oldCallback = upgrades.changeCallback;
-            upgrades.changeCallback = () -> {
-                if (oldCallback != null)
-                    oldCallback.onUpgradesChanged();
-                CE$onUpgradesChanged();
-            };
-        }
-    }
-
-    @Unique
-    private void CE$onUpgradesChanged() {
-        updateSleep();
     }
 }

@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tech.luckyblock.mcmod.ctnhenergy.api.ICircuitPattern;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
-import yuuki1293.pccard.wrapper.IAEPattern;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -61,8 +61,8 @@ public class PatternProviderTargetCacheMixin {
                                 .map(GenericStack::what)
                                 .collect(Collectors.toSet());
 
-                        int circuitNumber = patternDetails instanceof IAEPattern pattern ? pattern.pCCard$getNumber() :
-                                -1;
+                        int circuitNumber = patternDetails instanceof ICircuitPattern pattern ?
+                                pattern.CE$getCircuitNumber() : ICircuitPattern.NO_CIRCUIT;
 
                         boolean allCircuit = true;
                         boolean allMatch = true;

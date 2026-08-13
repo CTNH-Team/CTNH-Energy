@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tech.luckyblock.mcmod.ctnhenergy.mixin.pcc.ConfigClientAccessor;
+import tech.luckyblock.mcmod.ctnhenergy.CEConfig;
 import tech.luckyblock.mcmod.ctnhenergy.utils.button.Blitters;
 import tech.luckyblock.mcmod.ctnhenergy.utils.button.ToggleBlitterButton;
 
@@ -28,7 +28,7 @@ public abstract class ProcessingEncodingPanelMixin {
         CE$circuitButton = new ToggleBlitterButton(
                 Blitters.CIRCUIT_ON,
                 Blitters.CIRCUIT_OFF,
-                ConfigClientAccessor.getJeiIntegrationValue()::set);
+                value -> CEConfig.INSTANCE.client.enableCircuitInPatternEncoding = value);
         CE$circuitButton.setHalfSize(true);
         CE$circuitButton.setTooltipOn(List.of(
                 Component.translatable("gui.ctnhenergy.enable_circuit"),
@@ -46,6 +46,6 @@ public abstract class ProcessingEncodingPanelMixin {
 
     @Inject(method = "updateBeforeRender", at = @At("TAIL"))
     public void updateBeforeRender(CallbackInfo ci) {
-        CE$circuitButton.setState(ConfigClientAccessor.getJeiIntegrationValue().get());
+        CE$circuitButton.setState(CEConfig.INSTANCE.client.enableCircuitInPatternEncoding);
     }
 }

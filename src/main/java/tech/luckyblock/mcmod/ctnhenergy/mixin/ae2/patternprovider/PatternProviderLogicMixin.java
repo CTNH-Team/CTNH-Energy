@@ -1,6 +1,8 @@
 package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -15,7 +17,9 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
@@ -29,14 +33,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
+import tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService;
+import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEPatternProviderTarget;
-import yuuki1293.pccard.impl.PatternProviderLogicImpl;
-import yuuki1293.pccard.wrapper.IPatternProviderLogicMixin;
 
 import java.util.*;
 
 @Mixin(value = PatternProviderLogic.class, remap = false)
-public abstract class PatternProviderLogicMixin implements IPatternProviderLogicMixin, IUpgradeableObject {
+public abstract class PatternProviderLogicMixin implements IUpgradeableObject {
+
+    @Unique
+    private IUpgradeInventory CE$upgrades;
 
     @Final
     @Shadow
@@ -76,6 +83,9 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     public abstract LockCraftingMode getCraftingLockedReason();
 
     @Shadow
+    public abstract void updatePatterns();
+
+    @Shadow
     protected abstract Set<Direction> getActiveSides();
 
     @Shadow
@@ -112,11 +122,44 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
     private void PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host,
                                       int patternInventorySize, CallbackInfo ci) {
         configManager.registerSetting(CESettings.BLOCKING_TYPE, CESettings.BlockingType.DEFAULT);
+        CE$upgrades = UpgradeInventories.forMachine(host.getTerminalIcon().getItem(), 1,
+                () -> {
+                    host.saveChanges();
+                    updatePatterns();
+                    ((IEnergyDistributor) this).updateSleep();
+                });
     }
 
     @Unique
     public CESettings.BlockingType CE$getBlockingMode() {
         return configManager.getSetting(CESettings.BLOCKING_TYPE);
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return CE$upgrades;
+    }
+
+    @Inject(method = "writeToNBT", at = @At("HEAD"))
+    private void CE$writeUpgrades(CompoundTag tag, CallbackInfo ci) {
+        CE$upgrades.writeToNBT(tag, "ctnhenergy_upgrades");
+    }
+
+    @Inject(method = "readFromNBT", at = @At("HEAD"))
+    private void CE$readUpgrades(CompoundTag tag, CallbackInfo ci) {
+        CE$upgrades.readFromNBT(tag, "ctnhenergy_upgrades");
+    }
+
+    @Inject(method = "addDrops", at = @At("HEAD"))
+    private void CE$dropUpgrades(List<ItemStack> drops, CallbackInfo ci) {
+        for (var stack : CE$upgrades) {
+            if (!stack.isEmpty()) drops.add(stack.copy());
+        }
+    }
+
+    @Inject(method = "clearContent", at = @At("HEAD"))
+    private void CE$clearUpgrades(CallbackInfo ci) {
+        CE$upgrades.clear();
     }
 
     @Inject(
@@ -127,7 +170,8 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
         CE$patternsMap.clear();
         patternInputs.clear();
         for (var stack : this.patternInventory) {
-            var details = PatternDetailsHelper.decodePattern(PatternProviderLogicImpl.updatePatterns(this, stack),
+            var details = PatternDetailsHelper.decodePattern(CircuitPatternService.updatePattern(stack,
+                    isUpgradedWith(tech.luckyblock.mcmod.ctnhenergy.registry.CEItems.PROGRAMMED_CIRCUIT_CARD.get())),
                     this.host.getBlockEntity().getLevel());
 
             if (details != null) {
@@ -186,6 +230,8 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             var craftingMachine = ICraftingMachine.of(level, adjPos, adjBeSide, adjBe);
             if (craftingMachine != null && craftingMachine.acceptsPlans()) {
                 if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
+                    tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService.apply(patternDetails, level,
+                            List.of(adjPos));
                     onPushPatternSuccess(patternDetails);
                     cir.setReturnValue(true);
                     return;
@@ -239,9 +285,12 @@ public abstract class PatternProviderLogicMixin implements IPatternProviderLogic
             }
 
             if (canPush) {
-                pCCard$setSendDirection(direction);
                 // 重写cpulogic后pcc监听不到，故在此处帮其set
-                pCCard$setPCNumber(patternDetails);
+                if (patternDetails instanceof tech.luckyblock.mcmod.ctnhenergy.api.ICircuitPattern circuitPattern) {
+                    tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService.apply(patternDetails, level,
+                            tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService.resolveTargets(
+                                    level, be.getBlockPos(), direction, 5));
+                }
                 // 先设置电路板，最大程度保证不串配方
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                     long inserted = adapter.insert(what, amount, Actionable.MODULATE);

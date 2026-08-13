@@ -53,7 +53,6 @@ import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
 import tech.luckyblock.mcmod.ctnhenergy.registry.*;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
-import yuuki1293.pccard.PCCard;
 
 public class CommonProxy {
 
@@ -125,9 +124,17 @@ public class CommonProxy {
                 Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
                         "block.ae2cs.simple_pattern_provider");
 
-                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
+                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AEBlocks.PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AEParts.PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
+                        GuiText.CraftingInterface.getTranslationKey());
+                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
                         "block.ae2cs.simple_pattern_provider");
-                Upgrades.add(PCCard.PROGRAMMED_CIRCUIT_CARD_ITEM.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
+                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
                         "block.ae2cs.simple_pattern_provider");
 
                 Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");

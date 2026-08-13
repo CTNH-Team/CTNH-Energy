@@ -34,9 +34,9 @@ All artwork (images, textures, models, animations, etc.) is licensed under the [
 - The implementation of smart blocking mode of pattern provider referenced [ExpandedAE](https://github.com/ko-lja/expandedae)  
 - The implementation of Quantum Computer referenced [AdvancedAE](https://github.com/pedroksl/AdvancedAE)
 - The implementation of AppEU referenced [Applied Flux](https://github.com/GlodBlock/ExtendedAE/tree/appflux/1.21.1-neoforge)
+- Programmed circuit card functionality was adapted from [Programmed Circuit Card](https://github.com/yuuki1293/ProgrammedCircuitCard), licensed under MIT. The applicable license text is included in `THIRD_PARTY_LICENSE/ProgrammedCircuitCard-LICENSE.txt`.
 
 ### Dependents
 
 - Applied Energistics 2  
 - GregTech-Modern
-- The implementation of ME Advanced Pattern Buffer is based on [ProgrammedCircuitCard](https://github.com/yuuki1293/ProgrammedCircuitCard)  

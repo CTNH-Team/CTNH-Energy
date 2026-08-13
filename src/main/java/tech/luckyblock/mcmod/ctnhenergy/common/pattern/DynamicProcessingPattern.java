@@ -9,7 +9,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.pattern.AEProcessingPattern;
 import org.jetbrains.annotations.Nullable;
-import yuuki1293.pccard.wrapper.IAEPattern;
+import tech.luckyblock.mcmod.ctnhenergy.api.ICircuitPattern;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
@@ -17,13 +17,13 @@ import static com.mojang.text2speech.Narrator.LOGGER;
  * 支持动态倍数扩展的处理型 Pattern。
  * 可通过 multiplyInPlace(long) 方法原地修改输入输出数量。
  */
-public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
+public class DynamicProcessingPattern implements IPatternDetails, ICircuitPattern {
 
     private final AEItemKey definition;
     private final GenericStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;
     private final GenericStack[] condensedOutputs;
-    private int pCCard$number = 0;
+    private int circuitNumber = ICircuitPattern.NO_CIRCUIT;
 
     public DynamicProcessingPattern(AEProcessingPattern pattern) {
         this.definition = pattern.getDefinition();
@@ -34,8 +34,8 @@ public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
             inputs[i] = new Input(pattern.getInputs()[i]);
         }
         this.condensedOutputs = pattern.getOutputs().clone();
-        if (pattern instanceof IAEPattern iaePattern)
-            pCCard$setNumber(iaePattern.pCCard$getNumber());
+        if (pattern instanceof ICircuitPattern circuitPattern)
+            CE$setCircuitNumber(circuitPattern.CE$getCircuitNumber());
     }
 
     @Override
@@ -134,13 +134,13 @@ public class DynamicProcessingPattern implements IPatternDetails, IAEPattern {
     }
 
     @Override
-    public void pCCard$setNumber(int number) {
-        pCCard$number = number;
+    public void CE$setCircuitNumber(int number) {
+        circuitNumber = number;
     }
 
     @Override
-    public int pCCard$getNumber() {
-        return pCCard$number;
+    public int CE$getCircuitNumber() {
+        return circuitNumber;
     }
 
     // ===========================================================

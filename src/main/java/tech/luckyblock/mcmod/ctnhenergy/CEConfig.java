@@ -23,6 +23,17 @@ public class CEConfig {
     @Configurable.Comment("Crafting CPU")
     public CPU cpu = new CPU();
 
+    @Configurable
+    @Configurable.Comment("Client")
+    public Client client = new Client();
+
+    public static class Client {
+
+        @Configurable
+        @Configurable.Comment("Place the programmed circuit in processing patterns by default")
+        public boolean enableCircuitInPatternEncoding = true;
+    }
+
     public static class CPU {
 
         @Configurable

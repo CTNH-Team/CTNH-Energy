@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import appeng.api.parts.PartModels;
+import appeng.api.upgrades.Upgrades;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -66,6 +67,12 @@ public class CEItems {
                             .end();
                 }
             })
+            .register();
+
+    public static ItemEntry<Item> PROGRAMMED_CIRCUIT_CARD = REGISTRATE.item("programmed_circuit_card",
+            p -> Upgrades.createUpgradeCardItem(new Item.Properties()))
+            .cnlang("编程电路卡")
+            .lang("Programmed Circuit Card")
             .register();
 
     public static ItemEntry<Item> EU_CELL_HOUSING = REGISTRATE.item("eu_cell_housing", Item::new)

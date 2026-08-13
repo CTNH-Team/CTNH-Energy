@@ -7,9 +7,12 @@
   "mixins": [
     "ae2.CableBusContainerMixin",
     "ae2.SettingsMixin",
+    "ae2.circuit.PatternDetailsHelperMixin",
+    "ae2.circuit.ProcessingPatternMixin",
     "ae2.cpu.CraftingCpuLogicMixin",
     "ae2.cpu.CraftingCPUMenuMixin",
     "ae2.cpu.CraftingServiceMixin",
+    "ae2.cpu.ExecutingCraftingJobCircuitMixin",
     "ae2.emi.AbstractRecipeHandlerMixin",
     "ae2.emi.AbstractRecipeHandlerMixin$PartiallyCraftableMixin",
     "ae2.emi.CraftingHelperMixin",
@@ -24,7 +27,6 @@
     "ae2.energy.MEInventoryHandlerMixin",
     "ae2.energy.PatternProviderEnergyDistributorLogic",
     "ae2.energy.StorageBusPartMixin",
-    "ae2.menu.AEBaseMenuMixin",
     "ae2.misc.BodyProviderAdapterMixin",
     "ae2.misc.ColorApplicatorItemMixin",
     "ae2.misc.IOBusPartMixin",
@@ -35,6 +37,7 @@
     "ae2.patternencodingpanel.ProcessingEncodingPanelMixin",
     "ae2.patternencodingpanel.StyleManagerMixin",
     "ae2.patternprovider.PatternContainerGroupMixin",
+    "ae2.patternprovider.PatternProviderLogicHostMixin",
     "ae2.patternprovider.PatternProviderLogicMixin",
     "ae2.patternprovider.PatternProviderMenuMixin",
     "ae2.patternprovider.PatternProviderTargetCacheMixin",
@@ -48,13 +51,12 @@
     "gtm.MultiblockStateMixin",
     "omni.AEUniversalCellInventoryMixin",
     "omni.OCItemsMixin",
-    "omni.OmniCraftingBlockEntityMixin",
-    "pcc.ConfigClientAccessor",
-    "pcc.PatternProviderLogicImplMixin"
+    "omni.OmniCraftingBlockEntityMixin"
   ],
   "client": [
     "ae2.emi.EmiAeBaseScreenStackProviderMixin",
     "ae2.emi.EmiScreenBaseMixin",
+    "ae2.emi.EmiStackHelperCircuitMixin",
     "ae2.patternprovider.PatternProviderScreenMixin",
     "ae2.patternprovider.SettingToggleButtonMixin",
     "ae2ct.CraftingTreeScreenMixin"

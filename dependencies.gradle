@@ -13,7 +13,6 @@ dependencies {
     modImplementation(ctnh.glodium)
     modImplementation(ctnh.eae)
 
-    modImplementation(ctnh.pcc)
     modImplementation(ctnh.omnicells)
     modImplementation(ctnh.merequester)
     modImplementation(ctnh.ae2wt)
