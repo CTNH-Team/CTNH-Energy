@@ -17,6 +17,7 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.DynamoCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.item.EUCellStats;
+import tech.luckyblock.mcmod.ctnhenergy.common.item.MaintainingCardItem;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.parts.p2p.EUP2PTunnelPart;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -85,6 +86,12 @@ public class CEItems {
             .cnlang("EU能源P2P通道")
             .lang("EU P2P Tunnel")
             .model(NonNullBiConsumer.noop())
+            .register();
+
+    public static ItemEntry<MaintainingCardItem> MAINTAINING_CARD = REGISTRATE
+            .item("maintaining_card", MaintainingCardItem::new)
+            .cnlang("维持卡")
+            .lang("Maintaining Card")
             .register();
 
     public static void init() {

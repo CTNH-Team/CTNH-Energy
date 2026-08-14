@@ -9,6 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.ctnhlang.CN;
+import com.ctnhlang.Category;
 import com.ctnhlang.EN;
 import com.wintercogs.ae2omnicells.common.blocks.OmniCraftingUnitBlock;
 import com.wintercogs.ae2omnicells.common.items.OmniCraftingBlockItem;
@@ -16,6 +17,7 @@ import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
+@Category("tooltip")
 @Mod.EventBusSubscriber(modid = CTNHEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ForgeClientEventHandler {
 

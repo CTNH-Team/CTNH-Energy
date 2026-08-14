@@ -54,9 +54,9 @@ import tech.luckyblock.mcmod.ctnhenergy.registry.*;
 import tech.luckyblock.mcmod.ctnhenergy.utils.CEUtil;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 
+@SuppressWarnings({ "UnstableApiUsage", "removal" })
 public class CommonProxy {
 
-    @SuppressWarnings("removal")
     public CommonProxy() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
@@ -64,7 +64,6 @@ public class CommonProxy {
         CommonProxy.init();
     }
 
-    @SuppressWarnings({ "UnstableApiUsage", "removal" })
     public static void init() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         CTNHEnergy.REGISTRATE.registerRegistrate();
@@ -76,85 +75,9 @@ public class CommonProxy {
         CECreativeModeTabs.init();
         eventBus.addGenericListener(GTRecipeType.class, CommonProxy::registerRecipeTypes);
         eventBus.addGenericListener(MachineDefinition.class, CommonProxy::registerMachines);
-        eventBus.addListener((RegisterEvent event) -> {
-            if (!event.getRegistryKey().equals(Registries.BLOCK)) {
-                return;
-            }
-            AEKeyTypes.register(EUKeyType.INSTANCE);
-            AEKeyTypes.register(VoltageKeyType.INSTANCE);
-
-        });
 
         GenericSlotCapacities.register(EUKeyType.INSTANCE, (long) Integer.MAX_VALUE);
         StorageCells.addCellHandler(EuCellHandler.HANDLER);
-
-        eventBus.addListener((FMLCommonSetupEvent event) -> {
-            event.enqueueWork(() -> {
-                GridServices.register(EnergyDistributeService.class, EnergyDistributeService.class);
-                ContainerItemStrategy.register(EUKeyType.INSTANCE, EUKey.class, new EUContainerItemStrategy());
-                registerCellUpgrades(CEItems.EU_CELL);
-
-                Upgrades.add(AEItems.FUZZY_CARD, AEBlocks.PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(AEItems.FUZZY_CARD, AEParts.PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-
-                Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.INTERFACE, 1, GuiText.Interface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, AEParts.INTERFACE, 1, GuiText.Interface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE, 1,
-                        GuiText.Interface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE_PART, 1,
-                        GuiText.Interface.getTranslationKey());
-
-                Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, AEParts.PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
-                        "block.ae2cs.simple_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
-                        "block.ae2cs.simple_pattern_provider");
-
-                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AEBlocks.PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AEParts.PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
-                        GuiText.CraftingInterface.getTranslationKey());
-                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
-                        "block.ae2cs.simple_pattern_provider");
-                Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
-                        "block.ae2cs.simple_pattern_provider");
-
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, "block.ae2cs.ender_interface");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, 1,
-                        "block.ae2cs.ender_interface");
-
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.RESONATING_PATTERN_PROVIDER_PART, 1,
-                        "block.ae2cs.resonating_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1,
-                        "block.ae2cs.resonating_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART, 1,
-                        "block.ae2cs.resonating_pattern_provider");
-                Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, 1,
-                        "block.ae2cs.resonating_pattern_provider");
-
-                P2PTunnelAttunement.registerAttunementTag(CEItems.EU_P2P);
-            });
-        });
 
         MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, (AttachCapabilitiesEvent<BlockEntity> event) -> {
             var blockEntity = event.getObject();
@@ -192,6 +115,86 @@ public class CommonProxy {
 
     public static void registerRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         CERecipeTypes.init();
+    }
+
+    @SubscribeEvent
+    public void registerEUKey(RegisterEvent event) {
+        if (event.getRegistryKey().equals(Registries.BLOCK)) {
+            AEKeyTypes.register(EUKeyType.INSTANCE);
+            AEKeyTypes.register(VoltageKeyType.INSTANCE);
+        }
+    }
+
+    @SubscribeEvent
+    public void initAE2(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            GridServices.register(EnergyDistributeService.class, EnergyDistributeService.class);
+            ContainerItemStrategy.register(EUKeyType.INSTANCE, EUKey.class, new EUContainerItemStrategy());
+            registerCellUpgrades(CEItems.EU_CELL);
+
+            Upgrades.add(AEItems.FUZZY_CARD, AEBlocks.PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(AEItems.FUZZY_CARD, AEParts.PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(AEItems.FUZZY_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+
+            Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.INTERFACE, 1, GuiText.Interface.getTranslationKey());
+            Upgrades.add(CEItems.DYNAMO_CARD, AEParts.INTERFACE, 1, GuiText.Interface.getTranslationKey());
+            Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE, 1,
+                    GuiText.Interface.getTranslationKey());
+            Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_INTERFACE_PART, 1,
+                    GuiText.Interface.getTranslationKey());
+
+            Upgrades.add(CEItems.DYNAMO_CARD, AEBlocks.PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.DYNAMO_CARD, AEParts.PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.DYNAMO_CARD, EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
+                    "block.ae2cs.simple_pattern_provider");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
+                    "block.ae2cs.simple_pattern_provider");
+
+            Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AEBlocks.PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AEParts.PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), EPPItemAndBlock.EX_PATTERN_PROVIDER, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), EPPItemAndBlock.EX_PATTERN_PROVIDER_PART, 1,
+                    GuiText.CraftingInterface.getTranslationKey());
+            Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AECSParts.SIMPLE_PATTERN_PROVIDER_PART, 1,
+                    "block.ae2cs.simple_pattern_provider");
+            Upgrades.add(CEItems.PROGRAMMED_CIRCUIT_CARD.get(), AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1,
+                    "block.ae2cs.simple_pattern_provider");
+
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, "block.ae2cs.ender_interface");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_ENDER_INTERFACE_PART, 1, "block.ae2cs.ender_interface");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, 1,
+                    "block.ae2cs.ender_interface");
+
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.RESONATING_PATTERN_PROVIDER_PART, 1,
+                    "block.ae2cs.resonating_pattern_provider");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1,
+                    "block.ae2cs.resonating_pattern_provider");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART, 1,
+                    "block.ae2cs.resonating_pattern_provider");
+            Upgrades.add(CEItems.DYNAMO_CARD, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, 1,
+                    "block.ae2cs.resonating_pattern_provider");
+
+            Upgrades.add(CEItems.MAINTAINING_CARD, AEParts.IMPORT_BUS, 1, GuiText.IOBuses.getTranslationKey());
+            Upgrades.add(CEItems.MAINTAINING_CARD, AEParts.EXPORT_BUS, 1, GuiText.IOBuses.getTranslationKey());
+
+            P2PTunnelAttunement.registerAttunementTag(CEItems.EU_P2P);
+        });
     }
 
     @SubscribeEvent
