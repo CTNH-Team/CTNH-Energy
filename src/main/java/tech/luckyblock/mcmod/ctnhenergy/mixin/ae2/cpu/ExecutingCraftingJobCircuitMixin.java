@@ -14,13 +14,15 @@ import tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternData;
 
 import java.util.Map;
 
-@Mixin(value = ExecutingCraftingJob.class, remap = false)
+@Mixin(value = ExecutingCraftingJob.class)
 public class ExecutingCraftingJobCircuitMixin {
 
     @Inject(method = "writeToNBT",
             at = @At(value = "INVOKE",
                      target = "Lnet/minecraft/nbt/CompoundTag;putLong(Ljava/lang/String;J)V",
-                     ordinal = 0))
+                     remap = true,
+                     ordinal = 0),
+            remap = false)
     private void write(CallbackInfoReturnable<CompoundTag> cir, @Local(name = "e") Map.Entry<IPatternDetails, ?> entry,
                        @Local(name = "item") CompoundTag item) {
         if (entry.getKey() instanceof ICircuitPattern pattern &&
