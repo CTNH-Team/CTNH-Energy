@@ -199,6 +199,7 @@
   "ctnhenergy.quantum_computer": "Quantum Supercomputer",
   "ctnhenergy.tooltip.auto_multiply": "Automatically doubles processing pattern execution.",
   "ctnhenergy.tooltip.omni_thread_num": "Number of Parallels: ",
+  "gui.ctnhenergy.frequency_band_create.add_team_members": "Add FTB team members to whitelist",
   "gui.ctnhenergy.tagfilterconfigurator.black_list": "黑名单过滤器",
   "gui.ctnhenergy.tagfilterconfigurator.tag_filter": "Configure Tag Filter",
   "item.ctnhenergy.dynamo_card": "Dynamo Card",

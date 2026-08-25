@@ -18,6 +18,8 @@ dependencies {
     modImplementation(ctnh.ae2wt)
     modImplementation(ctnh.ae2ct)
     modImplementation(ctnh.ae2cs)
+    modImplementation(ctnh.ftblibrary)
+    modImplementation(ctnh.ftbteams)
     
     implementation(ctnh.kotlinforforge)
     modImplementation(ctnh.betterp2p)

@@ -48,6 +48,7 @@
     "ae2.patternprovider.PatternProviderTargetCacheMixin",
     "ae2ct.CraftingTreeWidgetAccessor",
     "aecs.CrystalSeedItemMixin",
+    "aecs.FrequencyBandCreateMenuMixin",
     "aecs.ResonatingPatternProviderLogicMixin",
     "betterP2P.ClientProxyMixin",
     "betterP2P.CommonProxyMixin",
@@ -58,6 +59,7 @@
     "omni.OmniCraftingBlockEntityMixin"
   ],
   "client": [
+    "aecs.FrequencyBandCreateGUIMixin",
     "ae2.emi.EmiAeBaseScreenStackProviderMixin",
     "ae2.emi.EmiScreenBaseMixin",
     "ae2.emi.EmiStackHelperCircuitMixin",
