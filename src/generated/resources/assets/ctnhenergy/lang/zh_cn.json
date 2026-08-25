@@ -61,6 +61,7 @@
   "ctnhenergy.maintainingcarditem.currentamounttooltip": "当前维持数量: %s",
   "ctnhenergy.maintainingcarditem.settingstitle": "维持卡设置",
   "ctnhenergy.maintainingcarditem.stockingamount": "库存维持数量",
+  "ctnhenergy.patternauthordata.patternencodedby": "由 %s 在 %s 编码",
   "ctnhenergy.ponder.annihilation_plane.header": "破坏面板的使用",
   "ctnhenergy.ponder.annihilation_plane.text_1": "破坏面板会将其前面的方块或者掉落物收集到网络中（如果能的话）",
   "ctnhenergy.ponder.annihilation_plane.title": "破坏面板的使用",
@@ -243,5 +244,7 @@
   "item.ctnhenergy.ulv_eu_cell": "§8ULV§r ME EU存储元件",
   "item.ctnhenergy.uv_eu_cell": "§3UV§r ME EU存储元件",
   "item.ctnhenergy.uxv_eu_cell": "§eUXV§r ME EU存储元件",
-  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU存储元件"
+  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU存储元件",
+  "stat.ctnhenergy.encoded_patterns": "编码样板数",
+  "stat.ctnhenergy.me_craft_requests": "ME合成请求数"
 }

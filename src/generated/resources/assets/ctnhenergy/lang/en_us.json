@@ -51,6 +51,7 @@
   "ctnhenergy.maintainingcarditem.currentamounttooltip": "Current stocking amount: %s",
   "ctnhenergy.maintainingcarditem.settingstitle": "Maintaining Card Settings",
   "ctnhenergy.maintainingcarditem.stockingamount": "Stocking Amount",
+  "ctnhenergy.patternauthordata.patternencodedby": "Encoded by %s at %s",
   "ctnhenergy.ponder.annihilation_plane.header": "Using the Annihilation Plane",
   "ctnhenergy.ponder.annihilation_plane.text_1": "The annihilation plane will collect blocks or items in front of it into the network (if possible)",
   "ctnhenergy.ponder.annihilation_plane.title": "Using the Annihilation Plane",
@@ -220,5 +221,7 @@
   "item.ctnhenergy.ulv_eu_cell": "§8ULV§r ME EU Storage Cell",
   "item.ctnhenergy.uv_eu_cell": "§3UV§r ME EU Storage Cell",
   "item.ctnhenergy.uxv_eu_cell": "§eUXV§r ME EU Storage Cell",
-  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU Storage Cell"
+  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU Storage Cell",
+  "stat.ctnhenergy.encoded_patterns": "Patterns Encoded",
+  "stat.ctnhenergy.me_craft_requests": "ME Crafting Requests"
 }

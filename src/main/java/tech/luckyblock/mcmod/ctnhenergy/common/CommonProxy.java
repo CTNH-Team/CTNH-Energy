@@ -48,6 +48,7 @@ import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKey;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.EUKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.key.VoltageKeyType;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.EnergyDistributeService;
+import tech.luckyblock.mcmod.ctnhenergy.common.stats.CEStats;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.strategy.EUContainerItemStrategy;
 import tech.luckyblock.mcmod.ctnhenergy.data.CEDatagen;
 import tech.luckyblock.mcmod.ctnhenergy.registry.*;
@@ -73,6 +74,7 @@ public class CommonProxy {
 
         CEDatagen.init();
         CECreativeModeTabs.init();
+        CEStats.init();
         eventBus.addGenericListener(GTRecipeType.class, CommonProxy::registerRecipeTypes);
         eventBus.addGenericListener(MachineDefinition.class, CommonProxy::registerMachines);
 
