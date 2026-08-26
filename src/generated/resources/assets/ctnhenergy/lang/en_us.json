@@ -51,6 +51,8 @@
   "ctnhenergy.maintainingcarditem.currentamounttooltip": "Current stocking amount: %s",
   "ctnhenergy.maintainingcarditem.settingstitle": "Maintaining Card Settings",
   "ctnhenergy.maintainingcarditem.stockingamount": "Stocking Amount",
+  "ctnhenergy.patternauthordata.patternencodedby": "Encoded by %s",
+  "ctnhenergy.patternauthordata.patternencodedtime": "Encoded Time: %s",
   "ctnhenergy.ponder.annihilation_plane.header": "Using the Annihilation Plane",
   "ctnhenergy.ponder.annihilation_plane.text_1": "The annihilation plane will collect blocks or items in front of it into the network (if possible)",
   "ctnhenergy.ponder.annihilation_plane.title": "Using the Annihilation Plane",
