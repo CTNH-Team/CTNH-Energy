@@ -11,8 +11,8 @@ import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
+import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public final class PatternAuthorData {
@@ -42,7 +42,7 @@ public final class PatternAuthorData {
             return;
         }
         rootTag.putString(AUTHOR, playerName);
-        rootTag.putString(ENCODE_TIME, ZonedDateTime.now(ZoneId.systemDefault()).format(TIME_FORMATTER));
+        rootTag.putLong(ENCODE_TIME, Instant.now().toEpochMilli());
 
         var display = stack.getOrCreateTagElement(DISPLAY);
         if (!display.contains(LORE, Tag.TAG_LIST)) {
@@ -60,10 +60,13 @@ public final class PatternAuthorData {
             return null;
         }
         var rootTag = stack.getTag();
-        if (!rootTag.contains(ENCODE_TIME, Tag.TAG_STRING)) {
+        if (!rootTag.contains(ENCODE_TIME, Tag.TAG_LONG)) {
             return null;
         }
-        return patternEncodedTime.translate(rootTag.getString(ENCODE_TIME))
+        var localTime = Instant.ofEpochMilli(rootTag.getLong(ENCODE_TIME))
+                .atZone(ZoneId.systemDefault())
+                .format(TIME_FORMATTER);
+        return patternEncodedTime.translate(localTime)
                 .withStyle(ChatFormatting.DARK_GRAY)
                 .withStyle(style -> style.withItalic(false));
     }
