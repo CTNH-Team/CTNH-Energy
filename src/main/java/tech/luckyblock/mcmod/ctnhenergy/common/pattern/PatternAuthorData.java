@@ -20,11 +20,16 @@ public final class PatternAuthorData {
     private static final String DISPLAY = "display";
     private static final String LORE = "Lore";
     private static final String AUTHOR = "ctnhenergy_author";
+    private static final String ENCODE_TIME = "ctnhenergy_encode_time";
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @CN("由 %s 在 %s 编码")
-    @EN("Encoded by %s at %s")
+    @CN("由 %s 编码")
+    @EN("Encoded by %s")
     static Lang patternEncodedBy;
+
+    @CN("编码时间: %s")
+    @EN("Encoded Time: %s")
+    static Lang patternEncodedTime;
 
     private PatternAuthorData() {}
 
@@ -37,16 +42,29 @@ public final class PatternAuthorData {
             return;
         }
         rootTag.putString(AUTHOR, playerName);
+        rootTag.putString(ENCODE_TIME, ZonedDateTime.now(ZoneId.systemDefault()).format(TIME_FORMATTER));
 
-        var encodedTime = ZonedDateTime.now(ZoneId.systemDefault()).format(TIME_FORMATTER);
         var display = stack.getOrCreateTagElement(DISPLAY);
         if (!display.contains(LORE, Tag.TAG_LIST)) {
             display.put(LORE, new ListTag());
         }
         var lore = display.getList(LORE, Tag.TAG_STRING);
-        Component authorLine = patternEncodedBy.translate(playerName, encodedTime)
+        Component authorLine = patternEncodedBy.translate(playerName)
                 .withStyle(ChatFormatting.DARK_GRAY)
                 .withStyle(style -> style.withItalic(false));
         lore.add(StringTag.valueOf(Component.Serializer.toJson(authorLine)));
+    }
+
+    public static Component encodedTimeLine(ItemStack stack) {
+        if (stack.isEmpty() || !stack.hasTag()) {
+            return null;
+        }
+        var rootTag = stack.getTag();
+        if (!rootTag.contains(ENCODE_TIME, Tag.TAG_STRING)) {
+            return null;
+        }
+        return patternEncodedTime.translate(rootTag.getString(ENCODE_TIME))
+                .withStyle(ChatFormatting.DARK_GRAY)
+                .withStyle(style -> style.withItalic(false));
     }
 }
