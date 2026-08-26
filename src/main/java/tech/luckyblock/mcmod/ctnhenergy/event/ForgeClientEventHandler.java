@@ -1,6 +1,7 @@
 package tech.luckyblock.mcmod.ctnhenergy.event;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,6 +16,7 @@ import com.wintercogs.ae2omnicells.common.blocks.OmniCraftingUnitBlock;
 import com.wintercogs.ae2omnicells.common.items.OmniCraftingBlockItem;
 import com.wintercogs.ae2omnicells.common.me.crafting.OmniCraftingFamily;
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
+import tech.luckyblock.mcmod.ctnhenergy.common.pattern.PatternAuthorData;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 @Category("tooltip")
@@ -39,6 +41,9 @@ public class ForgeClientEventHandler {
             if (craftingUnitBlock.omniCraftingType.family == OmniCraftingFamily.COMPLEX) {
                 event.getToolTip().add(auto_multiply.translate().withStyle(ChatFormatting.AQUA));
             }
+        }
+        if (Screen.hasShiftDown()) {
+            PatternAuthorData.addEncodedTimeLine(event.getToolTip(), stack);
         }
     }
 }

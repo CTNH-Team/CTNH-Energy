@@ -1,0 +1,86 @@
+package tech.luckyblock.mcmod.ctnhenergy.common.pattern;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+public final class PatternAuthorData {
+
+    private static final String DISPLAY = "display";
+    private static final String LORE = "Lore";
+    private static final String AUTHOR = "ctnhenergy_author";
+    private static final String ENCODE_TIME = "ctnhenergy_encode_time";
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    @CN("由 %s 编码")
+    @EN("Encoded by %s")
+    static Lang patternEncodedBy;
+
+    @CN("编码时间: %s")
+    @EN("Encoded Time: %s")
+    static Lang patternEncodedTime;
+
+    private PatternAuthorData() {}
+
+    public static void addAuthorLore(ItemStack stack, String playerName) {
+        if (stack.isEmpty() || playerName == null || playerName.isBlank()) {
+            return;
+        }
+        var rootTag = stack.getOrCreateTag();
+        if (rootTag.contains(AUTHOR, Tag.TAG_STRING)) {
+            return;
+        }
+        rootTag.putString(AUTHOR, playerName);
+        rootTag.putLong(ENCODE_TIME, Instant.now().toEpochMilli());
+
+        var display = stack.getOrCreateTagElement(DISPLAY);
+        if (!display.contains(LORE, Tag.TAG_LIST)) {
+            display.put(LORE, new ListTag());
+        }
+        var lore = display.getList(LORE, Tag.TAG_STRING);
+        Component authorLine = patternEncodedBy.translate(playerName)
+                .withStyle(ChatFormatting.DARK_GRAY)
+                .withStyle(style -> style.withItalic(false));
+        lore.add(StringTag.valueOf(Component.Serializer.toJson(authorLine)));
+    }
+
+    public static void addEncodedTimeLine(List<Component> tooltip, ItemStack stack) {
+        if (stack.isEmpty() || !stack.hasTag()) {
+            return;
+        }
+        var rootTag = stack.getTag();
+        if (!rootTag.contains(ENCODE_TIME, Tag.TAG_LONG)) {
+            return;
+        }
+        var localTime = Instant.ofEpochMilli(rootTag.getLong(ENCODE_TIME))
+                .atZone(ZoneId.systemDefault())
+                .format(TIME_FORMATTER);
+        Component timeLine = patternEncodedTime.translate(localTime)
+                .withStyle(ChatFormatting.DARK_GRAY)
+                .withStyle(style -> style.withItalic(false));
+
+        String author = rootTag.getString(AUTHOR);
+        if (!author.isBlank()) {
+            String authorLine = patternEncodedBy.translate(author).getString();
+            for (int i = 0; i < tooltip.size(); i++) {
+                if (tooltip.get(i).getString().equals(authorLine)) {
+                    tooltip.add(i + 1, timeLine);
+                    return;
+                }
+            }
+        }
+        tooltip.add(timeLine);
+    }
+}
