@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.luckyblock.mcmod.ctnhenergy.common.pattern.PatternAuthorData;
+import tech.luckyblock.mcmod.ctnhenergy.common.stats.CEStats;
 
 @Mixin(value = PatternEncodingTermMenu.class, remap = false)
 public abstract class PatternEncodingTermMenuMixin {
@@ -29,7 +30,7 @@ public abstract class PatternEncodingTermMenuMixin {
     }
 
     @Inject(method = "encode", at = @At("TAIL"))
-    private void ctnhenergy$addAuthorLore(CallbackInfo ci) {
+    private void ctnhenergy$afterEncode(CallbackInfo ci) {
         var player = ((AEBaseMenu) (Object) this).getPlayer();
         if (player.level().isClientSide()) {
             return;
@@ -37,6 +38,8 @@ public abstract class PatternEncodingTermMenuMixin {
         ItemStack stack = encodedPatternSlot.getItem();
         if (ctnhenergy$wasEmptyBeforeEncode && !stack.isEmpty() && PatternDetailsHelper.isEncodedPattern(stack)) {
             PatternAuthorData.addAuthorLore(stack, player.getScoreboardName());
+            //下单统计数
+            CEStats.awardEncodedPattern(player);
         }
     }
 }
