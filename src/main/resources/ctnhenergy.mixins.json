@@ -55,7 +55,9 @@
     "gtm.BlockPatternMixin",
     "omni.AEUniversalCellInventoryMixin",
     "omni.OCItemsMixin",
-    "omni.OmniCraftingBlockEntityMixin"
+    "omni.OmniCraftingBlockEntityMixin",
+    "ae2.patternencodingpanel.PatternEncodingTermMenuMixin",
+    "ae2pw.PatternWorkStationMenuMixin"
   ],
   "client": [
     "ae2.emi.EmiAeBaseScreenStackProviderMixin",
