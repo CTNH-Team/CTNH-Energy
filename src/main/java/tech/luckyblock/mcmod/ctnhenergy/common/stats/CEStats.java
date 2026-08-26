@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.ctnhlang.Key;
-
 import tech.luckyblock.mcmod.ctnhenergy.CTNHEnergy;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
@@ -29,8 +28,7 @@ public final class CEStats {
 
     private CEStats() {}
 
-    public static void init() {
-    }
+    public static void init() {}
 
     private static ResourceLocation register(String path) {
         ResourceLocation id = CTNHEnergy.id(path);

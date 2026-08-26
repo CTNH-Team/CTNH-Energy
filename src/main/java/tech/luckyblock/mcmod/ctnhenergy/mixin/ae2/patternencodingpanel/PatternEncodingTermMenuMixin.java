@@ -38,7 +38,7 @@ public abstract class PatternEncodingTermMenuMixin {
         ItemStack stack = encodedPatternSlot.getItem();
         if (ctnhenergy$wasEmptyBeforeEncode && !stack.isEmpty() && PatternDetailsHelper.isEncodedPattern(stack)) {
             PatternAuthorData.addAuthorLore(stack, player.getScoreboardName());
-            //下单统计数
+            // 下单统计数
             CEStats.awardEncodedPattern(player);
         }
     }

@@ -15,9 +15,9 @@ public class CraftConfirmMenuMixin {
     @Inject(
             method = "startJob",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lappeng/api/networking/crafting/ICraftingSubmitResult;successful()Z",
-                    remap = false))
+                     value = "INVOKE",
+                     target = "Lappeng/api/networking/crafting/ICraftingSubmitResult;successful()Z",
+                     remap = false))
     private void ctnhenergy$awardMECraftRequest(CallbackInfo ci, @Local ICraftingSubmitResult submitResult) {
         var menu = (CraftConfirmMenu) (Object) this;
         var player = menu.getPlayer();
