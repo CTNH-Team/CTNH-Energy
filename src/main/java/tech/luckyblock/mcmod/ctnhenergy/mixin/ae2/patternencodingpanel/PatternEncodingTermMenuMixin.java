@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.luckyblock.mcmod.ctnhenergy.common.pattern.PatternAuthorData;
-import tech.luckyblock.mcmod.ctnhenergy.common.stats.CEStats;
 
 @Mixin(value = PatternEncodingTermMenu.class, remap = false)
 public abstract class PatternEncodingTermMenuMixin {
@@ -40,7 +39,6 @@ public abstract class PatternEncodingTermMenuMixin {
                 && !stack.isEmpty()
                 && PatternDetailsHelper.isEncodedPattern(stack)) {
             PatternAuthorData.addAuthorLore(stack, player.getScoreboardName());
-            CEStats.awardEncodedPattern(player);
         }
     }
 }
