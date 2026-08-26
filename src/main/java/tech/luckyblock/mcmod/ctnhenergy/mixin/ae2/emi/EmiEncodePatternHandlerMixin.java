@@ -19,13 +19,4 @@ public class EmiEncodePatternHandlerMixin {
     void canCraft(EmiRecipe recipe, EmiCraftContext<?> context, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
     }
-
-    @Inject(method = "transferRecipe", at = @At("RETURN"))
-    private void ctnhenergy$encodeAfterTransfer(PatternEncodingTermMenu menu, Recipe<?> recipeBase,
-                                                EmiRecipe emiRecipe, boolean doTransfer,
-                                                CallbackInfoReturnable<Result> cir) {
-        if (doTransfer) {
-            menu.encode();
-        }
-    }
 }
