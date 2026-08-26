@@ -245,5 +245,7 @@
   "item.ctnhenergy.ulv_eu_cell": "§8ULV§r ME EU存储元件",
   "item.ctnhenergy.uv_eu_cell": "§3UV§r ME EU存储元件",
   "item.ctnhenergy.uxv_eu_cell": "§eUXV§r ME EU存储元件",
-  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU存储元件"
+  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU存储元件",
+  "stat.ctnhenergy.encoded_patterns": "编码样板数",
+  "stat.ctnhenergy.me_craft_requests": "ME合成请求数"
 }

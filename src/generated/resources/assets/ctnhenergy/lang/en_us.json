@@ -222,5 +222,7 @@
   "item.ctnhenergy.ulv_eu_cell": "§8ULV§r ME EU Storage Cell",
   "item.ctnhenergy.uv_eu_cell": "§3UV§r ME EU Storage Cell",
   "item.ctnhenergy.uxv_eu_cell": "§eUXV§r ME EU Storage Cell",
-  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU Storage Cell"
+  "item.ctnhenergy.zpm_eu_cell": "§cZPM§r ME EU Storage Cell",
+  "stat.ctnhenergy.encoded_patterns": "Patterns Encoded",
+  "stat.ctnhenergy.me_craft_requests": "ME Crafting Requests"
 }
