@@ -43,10 +43,7 @@ public class ForgeClientEventHandler {
             }
         }
         if (Screen.hasShiftDown()) {
-            Component encodedTimeLine = PatternAuthorData.encodedTimeLine(stack);
-            if (encodedTimeLine != null) {
-                event.getToolTip().add(encodedTimeLine);
-            }
+            PatternAuthorData.addEncodedTimeLine(event.getToolTip(), stack);
         }
     }
 }

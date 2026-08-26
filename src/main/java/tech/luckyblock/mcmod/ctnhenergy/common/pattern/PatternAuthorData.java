@@ -14,6 +14,7 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public final class PatternAuthorData {
 
@@ -55,19 +56,31 @@ public final class PatternAuthorData {
         lore.add(StringTag.valueOf(Component.Serializer.toJson(authorLine)));
     }
 
-    public static Component encodedTimeLine(ItemStack stack) {
+    public static void addEncodedTimeLine(List<Component> tooltip, ItemStack stack) {
         if (stack.isEmpty() || !stack.hasTag()) {
-            return null;
+            return;
         }
         var rootTag = stack.getTag();
         if (!rootTag.contains(ENCODE_TIME, Tag.TAG_LONG)) {
-            return null;
+            return;
         }
         var localTime = Instant.ofEpochMilli(rootTag.getLong(ENCODE_TIME))
                 .atZone(ZoneId.systemDefault())
                 .format(TIME_FORMATTER);
-        return patternEncodedTime.translate(localTime)
+        Component timeLine = patternEncodedTime.translate(localTime)
                 .withStyle(ChatFormatting.DARK_GRAY)
                 .withStyle(style -> style.withItalic(false));
+
+        String author = rootTag.getString(AUTHOR);
+        if (!author.isBlank()) {
+            String authorLine = patternEncodedBy.translate(author).getString();
+            for (int i = 0; i < tooltip.size(); i++) {
+                if (tooltip.get(i).getString().equals(authorLine)) {
+                    tooltip.add(i + 1, timeLine);
+                    return;
+                }
+            }
+        }
+        tooltip.add(timeLine);
     }
 }
