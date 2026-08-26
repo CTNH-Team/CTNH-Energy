@@ -1,8 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.pattern;
 
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -10,6 +7,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.time.ZoneId;

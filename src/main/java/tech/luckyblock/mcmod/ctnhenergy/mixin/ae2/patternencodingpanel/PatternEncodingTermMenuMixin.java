@@ -35,9 +35,7 @@ public abstract class PatternEncodingTermMenuMixin {
             return;
         }
         ItemStack stack = encodedPatternSlot.getItem();
-        if (ctnhenergy$wasEmptyBeforeEncode
-                && !stack.isEmpty()
-                && PatternDetailsHelper.isEncodedPattern(stack)) {
+        if (ctnhenergy$wasEmptyBeforeEncode && !stack.isEmpty() && PatternDetailsHelper.isEncodedPattern(stack)) {
             PatternAuthorData.addAuthorLore(stack, player.getScoreboardName());
         }
     }
