@@ -37,6 +37,10 @@ public class ForgeClientEventHandler {
     @EN("Automatically doubles processing pattern execution.")
     static Lang auto_multiply;
 
+    @CN("Shift 点击定位样板")
+    @EN("Shift + click to locate the pattern")
+    public static Lang shift_locate_pattern;
+
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();

@@ -211,6 +211,7 @@
   "ctnhenergy.quantum_computer": "量子超算",
   "ctnhenergy.tooltip.auto_multiply": "可自动翻倍发配处理样板",
   "ctnhenergy.tooltip.omni_thread_num": "并行数：",
+  "ctnhenergy.tooltip.shift_locate_pattern": "Shift 点击定位样板",
   "gui.ctnhenergy.blocking_type.all": "全部",
   "gui.ctnhenergy.blocking_type.all.details": "容器内存在任何材料时暂停发送。",
   "gui.ctnhenergy.blocking_type.default": "默认",
