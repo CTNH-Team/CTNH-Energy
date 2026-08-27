@@ -201,6 +201,7 @@
   "ctnhenergy.quantum_computer": "Quantum Supercomputer",
   "ctnhenergy.tooltip.auto_multiply": "Automatically doubles processing pattern execution.",
   "ctnhenergy.tooltip.omni_thread_num": "Number of Parallels: ",
+  "ctnhenergy.tooltip.shift_locate_pattern": "Shift + click to locate the pattern",
   "gui.ctnhenergy.tagfilterconfigurator.black_list": "黑名单过滤器",
   "gui.ctnhenergy.tagfilterconfigurator.tag_filter": "Configure Tag Filter",
   "item.ctnhenergy.dynamo_card": "Dynamo Card",

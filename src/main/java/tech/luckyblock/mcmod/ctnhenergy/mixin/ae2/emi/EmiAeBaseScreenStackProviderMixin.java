@@ -26,6 +26,14 @@ public class EmiAeBaseScreenStackProviderMixin {
                         target = "Ldev/emi/emi/api/stack/EmiStackInteraction;<init>(Ldev/emi/emi/api/stack/EmiIngredient;Ldev/emi/emi/api/recipe/EmiRecipe;Z)V"),
                index = 2)
     boolean allowClick(boolean clickable, @Local(argsOnly = true) Screen screen) {
+        // Shift + left click on the crafting status table is CTNH-Energy's own interaction (blink the
+        // pattern providers holding that pattern). While shift is held the stack must not be clickable
+        // for EMI, otherwise EMI consumes the press inside its MouseHandler mixin and starts a stack
+        // drag instead of letting the screen see the click. Hover tooltips are unaffected because EMI
+        // queries them with notClick = true.
+        if (Screen.hasShiftDown() && screen instanceof CraftingCPUScreen) {
+            return false;
+        }
         return screen instanceof CraftConfirmScreen || screen instanceof CraftingCPUScreen ||
                 screen instanceof CraftingTreeScreen;
     }
