@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tech.luckyblock.mcmod.ctnhenergy.api.ICircuitPattern;
 import tech.luckyblock.mcmod.ctnhenergy.common.CESettings;
 import tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService;
 import tech.luckyblock.mcmod.ctnhenergy.common.me.service.IEnergyDistributor;
@@ -285,11 +286,10 @@ public abstract class PatternProviderLogicMixin implements IUpgradeableObject {
             }
 
             if (canPush) {
-                // 重写cpulogic后pcc监听不到，故在此处帮其set
-                if (patternDetails instanceof tech.luckyblock.mcmod.ctnhenergy.api.ICircuitPattern circuitPattern) {
-                    tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService.apply(patternDetails, level,
-                            tech.luckyblock.mcmod.ctnhenergy.common.circuit.CircuitPatternService.resolveTargets(
-                                    level, be.getBlockPos(), direction, 5));
+                if (patternDetails instanceof ICircuitPattern) {
+                    CircuitPatternService.apply(patternDetails, level,
+                            CircuitPatternService.resolveTargets(
+                                    level, be.getBlockPos().relative(direction), direction, 5));
                 }
                 // 先设置电路板，最大程度保证不串配方
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {

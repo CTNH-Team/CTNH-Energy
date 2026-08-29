@@ -55,7 +55,7 @@ public final class CircuitPatternService {
         var result = new ArrayList<BlockPos>();
         var queue = new ArrayDeque<Node>();
         var visited = new HashSet<Node>();
-        queue.add(new Node(root.relative(direction), direction, 0));
+        queue.add(new Node(root, direction, 0));
         while (!queue.isEmpty()) {
             var node = queue.remove();
             if (!visited.add(node) || node.depth > maxDepth) continue;
