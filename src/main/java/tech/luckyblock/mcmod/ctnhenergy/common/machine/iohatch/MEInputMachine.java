@@ -36,8 +36,8 @@ public class MEInputMachine extends MEPartMachine {
     public MEInputMachine(IMachineBlockEntity holder, int tier, IO io, int configSize, Predicate<AEKey> predicate) {
         super(holder, tier, io);
         stackHandler = new GenericStackHandler(configSize);
-        new MEStorageItemHandler(this, IO.IN, nodeSupplier, stackHandler);
-        new MEStorageFluidHandler(this, IO.IN, nodeSupplier, stackHandler);
+        attachTrait(new MEStorageItemHandler(this, IO.IN, nodeSupplier, stackHandler));
+        attachTrait(new MEStorageFluidHandler(this, IO.IN, nodeSupplier, stackHandler));
         keyPredicate = predicate;
     }
 

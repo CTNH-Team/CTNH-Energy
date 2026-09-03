@@ -1,20 +1,20 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine;
 
+import appeng.integration.modules.igtooltip.GridNodeState;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickConfigurable;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IWorkLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.GridNodeHost;
 import com.gregtechceu.gtceu.integration.ae2.IGridConnectedMachine;
@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.integration.ae2.IGridConnectedMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
@@ -36,7 +37,11 @@ import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.config.IPluginConfig;
 import tech.luckyblock.mcmod.ctnhenergy.utils.MEConfigUtil;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -44,7 +49,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class MEPartMachine extends TieredIOPartMachine
-                           implements IDistinctPart, IHasCircuitSlot, IGridConnectedMachine, IActionHost,
+                           implements IDistinctPart, IGridConnectedMachine, IActionHost,
                            IDataStickConfigurable {
 
     @Persisted
@@ -57,10 +62,7 @@ public class MEPartMachine extends TieredIOPartMachine
     private final boolean circuitSlotEnabled;
     private final boolean distinctEnabled;
 
-    @Getter
-    @Persisted
-    @DescSynced
-    protected final NotifiableItemStackHandler circuitInventory;
+    protected final ProgrammableCircuitSlotTrait circuitSlot;
 
     @Getter
     @Persisted
@@ -83,7 +85,7 @@ public class MEPartMachine extends TieredIOPartMachine
     public MEPartMachine(IMachineBlockEntity holder, int tier, IO io,
                          boolean circuitSlotEnabled, boolean distinctEnabled) {
         super(holder, tier, io);
-        nodeHost = createNodeHost();
+        nodeHost = attachTrait(createNodeHost());
         nodeSupplier = () -> {
             if (isWorkingEnabled()) {
                 return nodeHost.getGridNode();
@@ -92,7 +94,10 @@ public class MEPartMachine extends TieredIOPartMachine
         };
         this.circuitSlotEnabled = circuitSlotEnabled;
         this.distinctEnabled = distinctEnabled;
-        this.circuitInventory = createCircuitItemHandler().shouldSearchContent(false);
+        this.circuitSlot = circuitSlotEnabled ?
+                attachPersistentTrait("circuit_slot", new ProgrammableCircuitSlotTrait(this))
+                        .shouldSearchContent(false)
+                : null;
     }
 
     @Override
@@ -148,15 +153,6 @@ public class MEPartMachine extends TieredIOPartMachine
         nodeHost.getMainNode().setExposedOnSides(exposeAllSides ? allFacing : Set.of(newFacing));
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler() {
-        if (circuitSlotEnabled) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-        } else {
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
-        }
-    }
-
     @Override
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
@@ -181,10 +177,6 @@ public class MEPartMachine extends TieredIOPartMachine
 
     @Override
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
-        if (isCircuitSlotEnabled()) {
-            left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-        }
-
         if (distinctEnabled) {
             IDistinctPart.super.attachConfigurators(left, right);
         } else {
@@ -200,7 +192,7 @@ public class MEPartMachine extends TieredIOPartMachine
     @Override
     public void writeConfig(CompoundTag tag) {
         if (isCircuitSlotEnabled()) {
-            MEConfigUtil.writeGhostCircuit(tag, circuitInventory);
+            MEConfigUtil.writeGhostCircuit(tag, circuitSlot.getStorage());
         }
         if (distinctEnabled) {
             MEConfigUtil.writeDistinctBuses(tag, isDistinct());
@@ -210,10 +202,38 @@ public class MEPartMachine extends TieredIOPartMachine
     @Override
     public void readConfig(CompoundTag tag) {
         if (isCircuitSlotEnabled()) {
-            MEConfigUtil.readGhostCircuit(tag, circuitInventory);
+            MEConfigUtil.readGhostCircuit(tag, circuitSlot.getStorage());
         }
         if (distinctEnabled) {
             MEConfigUtil.readDistinctBuses(tag, this::setDistinct);
         }
+    }
+
+    @Override
+    protected void writeMachineJadeData(CompoundTag data, BlockAccessor accessor) {
+        super.writeMachineJadeData(data, accessor);
+        data.putBoolean("exposeAllSides", exposeAllSides);
+    }
+
+    @CN({
+            "允许全向连接：",
+            "是",
+            "否"
+    })
+    @EN({
+            "Allow connection from all sides: ",
+            "Yes",
+            "No"
+    })
+    static Lang[] allowConnectionFromAllSides;
+
+    @Override
+    protected void appendMachineJadeTooltip(CompoundTag data, ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        super.appendMachineJadeTooltip(data, tooltip, accessor, config);
+        var allow = data.getBoolean("exposeAllSides");
+        tooltip.add(allowConnectionFromAllSides[0].translate().append(
+                allow ? allowConnectionFromAllSides[1].translate().withStyle(ChatFormatting.GREEN)
+                        : allowConnectionFromAllSides[2].translate().withStyle(ChatFormatting.RED)
+        ));
     }
 }

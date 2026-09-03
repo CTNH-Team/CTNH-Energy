@@ -3,6 +3,7 @@ package tech.luckyblock.mcmod.ctnhenergy.event;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,11 +74,13 @@ public class ForgeEventHandler {
     }
 
     private static void configureMachine(SimpleTieredMachine machine, Direction outputDir) {
-        machine.setAutoOutputFluids(true);
-        machine.setAutoOutputItems(true);
-        machine.setOutputFacingFluids(outputDir);
-        machine.setOutputFacingItems(outputDir);
-        machine.setAllowInputFromOutputSideItems(true);
-        machine.setAllowInputFromOutputSideFluids(true);
+        var autoOutput = machine.getTrait(AutoOutputTrait.class);
+        if (autoOutput == null) return;
+        autoOutput.setAutoOutputFluids(true);
+        autoOutput.setAutoOutputItems(true);
+        autoOutput.setOutputFacingFluids(outputDir);
+        autoOutput.setOutputFacingItems(outputDir);
+        autoOutput.setAllowInputFromOutputSideItems(true);
+        autoOutput.setAllowInputFromOutputSideFluids(true);
     }
 }

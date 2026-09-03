@@ -13,8 +13,8 @@ public class MEOutputMachine extends MEPartMachine {
 
     public MEOutputMachine(IMachineBlockEntity holder, int tier, IO io, boolean allowItem, boolean allowFluid) {
         super(holder, tier, io);
-        if (allowItem) new MEStorageItemHandler(this, io, this.nodeSupplier, null);
-        if (allowFluid) new MEStorageFluidHandler(this, io, this.nodeSupplier, null);
+        if (allowItem) attachTrait(new MEStorageItemHandler(this, io, this.nodeSupplier, null));
+        if (allowFluid) attachTrait(new MEStorageFluidHandler(this, io, this.nodeSupplier, null));
     }
 
     @Override

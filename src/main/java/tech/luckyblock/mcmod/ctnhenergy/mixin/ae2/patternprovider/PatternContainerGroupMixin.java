@@ -3,10 +3,10 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.patternprovider;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 
 import net.minecraft.core.BlockPos;
@@ -75,11 +75,9 @@ public class PatternContainerGroupMixin {
             }
 
             int circuitConfiguration = -1;
-            if (machine instanceof IHasCircuitSlot circuitSlot &&
-                    circuitSlot.getCircuitInventory().storage.getSlots() > 0) {
-                ItemStack circuitStack = circuitSlot.isCircuitSlotEnabled() ?
-                        circuitSlot.getCircuitInventory().storage.getStackInSlot(0) :
-                        ItemStack.EMPTY;
+            var circuitSlot = machine.getTrait(ProgrammableCircuitSlotTrait.class);
+            if (circuitSlot != null && circuitSlot.getStorage().getSlots() > 0) {
+                ItemStack circuitStack = circuitSlot.getStorage().getStackInSlot(0);
                 circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
             }

@@ -1,14 +1,14 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.circuit;
 
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
@@ -41,13 +41,15 @@ public final class CircuitPatternService {
         if (number == ICircuitPattern.NO_CIRCUIT || level == null) return;
         for (BlockPos pos : targets) {
             var machine = SimpleTieredMachine.getMachine(level, pos);
-            if (machine instanceof IHasCircuitSlot circuitMachine) {
-                setCircuit(circuitMachine.getCircuitInventory(), number);
+            if(machine == null) return;
+            var circuitSlot = machine.getTrait(ProgrammableCircuitSlotTrait.class);
+            if (circuitSlot != null) {
+                setCircuit(circuitSlot.getStorage(), number);
             }
         }
     }
 
-    public static void setCircuit(NotifiableItemStackHandler inventory, int number) {
+    public static void setCircuit(IItemHandlerModifiable inventory, int number) {
         inventory.setStackInSlot(0, CircuitPatternData.stack(number));
     }
 

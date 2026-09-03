@@ -13,8 +13,8 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
@@ -41,7 +41,7 @@ public class MEEnergyPartMachine extends MEPartMachine {
 
     public MEEnergyPartMachine(IMachineBlockEntity holder, IO io) {
         super(holder, UV, io, false, false);
-        this.energyContainer = new MEStorageEUHandler(this, io, nodeSupplier);
+        this.energyContainer = attachTrait(new MEStorageEUHandler(this, io, nodeSupplier));
     }
 
     @Override

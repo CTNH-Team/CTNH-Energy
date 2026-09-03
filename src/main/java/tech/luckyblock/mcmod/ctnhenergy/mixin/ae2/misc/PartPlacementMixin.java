@@ -2,6 +2,7 @@ package tech.luckyblock.mcmod.ctnhenergy.mixin.ae2.misc;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,12 +46,15 @@ public class PartPlacementMixin {
             BlockEntity be = level.getBlockEntity(targetPos);
             if (be instanceof MetaMachineBlockEntity metaMachineBlockEntity &&
                     metaMachineBlockEntity.getMetaMachine() instanceof SimpleTieredMachine tieredMachine) {
-                tieredMachine.setAutoOutputFluids(true);
-                tieredMachine.setAutoOutputItems(true);
-                tieredMachine.setOutputFacingFluids(side.getOpposite());
-                tieredMachine.setOutputFacingItems(side.getOpposite());
-                tieredMachine.setAllowInputFromOutputSideItems(true);
-                tieredMachine.setAllowInputFromOutputSideFluids(true);
+                var autoOutput = tieredMachine.getTrait(AutoOutputTrait.class);
+                if (autoOutput != null) {
+                    autoOutput.setAutoOutputFluids(true);
+                    autoOutput.setAutoOutputItems(true);
+                    autoOutput.setOutputFacingFluids(side.getOpposite());
+                    autoOutput.setOutputFacingItems(side.getOpposite());
+                    autoOutput.setAllowInputFromOutputSideItems(true);
+                    autoOutput.setAllowInputFromOutputSideFluids(true);
+                }
             }
         }
     }

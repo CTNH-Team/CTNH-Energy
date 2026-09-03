@@ -86,8 +86,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private IMaintenanceMachine maintenance;
 
-    @Persisted
     @Getter
+    @Persisted
     private final PowerStationEnergyBank energyBank;
     @NotNull
     private EnergyContainerList inputHatches = EnergyContainerList.EMPTY;
@@ -110,7 +110,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     public PowerSubstationMachine(IMachineBlockEntity holder) {
         super(holder);
-        this.energyBank = PowerStationEnergyBank.createEnergyBank(this);
+        this.energyBank = attachTrait(PowerStationEnergyBank.createEnergyBank(this));
     }
 
     @Override
@@ -165,9 +165,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         outputs.add(c);
                     }
                 });
-
-                traitSubscriptions
-                        .add(handlerList.subscribe(getWorkLogic()::updateTickSubscription, EURecipeCapability.CAP));
+                workLogic.addNotifier(handlerList::subscribe);
             }
         }
         this.inputHatches = new EnergyContainerList(inputs);
