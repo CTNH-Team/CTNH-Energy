@@ -59,7 +59,8 @@ public class PatternContainerGroupMixin {
             MachineDefinition machineDefinition;
             MetaMachine machine = blockEntity.getMetaMachine();
             MutableComponent name;
-            if (machine instanceof MultiblockPartMachine multiblockPartMachine && multiblockPartMachine.isFormed()) {
+            if (machine instanceof MultiblockPartMachine multiblockPartMachine && multiblockPartMachine.isFormed() &&
+                    !multiblockPartMachine.getControllers().isEmpty()) {
                 IMultiController controller = multiblockPartMachine.getControllers().first();
                 machineDefinition = controller.self().getDefinition();
                 tooltip.add(Component.translatable(machine.getDefinition().getDescriptionId()));

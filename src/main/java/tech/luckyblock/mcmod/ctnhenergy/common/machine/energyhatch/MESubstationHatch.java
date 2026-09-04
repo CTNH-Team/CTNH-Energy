@@ -41,8 +41,7 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
     private int priority = 0;
 
     private final SubstationEUStorage storage = new SubstationEUStorage();
-
-    PowerSubstationMachine.PowerStationEnergyBank mountedEnergyBank;
+    private boolean unloading;
 
     public MESubstationHatch(IMachineBlockEntity holder) {
         super(holder, GTValues.IV, IO.BOTH, false, false);
@@ -125,8 +124,39 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
+        clearControllerRuntime();
+    }
+
+    @Override
+    public void unloadedFromController(IMultiController controller) {
+        super.unloadedFromController(controller);
+        clearControllerRuntime();
+    }
+
+    private void clearControllerRuntime() {
         storage.reset();
-        remountStorage();
+        if (!unloading) {
+            remountStorage();
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        unloading = true;
+        try {
+            super.onUnload();
+        } finally {
+            // The controller can already be outside the loaded area, so the base unload path may have no runtime
+            // controller callback to deliver. Do not retain its machine and energy-bank graph through this hatch.
+            storage.reset();
+            unloading = false;
+        }
+    }
+
+    private boolean isOperationalRuntimeController(PowerSubstationMachine controller) {
+        return controller != null &&
+                controllers.stream().anyMatch(candidate -> candidate == controller) &&
+                controller.isStructureOperational() && controller.self().hasRuntimePart(this);
     }
 
     @Override
@@ -165,24 +195,28 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
 
         @Override
         public Component getDescription() {
-            if (getPowerStation() != null) {
-                return powerStation.getTitle();
+            var station = getPowerStation();
+            if (station != null) {
+                return station.getTitle();
             }
             return MESubstationHatch.this.getTitle();
         }
 
         public PowerSubstationMachine getPowerStation() {
-            if (powerStation == null && isFormed()) {
-                powerStation = (PowerSubstationMachine) getControllers().stream()
-                        .filter(c -> c instanceof PowerSubstationMachine)
+            if (!isOperationalRuntimeController(powerStation)) {
+                powerStation = controllers.stream()
+                        .filter(PowerSubstationMachine.class::isInstance)
+                        .map(PowerSubstationMachine.class::cast)
+                        .filter(MESubstationHatch.this::isOperationalRuntimeController)
                         .findFirst().orElse(null);
             }
             return powerStation;
         }
 
         public PowerSubstationMachine.PowerStationEnergyBank getPowerBank() {
-            if (isWorkingEnabled() && getPowerStation() != null) {
-                return getPowerStation().getEnergyBank();
+            var station = getPowerStation();
+            if (isWorkingEnabled() && station != null) {
+                return station.getEnergyBank();
             }
             return null;
         }
@@ -194,14 +228,15 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
 
         @Override
         public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-            if (what == EUKey.EU && getPowerBank() != null && getPowerStation().isWorkingEnabled()) {
+            var powerBank = getPowerBank();
+            var station = getPowerStation();
+            if (what == EUKey.EU && powerBank != null && station != null && station.isWorkingEnabled()) {
                 if (mode.isSimulate()) {
-                    long canInsert = CEUtil
-                            .clampToLong(getPowerBank().getCapacity().subtract(getPowerBank().getStored()));
+                    long canInsert = CEUtil.clampToLong(powerBank.getCapacity().subtract(powerBank.getStored()));
                     return Math.min(amount, canInsert);
                 } else {
-                    getPowerStation().getWorkLogic().updateTickSubscription();
-                    return getPowerBank().fill(amount);
+                    station.getWorkLogic().updateTickSubscription();
+                    return powerBank.fill(amount);
                 }
 
             }
@@ -210,20 +245,22 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
 
         @Override
         public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-            if (getPowerBank() == null || !getPowerStation().isWorkingEnabled()) return 0;
+            var powerBank = getPowerBank();
+            var station = getPowerStation();
+            if (powerBank == null || station == null || !station.isWorkingEnabled()) return 0;
 
-            if (what instanceof VoltageKey voltageKey && voltageKey.getTier() <= getPowerBank().getTier() &&
+            if (what instanceof VoltageKey voltageKey && voltageKey.getTier() <= powerBank.getTier() &&
                     mode.isSimulate()) {
                 return 1;
             }
 
             if (what == EUKey.EU) {
                 if (mode.isSimulate()) {
-                    long canExtract = CEUtil.clampToLong(getPowerBank().getStored());
+                    long canExtract = CEUtil.clampToLong(powerBank.getStored());
                     return Math.min(amount, canExtract);
                 } else {
-                    getPowerStation().getWorkLogic().updateTickSubscription();
-                    return getPowerBank().drain(amount);
+                    station.getWorkLogic().updateTickSubscription();
+                    return powerBank.drain(amount);
                 }
             }
             return 0;
@@ -231,8 +268,10 @@ public class MESubstationHatch extends MEPartMachine implements IStorageProvider
 
         @Override
         public void getAvailableStacks(KeyCounter out) {
-            if (getPowerBank() != null && getPowerStation().isWorkingEnabled()) {
-                out.add(EUKey.EU, CEUtil.clampToLong(getPowerBank().getStored()));
+            var powerBank = getPowerBank();
+            var station = getPowerStation();
+            if (powerBank != null && station != null && station.isWorkingEnabled()) {
+                out.add(EUKey.EU, CEUtil.clampToLong(powerBank.getStored()));
             }
         }
 
