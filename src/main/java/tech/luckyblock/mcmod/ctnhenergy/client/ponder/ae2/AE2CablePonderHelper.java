@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.core.definitions.AEBlocks;
-import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
+import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderSceneBuilder;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -51,11 +51,11 @@ public final class AE2CablePonderHelper {
             ae2("256k_crafting_storage"),
             ae2("crystal_resonance_generator"));
 
-    private final CTNHEnergyPonderSceneBuilder scene;
+    private final CTNHPonderSceneBuilder scene;
     private final SceneBuildingUtil util;
     private final Set<BlockPos> visiblePositions = new HashSet<>();
 
-    public AE2CablePonderHelper(CTNHEnergyPonderSceneBuilder scene, SceneBuildingUtil util) {
+    public AE2CablePonderHelper(CTNHPonderSceneBuilder scene, SceneBuildingUtil util) {
         this.scene = scene;
         this.util = util;
     }
@@ -76,11 +76,11 @@ public final class AE2CablePonderHelper {
         hideSectionAndDisconnect(util.grid().at(x1, y1, z1), util.grid().at(x2, y2, z2), direction);
     }
 
-    public static void connectAllVisibleCableBuses(CTNHEnergyPonderSceneBuilder scene, SceneBuildingUtil util) {
+    public static void connectAllVisibleCableBuses(CTNHPonderSceneBuilder scene, SceneBuildingUtil util) {
         new AE2CablePonderHelper(scene, util).markVisibleAndConnect(util.grid().at(0, 0, 0), util.grid().at(8, 17, 8));
     }
 
-    public static void connectVisibleCableBuses(CTNHEnergyPonderSceneBuilder scene, SceneBuildingUtil util,
+    public static void connectVisibleCableBuses(CTNHPonderSceneBuilder scene, SceneBuildingUtil util,
                                                 BlockPos from, BlockPos to) {
         new AE2CablePonderHelper(scene, util).markVisibleAndConnect(from, to);
     }
