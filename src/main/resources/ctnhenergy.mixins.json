@@ -61,6 +61,7 @@
     "ae2pw.PatternWorkStationMenuMixin"
   ],
   "client": [
+    "ae2.cpu.CraftingStatusTableRendererMixin",
     "ae2.emi.EmiAeBaseScreenStackProviderMixin",
     "ae2.emi.EmiScreenBaseMixin",
     "ae2.emi.EmiStackHelperCircuitMixin",
