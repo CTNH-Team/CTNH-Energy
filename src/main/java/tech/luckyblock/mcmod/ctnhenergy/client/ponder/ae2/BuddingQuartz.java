@@ -9,7 +9,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
 import tech.luckyblock.mcmod.ctnhenergy.client.ponder.CTNHEnergyPonderSceneBuilder;
 
 public class BuddingQuartz {
@@ -138,19 +137,28 @@ public class BuddingQuartz {
         scene.idle(10);
         scene.showText(100, "Your budding quartz degraded to a quartz block?", "母岩退化到石英块了？");
         scene.idle(20);
+        scene.showText(100, "Use a matching block to try an upgrade. Each attempt costs one block and has a one-in-two chance to succeed.",
+                "手持同级方块右键尝试升级。每次消耗手中一个方块，有一半概率升一级。")
+                .attachKeyFrame();
+        BlockState[] tiers = {
+                AEBlocks.QUARTZ_BLOCK.block().defaultBlockState(),
+                AEBlocks.DAMAGED_BUDDING_QUARTZ.block().defaultBlockState(),
+                AEBlocks.CHIPPED_BUDDING_QUARTZ.block().defaultBlockState(),
+                AEBlocks.FLAWED_BUDDING_QUARTZ.block().defaultBlockState(),
+                AEBlocks.FLAWLESS_BUDDING_QUARTZ.block().defaultBlockState()
+        };
+        var pos = util.grid().at(2, 1, 2);
+        for (int i = 0; i + 1 < tiers.length; i++) {
+            scene.overlay().showControls(util.vector().blockSurface(pos, Direction.UP), Pointing.DOWN, 20)
+                    .rightClick().withItem(tiers[i].getBlock().asItem().getDefaultInstance());
+            scene.idle(20);
+            scene.world().setBlocks(util.select().position(pos), tiers[i + 1], false);
+            scene.idle(10);
+        }
+        scene.showText(80, "This works up to flawless. Sneak to place matching blocks normally.",
+                "一直升级可获得无瑕母岩。潜行时可以正常放置同级方块。")
+                .attachKeyFrame();
+        scene.idle(80);
         scene.markAsFinished();
-        scene.idle(20);
-        scene.overlay()
-                .showControls(util.vector().blockSurface(util.grid().at(2, 1, 2), Direction.UP), Pointing.DOWN, 20)
-                .rightClick()
-                .withItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem().getDefaultInstance());
-        scene.idle(60);
-        scene.showText(60, "Right-click with a budding quartz of the same tier for a 50% chance to upgrade it!",
-                "手持与放置的相同等级的母岩右键右击它就有50%的概率生成一个更高级的母岩！")
-                .attachKeyFrame();
-        scene.idle(60);
-        scene.showText(60, "You can obtain flawless budding quartz this way!", "使用该方法修复可以获取无瑕母岩！")
-                .attachKeyFrame();
-        scene.idle(60);
     }
 }
