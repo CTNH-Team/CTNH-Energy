@@ -24,6 +24,7 @@ dependencies {
     modImplementation(ctnh.betterp2p)
 
     modCompileOnly(variantOf(ctnh.curios) { classifier("api") })
+    modCompileOnly(ctnh.ftbchunks)
 
     modImplementation(ctnh.clothconfig)
 
