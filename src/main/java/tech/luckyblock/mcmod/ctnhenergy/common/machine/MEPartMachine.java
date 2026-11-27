@@ -1,8 +1,5 @@
 package tech.luckyblock.mcmod.ctnhenergy.common.machine;
 
-import appeng.integration.modules.igtooltip.GridNodeState;
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
@@ -33,6 +30,8 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -96,8 +95,8 @@ public class MEPartMachine extends TieredIOPartMachine
         this.distinctEnabled = distinctEnabled;
         this.circuitSlot = circuitSlotEnabled ?
                 attachPersistentTrait("circuit_slot", new ProgrammableCircuitSlotTrait(this))
-                        .shouldSearchContent(false)
-                : null;
+                        .shouldSearchContent(false) :
+                null;
     }
 
     @Override
@@ -228,12 +227,12 @@ public class MEPartMachine extends TieredIOPartMachine
     static Lang[] allowConnectionFromAllSides;
 
     @Override
-    protected void appendMachineJadeTooltip(CompoundTag data, ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+    protected void appendMachineJadeTooltip(CompoundTag data, ITooltip tooltip, BlockAccessor accessor,
+                                            IPluginConfig config) {
         super.appendMachineJadeTooltip(data, tooltip, accessor, config);
         var allow = data.getBoolean("exposeAllSides");
         tooltip.add(allowConnectionFromAllSides[0].translate().append(
-                allow ? allowConnectionFromAllSides[1].translate().withStyle(ChatFormatting.GREEN)
-                        : allowConnectionFromAllSides[2].translate().withStyle(ChatFormatting.RED)
-        ));
+                allow ? allowConnectionFromAllSides[1].translate().withStyle(ChatFormatting.GREEN) :
+                        allowConnectionFromAllSides[2].translate().withStyle(ChatFormatting.RED)));
     }
 }

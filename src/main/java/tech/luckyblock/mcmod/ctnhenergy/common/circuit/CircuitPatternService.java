@@ -41,7 +41,7 @@ public final class CircuitPatternService {
         if (number == ICircuitPattern.NO_CIRCUIT || level == null) return;
         for (BlockPos pos : targets) {
             var machine = SimpleTieredMachine.getMachine(level, pos);
-            if(machine == null) return;
+            if (machine == null) return;
             var circuitSlot = machine.getTrait(ProgrammableCircuitSlotTrait.class);
             if (circuitSlot != null) {
                 setCircuit(circuitSlot.getStorage(), number);
